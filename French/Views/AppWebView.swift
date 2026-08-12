@@ -44,16 +44,19 @@ struct InstagramEmbedHelper {
                     border: none;
                     width: 100%;
                     height: 100%;
-                    max-width: 500px;
                 }
             </style>
         </head>
         <body>
-            <iframe src="https://www.instagram.com/reel/\(reelID)/embed/captioned/"
+            <iframe id="insta-frame"
+                    src="https://www.instagram.com/p/\(reelID)/embed/"
+                    width="100%"
+                    height="100%"
                     frameborder="0"
                     scrolling="no"
                     allowtransparency="true"
-                    allowfullscreen="true">
+                    allowfullscreen="true"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
             </iframe>
             <script async src="https://www.instagram.com/embed.js"></script>
         </body>
@@ -62,17 +65,24 @@ struct InstagramEmbedHelper {
     }
 }
 
-// MARK: - Native Web View with Instagram Embed Support
+// MARK: - Native Web View with Mobile Safari User-Agent
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
+    let webView: WKWebView
+
+    init(url: URL, webView: WKWebView = WKWebView()) {
+        self.url = url
+        self.webView = webView
+    }
 
     func makeUIView(context: Context) -> WKWebView {
-        let config = WKWebViewConfiguration()
+        let config = webView.configuration
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
+        config.allowsPictureInPictureMediaPlayback = true
 
-        let webView = WKWebView(frame: .zero, configuration: config)
+        webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.showsVerticalScrollIndicator = false
 
@@ -90,34 +100,126 @@ struct AppWebView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {}
 }
 
-// MARK: - Dedicated Web Detail Screen
+// MARK: - Dedicated Web Detail Screen with Native Video Controls
 
 struct WebViewDetailView: View {
     let link: SavedLink
     @ObservedObject private var themeManager = ThemeManager.shared
+    @State private var webView = WKWebView()
+    @State private var isPlaying: Bool = true
+    @State private var useDirectWeb: Bool = false
 
     var body: some View {
-        ZStack {
-            themeManager.currentTheme.backgroundColor
-                .ignoresSafeArea()
+        VStack(spacing: 0) {
+            ZStack {
+                themeManager.currentTheme.backgroundColor
+                    .ignoresSafeArea()
 
-            if let url = URL(string: link.urlString) {
-                AppWebView(url: url)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 8)
-            } else {
-                VStack(spacing: 12) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(.orange)
-                    Text("Invalid URL")
-                        .font(themeManager.fontSizeScale.titleFont)
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                if let url = URL(string: link.urlString) {
+                    if useDirectWeb {
+                        DirectAppWebView(url: url, webView: webView)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding(.horizontal, 8)
+                            .padding(.top, 8)
+                    } else {
+                        AppWebView(url: url, webView: webView)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding(.horizontal, 8)
+                            .padding(.top, 8)
+                    }
+                } else {
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.largeTitle)
+                            .foregroundStyle(.orange)
+                        Text("Invalid URL")
+                            .font(themeManager.fontSizeScale.titleFont)
+                            .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                    }
                 }
             }
+
+            // MARK: - Native Player Control Toolbar
+            HStack(spacing: 20) {
+                // Native Play / Pause Toggle
+                Button {
+                    HapticManager.shared.tapWord()
+                    isPlaying.toggle()
+                    let js = isPlaying ? "document.querySelector('video')?.play();" : "document.querySelector('video')?.pause();"
+                    webView.evaluateJavaScript(js, completionHandler: nil)
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                            .font(.system(size: 16, weight: .bold))
+                        Text(isPlaying ? "Pause" : "Play")
+                            .font(themeManager.fontSizeScale.bodyFont.bold())
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(.white)
+                    .background(themeManager.currentTheme.accentColor)
+                    .clipShape(Capsule())
+                }
+
+                // Reload Player Button
+                Button {
+                    HapticManager.shared.tapWord()
+                    webView.reload()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        .padding(10)
+                        .appNeumorphicCard(cornerRadius: 20)
+                }
+
+                Spacer()
+
+                // Toggle Direct Web / Embed Mode
+                Button {
+                    HapticManager.shared.tapWord()
+                    useDirectWeb.toggle()
+                } label: {
+                    Text(useDirectWeb ? "Embed Mode" : "Direct Mode")
+                        .font(themeManager.fontSizeScale.captionFont)
+                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .appNeumorphicCard(cornerRadius: 10)
+                }
+
+                // Open in External Safari / Instagram App
+                if let url = URL(string: link.urlString) {
+                    Link(destination: url) {
+                        Image(systemName: "safari")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(themeManager.currentTheme.accentColor)
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(themeManager.currentTheme.cardBackgroundColor)
         }
         .appBackground()
         .appNavigationStyle(title: link.title, displayMode: .inline)
     }
+}
+
+// MARK: - Direct App Web View (Fallback)
+
+private struct DirectAppWebView: UIViewRepresentable {
+    let url: URL
+    let webView: WKWebView
+
+    func makeUIView(context: Context) -> WKWebView {
+        let config = webView.configuration
+        config.allowsInlineMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = []
+        webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
+        webView.load(URLRequest(url: url))
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
 }
