@@ -38,7 +38,42 @@ struct SettingsView: View {
                     .padding(14)
                     .appNeumorphicCard(cornerRadius: 16)
 
-                    // MARK: - 2. Font Size Section
+                    // MARK: - 2. French Voice Options Section
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Image(systemName: "waveform.circle.fill")
+                                .foregroundStyle(themeManager.currentTheme.accentColor)
+                            Text("French Speaker Voice")
+                                .font(themeManager.fontSizeScale.bodyFont.bold())
+                                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        }
+
+                        Text("Select your preferred French speaker voice (Female / Male / Enhanced).")
+                            .font(themeManager.fontSizeScale.captionFont)
+                            .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+
+                        VStack(spacing: 10) {
+                            ForEach(themeManager.availableFrenchVoices) { option in
+                                Button {
+                                    HapticManager.shared.tapWord()
+                                    themeManager.selectedVoiceIdentifier = option.id
+                                    speech.speak("Bonjour, comment allez-vous ?", rate: Float(themeManager.speechRate))
+                                } label: {
+                                    VoiceOptionRow(option: option, isSelected: themeManager.selectedVoiceIdentifier == option.id)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+
+                        Text("💡 Tip: Apple Personal Voice (iOS 17+) and additional high-quality voices can be enabled in iPhone Settings → Accessibility → Spoken Content → Voices.")
+                            .font(themeManager.fontSizeScale.captionFont)
+                            .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                            .padding(.top, 4)
+                    }
+                    .padding(14)
+                    .appNeumorphicCard(cornerRadius: 16)
+
+                    // MARK: - 3. Font Size Section
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "textformat.size")
@@ -85,7 +120,7 @@ struct SettingsView: View {
                     .padding(14)
                     .appNeumorphicCard(cornerRadius: 16)
 
-                    // MARK: - 3. Speech Audio Speed
+                    // MARK: - 4. Speech Audio Speed
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "speaker.wave.2.fill")
@@ -149,7 +184,6 @@ private struct ThemeSwatchRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Theme Icon Badge
             ZStack {
                 Circle()
                     .fill(theme.cardBackgroundColor)
@@ -160,7 +194,6 @@ private struct ThemeSwatchRow: View {
                     .foregroundStyle(theme.accentColor)
             }
 
-            // Theme Name
             VStack(alignment: .leading, spacing: 2) {
                 Text(theme.rawValue)
                     .font(themeManager.fontSizeScale.bodyFont.bold())
@@ -173,7 +206,6 @@ private struct ThemeSwatchRow: View {
 
             Spacer()
 
-            // Swatch Color Preview Pill with border outline
             HStack(spacing: 3) {
                 RoundedRectangle(cornerRadius: 3)
                     .fill(theme.backgroundColor)
@@ -192,6 +224,48 @@ private struct ThemeSwatchRow: View {
                 RoundedRectangle(cornerRadius: 6)
                     .stroke(Color.black.opacity(0.12), lineWidth: 1)
             )
+
+            if isSelected {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title3)
+                    .foregroundStyle(themeManager.currentTheme.accentColor)
+            }
+        }
+        .padding(10)
+        .appNeumorphicCard(cornerRadius: 12, isPressed: isSelected)
+    }
+}
+
+// MARK: - Voice Option Row View
+
+private struct VoiceOptionRow: View {
+    let option: FrenchVoiceOption
+    let isSelected: Bool
+    @ObservedObject private var themeManager = ThemeManager.shared
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(themeManager.currentTheme.cardBackgroundColor)
+                    .frame(width: 36, height: 36)
+
+                Image(systemName: option.genderName == "Female" ? "person.wave.2.fill" : (option.genderName == "Male" ? "person.fill" : "speaker.wave.2.fill"))
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(themeManager.currentTheme.accentColor)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(option.name)
+                    .font(themeManager.fontSizeScale.bodyFont.bold())
+                    .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+
+                Text(option.genderName)
+                    .font(themeManager.fontSizeScale.captionFont)
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+            }
+
+            Spacer()
 
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")

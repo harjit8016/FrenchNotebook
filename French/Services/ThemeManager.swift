@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import AVFoundation
 import Combine
 
 // MARK: - App Theme Options (5 Readers' Favorites)
@@ -107,6 +108,15 @@ enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     var captionFont: Font { Font.system(size: 13 * scaleFactor, weight: .medium) }
 }
 
+// MARK: - Voice Model Helper
+
+struct FrenchVoiceOption: Identifiable, Hashable {
+    let id: String // voice.identifier or "" for system default
+    let name: String
+    let genderName: String
+    let isDefault: Bool
+}
+
 // MARK: - Theme & Reader Environment Manager (Single Source of Truth)
 
 final class ThemeManager: ObservableObject {
@@ -127,8 +137,39 @@ final class ThemeManager: ObservableObject {
         didSet { objectWillChange.send() }
     }
 
+    @AppStorage("selectedVoiceIdentifierKey") var selectedVoiceIdentifier: String = "" {
+        didSet { objectWillChange.send() }
+    }
+
     private init() {
         updateSystemAppearances()
+    }
+
+    var availableFrenchVoices: [FrenchVoiceOption] {
+        var options: [FrenchVoiceOption] = [
+            FrenchVoiceOption(id: "", name: "System Default French", genderName: "Auto / Native", isDefault: true)
+        ]
+
+        let installedVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.language.hasPrefix("fr") }
+        for voice in installedVoices {
+            let genderStr: String
+            switch voice.gender {
+            case .female: genderStr = "Female"
+            case .male: genderStr = "Male"
+            default: genderStr = "Voice"
+            }
+            let qualityStr = voice.quality == .enhanced ? " (Enhanced)" : (voice.quality == .premium ? " (Premium)" : "")
+            let option = FrenchVoiceOption(
+                id: voice.identifier,
+                name: "\(voice.name)\(qualityStr)",
+                genderName: genderStr,
+                isDefault: false
+            )
+            if !options.contains(where: { $0.id == option.id }) {
+                options.append(option)
+            }
+        }
+        return options
     }
 
     func updateSystemAppearances() {

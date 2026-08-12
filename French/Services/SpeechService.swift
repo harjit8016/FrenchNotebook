@@ -1,7 +1,7 @@
 import AVFoundation
 import Combine
 
-/// Handles tap-to-play French pronunciation with real-time word highlighting.
+/// Handles tap-to-play French pronunciation with real-time word highlighting and customizable voice options.
 final class SpeechService: NSObject, ObservableObject {
     static let shared = SpeechService()
 
@@ -34,7 +34,15 @@ final class SpeechService: NSObject, ObservableObject {
         }
 
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "fr-FR")
+
+        // Apply chosen French Voice identifier if selected
+        let voiceID = ThemeManager.shared.selectedVoiceIdentifier
+        if !voiceID.isEmpty, let voice = AVSpeechSynthesisVoice(identifier: voiceID) {
+            utterance.voice = voice
+        } else {
+            utterance.voice = AVSpeechSynthesisVoice(language: "fr-FR")
+        }
+
         utterance.rate = rate
         utterance.pitchMultiplier = pitch
 
