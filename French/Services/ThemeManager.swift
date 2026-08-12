@@ -145,18 +145,29 @@ final class ThemeManager: ObservableObject {
         updateSystemAppearances()
     }
 
+    /// Curates a maximum of 5 top quality French voice options.
     var availableFrenchVoices: [FrenchVoiceOption] {
         var options: [FrenchVoiceOption] = [
-            FrenchVoiceOption(id: "", name: "System Default French", genderName: "Auto / Native", isDefault: true)
+            FrenchVoiceOption(id: "", name: "System Default", genderName: "Auto / Native", isDefault: true)
         ]
 
-        let installedVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.language.hasPrefix("fr") }
+        let installedVoices = AVSpeechSynthesisVoice.speechVoices()
+            .filter { $0.language.hasPrefix("fr") }
+            .sorted { v1, v2 in
+                if v1.quality.rawValue != v2.quality.rawValue {
+                    return v1.quality.rawValue > v2.quality.rawValue
+                }
+                return v1.name < v2.name
+            }
+
         for voice in installedVoices {
+            if options.count >= 5 { break } // Max 5 curated options!
+
             let genderStr: String
             switch voice.gender {
-            case .female: genderStr = "Female"
-            case .male: genderStr = "Male"
-            default: genderStr = "Voice"
+            case .female: genderStr = "Female Voice"
+            case .male: genderStr = "Male Voice"
+            default: genderStr = "Native Voice"
             }
             let qualityStr = voice.quality == .enhanced ? " (Enhanced)" : (voice.quality == .premium ? " (Premium)" : "")
             let option = FrenchVoiceOption(
