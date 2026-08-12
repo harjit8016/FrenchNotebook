@@ -146,14 +146,14 @@ final class ThemeManager: ObservableObject {
         updateSystemAppearances()
     }
 
-    /// Curates a maximum of 5 top quality French voice options.
+    /// Curates a maximum of 5 distinct, deduplicated top quality French voice options.
     var availableFrenchVoices: [FrenchVoiceOption] {
         var options: [FrenchVoiceOption] = [
             FrenchVoiceOption(id: "", name: "System Default", genderName: "Auto / Native", isDefault: true)
         ]
 
-        let installedVoices = AVSpeechSynthesisVoice.speechVoices()
-            .filter { $0.language.hasPrefix("fr") }
+        let allFrench = AVSpeechSynthesisVoice.speechVoices()
+            .filter { $0.language.lowercased().hasPrefix("fr") }
             .sorted { v1, v2 in
                 if v1.quality.rawValue != v2.quality.rawValue {
                     return v1.quality.rawValue > v2.quality.rawValue
@@ -161,8 +161,15 @@ final class ThemeManager: ObservableObject {
                 return v1.name < v2.name
             }
 
-        for voice in installedVoices {
+        var seenNames = Set<String>()
+
+        for voice in allFrench {
             if options.count >= 5 { break }
+
+            // Deduplicate by base voice name so names never repeat!
+            let baseName = voice.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            if seenNames.contains(baseName) { continue }
+            seenNames.insert(baseName)
 
             let genderStr: String
             switch voice.gender {
@@ -170,16 +177,17 @@ final class ThemeManager: ObservableObject {
             case .male: genderStr = "Male Voice"
             default: genderStr = "Native Voice"
             }
-            let qualityStr = voice.quality == .enhanced ? " (Enhanced)" : (voice.quality == .premium ? " (Premium)" : "")
+
+            let regionTag = voice.language.contains("CA") ? " (Canada)" : (voice.language.contains("FR") ? " (France)" : "")
+            let qualityTag = voice.quality == .enhanced ? " • Enhanced" : (voice.quality == .premium ? " • Premium" : "")
+
             let option = FrenchVoiceOption(
                 id: voice.identifier,
-                name: "\(voice.name)\(qualityStr)",
+                name: "\(baseName)\(regionTag)\(qualityTag)",
                 genderName: genderStr,
                 isDefault: false
             )
-            if !options.contains(where: { $0.id == option.id }) {
-                options.append(option)
-            }
+            options.append(option)
         }
         return options
     }
