@@ -3,7 +3,8 @@ import SwiftUI
 enum AppTab: Int, CaseIterable, Identifiable {
     case notebook = 0
     case reference = 1
-    case settings = 2
+    case links = 2
+    case settings = 3
 
     var id: Int { rawValue }
 }
@@ -25,6 +26,12 @@ struct RootTabView: View {
                     Label("Reference", systemImage: "text.book.closed.fill")
                 }
                 .tag(AppTab.reference)
+
+            LinksView()
+                .tabItem {
+                    Label("Media", systemImage: "play.rectangle.fill")
+                }
+                .tag(AppTab.links)
 
             SettingsView()
                 .tabItem {
