@@ -21,7 +21,6 @@ struct AppWebView: UIViewRepresentable {
 
 struct WebViewDetailView: View {
     let link: SavedLink
-    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
@@ -45,22 +44,7 @@ struct WebViewDetailView: View {
                 }
             }
         }
-        .navigationTitle(link.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "chevron.left")
-                            .font(.body.bold())
-                        Text("Back")
-                    }
-                    .foregroundStyle(themeManager.currentTheme.accentColor)
-                }
-            }
-        }
+        .appBackground()
         .appNavigationStyle(title: link.title, displayMode: .inline)
     }
 }
