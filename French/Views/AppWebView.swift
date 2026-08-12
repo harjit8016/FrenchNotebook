@@ -89,7 +89,7 @@ struct InstagramEmbedHelper {
     }
 }
 
-// MARK: - Native Web View with Interactive Navigation & Delegate Support
+// MARK: - Native Web View with Interactive Navigation & JS Auto-Play Support
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
@@ -122,7 +122,6 @@ struct AppWebView: UIViewRepresentable {
             let html = YouTubeEmbedHelper.generateEmbedHTML(for: videoID)
             webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube-nocookie.com"))
         } else if let reelID = InstagramEmbedHelper.extractReelID(from: urlString) {
-            // Load direct Instagram embed URL via URLRequest so touches and play commands respond instantly
             if let embedURL = URL(string: "https://www.instagram.com/reel/\(reelID)/embed/") {
                 webView.load(URLRequest(url: embedURL))
             } else {
@@ -138,6 +137,39 @@ struct AppWebView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {}
 
     class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            let autoPlayJS = """
+            (function() {
+                function autoClickAndPlay() {
+                    // Auto-click "Continue on web", "Continue", or dismiss banners
+                    const buttons = document.querySelectorAll('button, a, div[role="button"]');
+                    for (let btn of buttons) {
+                        const text = (btn.innerText || '').toLowerCase();
+                        if (text.includes('continue') || text.includes('not now') || text.includes('accept') || text.includes('watch on web')) {
+                            try { btn.click(); } catch(e) {}
+                        }
+                    }
+                    // Auto-trigger video play
+                    const videos = document.querySelectorAll('video');
+                    for (let video of videos) {
+                        video.play().catch(function(e) {
+                            video.muted = true;
+                            video.play().catch(function(e){});
+                        });
+                    }
+                }
+                autoClickAndPlay();
+                var count = 0;
+                var interval = setInterval(function() {
+                    autoClickAndPlay();
+                    count++;
+                    if (count > 12) clearInterval(interval);
+                }, 300);
+            })();
+            """
+            webView.evaluateJavaScript(autoPlayJS, completionHandler: nil)
+        }
+
         func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
             if navigationAction.targetFrame == nil {
                 webView.load(navigationAction.request)
