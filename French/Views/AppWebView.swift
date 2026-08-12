@@ -89,7 +89,71 @@ struct InstagramEmbedHelper {
     }
 }
 
-// MARK: - Native Web View with Interactive Navigation & JS Auto-Play Support
+// MARK: - Safe Future-Proof Auto-Bypass & Auto-Play Script
+
+private let safeAutoPlayJS = """
+(function() {
+    'use strict';
+    function safeExecute() {
+        try {
+            // Keywords to match "Continue on web", "Watch on web", "Not now", etc.
+            const keywords = ['continue', 'web', 'watch', 'play', 'open', 'not now', 'stay', 'view', 'proceed', 'accept', 'allow'];
+
+            const elements = document.querySelectorAll('button, a, div[role="button"], span[role="button"], p, div, input[type="button"]');
+            for (let i = 0; i < elements.length; i++) {
+                const el = elements[i];
+                if (!el || typeof el.innerText !== 'string') continue;
+                const text = el.innerText.trim().toLowerCase();
+                if (text.length > 0 && text.length < 80) {
+                    const matches = keywords.some(function(k) { return text.indexOf(k) !== -1; });
+                    if (matches) {
+                        try {
+                            el.click();
+                            el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+                        } catch(e) {}
+                    }
+                }
+            }
+
+            // Safely auto-play HTML5 video elements
+            const videos = document.getElementsByTagName('video');
+            for (let i = 0; i < videos.length; i++) {
+                const vid = videos[i];
+                if (vid && vid.paused) {
+                    vid.playsInline = true;
+                    vid.setAttribute('playsinline', '');
+                    vid.setAttribute('webkit-playsinline', '');
+                    const promise = vid.play();
+                    if (promise !== undefined) {
+                        promise.catch(function() {
+                            vid.muted = true;
+                            vid.play().catch(function(){});
+                        });
+                    }
+                }
+            }
+        } catch(err) {}
+    }
+
+    safeExecute();
+
+    try {
+        const observer = new MutationObserver(function() { safeExecute(); });
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+        }
+    } catch(e) {}
+
+    var attempts = 0;
+    var timer = setInterval(function() {
+        safeExecute();
+        attempts++;
+        if (attempts > 15) clearInterval(timer);
+    }, 300);
+})();
+"""
+
+// MARK: - Native Web View with Interactive Navigation & Safe Script Injection
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
@@ -109,6 +173,10 @@ struct AppWebView: UIViewRepresentable {
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         config.allowsPictureInPictureMediaPlayback = true
+
+        // Inject safe future-proof auto-play script into all frames
+        let userScript = WKUserScript(source: safeAutoPlayJS, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        config.userContentController.addUserScript(userScript)
 
         webView.uiDelegate = context.coordinator
         webView.navigationDelegate = context.coordinator
@@ -138,36 +206,7 @@ struct AppWebView: UIViewRepresentable {
 
     class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            let autoPlayJS = """
-            (function() {
-                function autoClickAndPlay() {
-                    // Auto-click "Continue on web", "Continue", or dismiss banners
-                    const buttons = document.querySelectorAll('button, a, div[role="button"]');
-                    for (let btn of buttons) {
-                        const text = (btn.innerText || '').toLowerCase();
-                        if (text.includes('continue') || text.includes('not now') || text.includes('accept') || text.includes('watch on web')) {
-                            try { btn.click(); } catch(e) {}
-                        }
-                    }
-                    // Auto-trigger video play
-                    const videos = document.querySelectorAll('video');
-                    for (let video of videos) {
-                        video.play().catch(function(e) {
-                            video.muted = true;
-                            video.play().catch(function(e){});
-                        });
-                    }
-                }
-                autoClickAndPlay();
-                var count = 0;
-                var interval = setInterval(function() {
-                    autoClickAndPlay();
-                    count++;
-                    if (count > 12) clearInterval(interval);
-                }, 300);
-            })();
-            """
-            webView.evaluateJavaScript(autoPlayJS, completionHandler: nil)
+            webView.evaluateJavaScript(safeAutoPlayJS, completionHandler: nil)
         }
 
         func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
@@ -301,6 +340,11 @@ private struct DirectAppWebView: UIViewRepresentable {
         let config = webView.configuration
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
+
+        // Inject safe future-proof auto-play script into direct web view as well
+        let userScript = WKUserScript(source: safeAutoPlayJS, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        config.userContentController.addUserScript(userScript)
+
         webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
         webView.load(URLRequest(url: url))
         return webView
