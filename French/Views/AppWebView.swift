@@ -1,6 +1,72 @@
 import SwiftUI
 import WebKit
 
+// MARK: - YouTube Embed Helper
+
+struct YouTubeEmbedHelper {
+    static func extractVideoID(from urlString: String) -> String? {
+        if urlString.contains("/shorts/") {
+            let components = urlString.components(separatedBy: "/shorts/")
+            if components.count > 1 {
+                let id = components[1].components(separatedBy: "?")[0].components(separatedBy: "/")[0]
+                if !id.isEmpty { return id }
+            }
+        }
+        if urlString.contains("watch?v=") {
+            let components = urlString.components(separatedBy: "watch?v=")
+            if components.count > 1 {
+                let id = components[1].components(separatedBy: "&")[0].components(separatedBy: "/")[0]
+                if !id.isEmpty { return id }
+            }
+        }
+        if urlString.contains("youtu.be/") {
+            let components = urlString.components(separatedBy: "youtu.be/")
+            if components.count > 1 {
+                let id = components[1].components(separatedBy: "?")[0].components(separatedBy: "/")[0]
+                if !id.isEmpty { return id }
+            }
+        }
+        return nil
+    }
+
+    static func generateEmbedHTML(for videoID: String) -> String {
+        return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+            <style>
+                html, body {
+                    margin: 0;
+                    padding: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #000000;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    overflow: hidden;
+                }
+                iframe {
+                    border: none;
+                    width: 100%;
+                    height: 100%;
+                }
+            </style>
+        </head>
+        <body>
+            <iframe id="yt-player"
+                    src="https://www.youtube-nocookie.com/embed/\(videoID)?autoplay=1&playsinline=1&enablejsapi=1&rel=0&modestbranding=1"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+            </iframe>
+        </body>
+        </html>
+        """
+    }
+}
+
 // MARK: - Instagram Embed Helper
 
 struct InstagramEmbedHelper {
@@ -65,7 +131,7 @@ struct InstagramEmbedHelper {
     }
 }
 
-// MARK: - Native Web View with Mobile Safari User-Agent
+// MARK: - Native Web View with YouTube & Instagram Embed Support
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
@@ -87,7 +153,10 @@ struct AppWebView: UIViewRepresentable {
         webView.scrollView.showsVerticalScrollIndicator = false
 
         let urlString = url.absoluteString
-        if let reelID = InstagramEmbedHelper.extractReelID(from: urlString) {
+        if let videoID = YouTubeEmbedHelper.extractVideoID(from: urlString) {
+            let html = YouTubeEmbedHelper.generateEmbedHTML(for: videoID)
+            webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube-nocookie.com"))
+        } else if let reelID = InstagramEmbedHelper.extractReelID(from: urlString) {
             let html = InstagramEmbedHelper.generateEmbedHTML(for: reelID)
             webView.loadHTMLString(html, baseURL: URL(string: "https://www.instagram.com"))
         } else {
@@ -145,7 +214,9 @@ struct WebViewDetailView: View {
                 Button {
                     HapticManager.shared.tapWord()
                     isPlaying.toggle()
-                    let js = isPlaying ? "document.querySelector('video')?.play();" : "document.querySelector('video')?.pause();"
+                    let js = isPlaying ?
+                        "(document.querySelector('video')?.play() || document.getElementById('yt-player')?.contentWindow?.postMessage('{\"event\":\"command\",\"func\":\"playVideo\",\"args\":\"\"}', '*'));" :
+                        "(document.querySelector('video')?.pause() || document.getElementById('yt-player')?.contentWindow?.postMessage('{\"event\":\"command\",\"func\":\"pauseVideo\",\"args\":\"\"}', '*'));"
                     webView.evaluateJavaScript(js, completionHandler: nil)
                 } label: {
                     HStack(spacing: 6) {
@@ -188,7 +259,7 @@ struct WebViewDetailView: View {
                         .appNeumorphicCard(cornerRadius: 10)
                 }
 
-                // Open in External Safari / Instagram App
+                // Open in External Safari / YouTube / Instagram App
                 if let url = URL(string: link.urlString) {
                     Link(destination: url) {
                         Image(systemName: "safari")
