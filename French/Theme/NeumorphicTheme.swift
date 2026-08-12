@@ -29,7 +29,7 @@ struct AppNavigationModifier: ViewModifier {
     }
 }
 
-// MARK: - Inset Depth Card Modifier (Strictly Clipped Bounds - Zero Spill)
+// MARK: - Sharp Razor-Clean Inset Depth Box Modifier
 
 struct InsetDepthCardModifier: ViewModifier {
     var cornerRadius: CGFloat = 16
@@ -40,11 +40,12 @@ struct InsetDepthCardModifier: ViewModifier {
         let theme = themeManager.currentTheme
         let isDark = theme.isDark
 
-        // 1. Dark Inset Shadow (Top & Left carved wall)
-        let darkShadow = isDark ? Color.black.opacity(0.85) : Color(red: 0.60, green: 0.64, blue: 0.72).opacity(0.65)
+        // 1. Sharp Inset Shadow Colors
+        let darkShadow     = isDark ? Color.black.opacity(0.90) : Color(red: 0.45, green: 0.49, blue: 0.58).opacity(0.75)
+        let lightHighlight = isDark ? Color.white.opacity(0.22) : Color.white.opacity(0.95)
         
-        // 2. Light Inset Highlight (Bottom & Right carved wall)
-        let lightHighlight = isDark ? Color.white.opacity(0.12) : Color.white.opacity(0.85)
+        // 2. Razor-Sharp Boundary Edge Line
+        let sharpEdgeColor = isDark ? Color.white.opacity(0.14) : Color.black.opacity(0.14)
 
         return content
             .background(
@@ -53,19 +54,22 @@ struct InsetDepthCardModifier: ViewModifier {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(theme.cardBackgroundColor)
 
-                    // Top-Left Dark Inset Shadow
+                    // Sharp Top-Left Dark Inset Shadow (Low 0.8pt blur for crisp precision)
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(darkShadow, lineWidth: isPressed ? 4.0 : 3.0)
-                        .blur(radius: 2.5)
-                        .offset(x: 2, y: 2)
+                        .stroke(darkShadow, lineWidth: isPressed ? 2.5 : 2.0)
+                        .blur(radius: 0.8)
+                        .offset(x: 1.5, y: 1.5)
 
-                    // Bottom-Right Light Inset Highlight
+                    // Sharp Bottom-Right Light Inset Highlight
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(lightHighlight, lineWidth: isPressed ? 3.0 : 2.0)
-                        .blur(radius: 2.0)
-                        .offset(x: -2, y: -2)
+                        .stroke(lightHighlight, lineWidth: isPressed ? 2.0 : 1.5)
+                        .blur(radius: 0.8)
+                        .offset(x: -1.5, y: -1.5)
+
+                    // Razor-Sharp Edge Boundary (Unblurred 1.0pt stroke border)
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .strokeBorder(sharpEdgeColor, lineWidth: 1.0)
                 }
-                // Strictly clip all inner shadows and glows inside the exact card shape so nothing spills out to the right side!
                 .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             )
             .scaleEffect(isPressed ? 0.985 : 1.0)
@@ -86,7 +90,7 @@ extension View {
         self.modifier(AppNavigationModifier(title: title, displayMode: displayMode))
     }
 
-    /// Applies Inset Depth Card styling with strictly clipped boundaries (Zero spill on right side).
+    /// Applies Sharp Razor-Clean Inset Depth Card styling.
     func appNeumorphicCard(cornerRadius: CGFloat = 16, isPressed: Bool = false) -> some View {
         self.modifier(InsetDepthCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
     }
