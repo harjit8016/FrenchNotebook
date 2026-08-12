@@ -29,61 +29,73 @@ struct AppNavigationModifier: ViewModifier {
     }
 }
 
-// MARK: - Soft Depth Box Modifier (Inspired by HTML Soft Depth Box Design)
+// MARK: - Exact Carved Inset Depth Box Modifier (Matching User Screenshot)
 
-struct SoftDepthBoxModifier: ViewModifier {
+struct CarvedDepthBoxModifier: ViewModifier {
     var cornerRadius: CGFloat = 18
     var isPressed: Bool = false
-    var isRecessed: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
 
     func body(content: Content) -> some View {
         let theme = themeManager.currentTheme
         let isDark = theme.isDark
 
-        let highlightColor = isDark ? Color.white.opacity(0.09) : Color.white.opacity(0.95)
-        let shadowColor    = isDark ? Color.black.opacity(0.65) : Color(red: 0.65, green: 0.69, blue: 0.77).opacity(0.55)
+        // Exact inset shadow parameters matching the screenshot depth well
+        let darkInsetShadow = isDark ? Color.black.opacity(0.80) : Color(red: 0.60, green: 0.64, blue: 0.72).opacity(0.65)
+        let lightInsetGlow  = isDark ? Color.white.opacity(0.14) : Color.white.opacity(0.95)
 
         return content
             .background(
                 ZStack {
-                    if isRecessed || isPressed {
-                        // Recessed/Sunken Depth Well (like .code-panel inset box)
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .fill(theme.cardBackgroundColor)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                                    .stroke(shadowColor, lineWidth: 1.5)
-                                    .blur(radius: 2)
-                                    .offset(x: 2, y: 2)
-                                    .mask(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                                    .stroke(highlightColor, lineWidth: 1.5)
-                                    .blur(radius: 2)
-                                    .offset(x: -2, y: -2)
-                                    .mask(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                            )
-                    } else {
-                        // Soft Extruded Elevated Depth Box (like .row-card outer box)
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .fill(theme.cardBackgroundColor)
-                            .shadow(
-                                color: highlightColor,
-                                radius: 7,
-                                x: -6,
-                                y: -6
-                            )
-                            .shadow(
-                                color: shadowColor,
-                                radius: 7,
-                                x: 6,
-                                y: 6
-                            )
-                    }
+                    // 1. Carved Depth Well Surface Fill
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .fill(theme.cardBackgroundColor)
+
+                    // 2. Top-Left Carved Inner Dark Shadow
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(darkInsetShadow, lineWidth: isPressed ? 4.5 : 3.5)
+                        .blur(radius: isPressed ? 3.5 : 2.5)
+                        .offset(x: isPressed ? 3 : 2, y: isPressed ? 3 : 2)
+                        .mask(
+                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [.black, .black.opacity(0.4), .clear],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                        )
+
+                    // 3. Bottom-Right Carved Inner Light Glow
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .stroke(lightInsetGlow, lineWidth: isPressed ? 3.5 : 2.5)
+                        .blur(radius: isPressed ? 3.5 : 2.5)
+                        .offset(x: isPressed ? -3 : -2, y: isPressed ? -3 : -2)
+                        .mask(
+                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [.clear, .black.opacity(0.4), .black],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                        )
+
+                    // 4. Subtle Carved Bevel Rim Border
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .strokeBorder(
+                            LinearGradient(
+                                colors: [darkInsetShadow.opacity(0.4), lightInsetGlow.opacity(0.6)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.0
+                        )
                 }
             )
+            .scaleEffect(isPressed ? 0.985 : 1.0)
             .animation(.easeInOut(duration: 0.15), value: isPressed)
     }
 }
@@ -101,13 +113,18 @@ extension View {
         self.modifier(AppNavigationModifier(title: title, displayMode: displayMode))
     }
 
-    /// Applies Soft Extruded / Recessed Depth Box styling matching swift-vs-kotlin-neumorphic depth box design.
+    /// Applies Exact Carved Inset Depth Box styling matching the user's screenshot.
     func appNeumorphicCard(cornerRadius: CGFloat = 18, isPressed: Bool = false) -> some View {
-        self.modifier(SoftDepthBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed, isRecessed: false))
+        self.modifier(CarvedDepthBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed))
     }
 
-    /// Explicit helper for sunken/recessed depth wells (like code/audio panels).
+    /// Alias for explicit Carved Depth Box naming.
+    func appCarvedDepthCard(cornerRadius: CGFloat = 18, isPressed: Bool = false) -> some View {
+        self.modifier(CarvedDepthBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed))
+    }
+
+    /// Helper for inner sunken wells.
     func appRecessedWell(cornerRadius: CGFloat = 12) -> some View {
-        self.modifier(SoftDepthBoxModifier(cornerRadius: cornerRadius, isPressed: false, isRecessed: true))
+        self.modifier(CarvedDepthBoxModifier(cornerRadius: cornerRadius, isPressed: false))
     }
 }
