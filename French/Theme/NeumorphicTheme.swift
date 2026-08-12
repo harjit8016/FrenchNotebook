@@ -29,9 +29,9 @@ struct AppNavigationModifier: ViewModifier {
     }
 }
 
-// MARK: - Exact Carved Inset Depth Box Modifier (Matching User Screenshot)
+// MARK: - Carved Shelf Depth Box Modifier (Crisp Unblended Boundaries)
 
-struct CarvedDepthBoxModifier: ViewModifier {
+struct CarvedShelfBoxModifier: ViewModifier {
     var cornerRadius: CGFloat = 18
     var isPressed: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -40,58 +40,62 @@ struct CarvedDepthBoxModifier: ViewModifier {
         let theme = themeManager.currentTheme
         let isDark = theme.isDark
 
-        // Exact inset shadow parameters matching the screenshot depth well
-        let darkInsetShadow = isDark ? Color.black.opacity(0.80) : Color(red: 0.60, green: 0.64, blue: 0.72).opacity(0.65)
-        let lightInsetGlow  = isDark ? Color.white.opacity(0.14) : Color.white.opacity(0.95)
+        // 1. Deep Inset Wall Shadows
+        let innerShadowDark  = isDark ? Color.black.opacity(0.88) : Color(red: 0.48, green: 0.52, blue: 0.62).opacity(0.70)
+        let innerGlowLight   = isDark ? Color.white.opacity(0.20) : Color.white.opacity(0.85)
+
+        // 2. Crisp Outer Carved Rim (Prevents right/bottom blending with outer background view)
+        let outerRimColor    = isDark ? Color.black.opacity(0.85) : Color(red: 0.40, green: 0.44, blue: 0.53).opacity(0.38)
+        let bottomHighlight  = isDark ? Color.white.opacity(0.12) : Color.white.opacity(0.65)
 
         return content
             .background(
                 ZStack {
-                    // 1. Carved Depth Well Surface Fill
+                    // Step A: Carved Shelf Base Floor Fill
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(theme.cardBackgroundColor)
 
-                    // 2. Top-Left Carved Inner Dark Shadow
+                    // Step B: Top-Left Deep Carved Inner Shadow (Top & Left Walls)
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(darkInsetShadow, lineWidth: isPressed ? 4.5 : 3.5)
-                        .blur(radius: isPressed ? 3.5 : 2.5)
-                        .offset(x: isPressed ? 3 : 2, y: isPressed ? 3 : 2)
+                        .stroke(innerShadowDark, lineWidth: isPressed ? 4.0 : 3.0)
+                        .blur(radius: 2.5)
+                        .offset(x: 1.5, y: 1.5)
                         .mask(
                             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                                 .fill(
                                     LinearGradient(
-                                        colors: [.black, .black.opacity(0.4), .clear],
+                                        colors: [.black, .black.opacity(0.5), .clear],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
                                 )
                         )
 
-                    // 3. Bottom-Right Carved Inner Light Glow
+                    // Step C: Bottom-Right Crisp Shelf Wall Highlight (Inner Floor Edge)
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(lightInsetGlow, lineWidth: isPressed ? 3.5 : 2.5)
-                        .blur(radius: isPressed ? 3.5 : 2.5)
-                        .offset(x: isPressed ? -3 : -2, y: isPressed ? -3 : -2)
+                        .stroke(innerGlowLight, lineWidth: 1.5)
+                        .blur(radius: 1.5)
+                        .offset(x: -1.0, y: -1.0)
                         .mask(
                             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                                 .fill(
                                     LinearGradient(
-                                        colors: [.clear, .black.opacity(0.4), .black],
+                                        colors: [.clear, .black.opacity(0.5), .black],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
                                 )
                         )
 
-                    // 4. Subtle Carved Bevel Rim Border
+                    // Step D: Crisp Distinct Outer Carved Wall Rim (Defines exact right/bottom boundary without blending)
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .strokeBorder(
                             LinearGradient(
-                                colors: [darkInsetShadow.opacity(0.4), lightInsetGlow.opacity(0.6)],
+                                colors: [outerRimColor, outerRimColor.opacity(0.6), bottomHighlight],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             ),
-                            lineWidth: 1.0
+                            lineWidth: 1.2
                         )
                 }
             )
@@ -113,18 +117,18 @@ extension View {
         self.modifier(AppNavigationModifier(title: title, displayMode: displayMode))
     }
 
-    /// Applies Exact Carved Inset Depth Box styling matching the user's screenshot.
+    /// Applies Carved Shelf Depth Box styling with crisp unblended outer boundaries.
     func appNeumorphicCard(cornerRadius: CGFloat = 18, isPressed: Bool = false) -> some View {
-        self.modifier(CarvedDepthBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed))
+        self.modifier(CarvedShelfBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed))
     }
 
-    /// Alias for explicit Carved Depth Box naming.
+    /// Alias for explicit Carved Shelf Depth Box naming.
     func appCarvedDepthCard(cornerRadius: CGFloat = 18, isPressed: Bool = false) -> some View {
-        self.modifier(CarvedDepthBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed))
+        self.modifier(CarvedShelfBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed))
     }
 
     /// Helper for inner sunken wells.
     func appRecessedWell(cornerRadius: CGFloat = 12) -> some View {
-        self.modifier(CarvedDepthBoxModifier(cornerRadius: cornerRadius, isPressed: false))
+        self.modifier(CarvedShelfBoxModifier(cornerRadius: cornerRadius, isPressed: false))
     }
 }
