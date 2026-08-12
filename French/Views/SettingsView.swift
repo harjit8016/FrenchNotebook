@@ -120,31 +120,31 @@ struct SettingsView: View {
                     .padding(14)
                     .appNeumorphicCard(cornerRadius: 16)
 
-                    // MARK: - 4. Speech Audio Speed
+                    // MARK: - 4. Beginner Slow Audio Speed Section
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "speaker.wave.2.fill")
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
-                            Text("Pronunciation Audio Speed")
+                            Text("Pronunciation Speed (Beginner Friendly)")
                                 .font(themeManager.fontSizeScale.bodyFont.bold())
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         }
 
                         HStack {
-                            Text("Slow (0.35x)")
+                            Text("Very Slow (0.15x)")
+                                .font(themeManager.fontSizeScale.captionFont)
+                                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                            Spacer()
+                            Text("Beginner Slow (0.30x)")
                                 .font(themeManager.fontSizeScale.captionFont)
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                             Spacer()
                             Text("Normal (0.45x)")
                                 .font(themeManager.fontSizeScale.captionFont)
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                            Spacer()
-                            Text("Fast (0.55x)")
-                                .font(themeManager.fontSizeScale.captionFont)
-                                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                         }
 
-                        Slider(value: $themeManager.speechRate, in: 0.35...0.55, step: 0.05)
+                        Slider(value: $themeManager.speechRate, in: 0.15...0.45, step: 0.05)
                             .tint(themeManager.currentTheme.accentColor)
 
                         Button {
@@ -250,7 +250,7 @@ private struct VoiceOptionRow: View {
                     .fill(themeManager.currentTheme.cardBackgroundColor)
                     .frame(width: 36, height: 36)
 
-                Image(systemName: option.genderName == "Female" ? "person.wave.2.fill" : (option.genderName == "Male" ? "person.fill" : "speaker.wave.2.fill"))
+                Image(systemName: option.genderName == "Female Voice" ? "person.wave.2.fill" : (option.genderName == "Male Voice" ? "person.fill" : "speaker.wave.2.fill"))
                     .font(.system(size: 15, weight: .bold))
                     .foregroundStyle(themeManager.currentTheme.accentColor)
             }

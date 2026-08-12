@@ -133,7 +133,8 @@ final class ThemeManager: ObservableObject {
         didSet { objectWillChange.send() }
     }
 
-    @AppStorage("speechRateKey") var speechRate: Double = 0.42 {
+    // Default slow beginner pace (0.30x)
+    @AppStorage("speechRateKey") var speechRate: Double = 0.30 {
         didSet { objectWillChange.send() }
     }
 
@@ -161,7 +162,7 @@ final class ThemeManager: ObservableObject {
             }
 
         for voice in installedVoices {
-            if options.count >= 5 { break } // Max 5 curated options!
+            if options.count >= 5 { break }
 
             let genderStr: String
             switch voice.gender {
