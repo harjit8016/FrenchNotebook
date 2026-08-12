@@ -1,4 +1,34 @@
 import SwiftUI
+import LinkPresentation
+
+// MARK: - Link Metadata Loader & Helper
+
+struct LinkMetadataHelper {
+    static func getYouTubeThumbnailURL(from urlString: String) -> URL? {
+        if urlString.contains("/shorts/") {
+            let components = urlString.components(separatedBy: "/shorts/")
+            if components.count > 1 {
+                let id = components[1].components(separatedBy: "?")[0].components(separatedBy: "/")[0]
+                return URL(string: "https://img.youtube.com/vi/\(id)/hqdefault.jpg")
+            }
+        } else if urlString.contains("watch?v=") {
+            let components = urlString.components(separatedBy: "watch?v=")
+            if components.count > 1 {
+                let id = components[1].components(separatedBy: "&")[0].components(separatedBy: "/")[0]
+                return URL(string: "https://img.youtube.com/vi/\(id)/hqdefault.jpg")
+            }
+        } else if urlString.contains("youtu.be/") {
+            let components = urlString.components(separatedBy: "youtu.be/")
+            if components.count > 1 {
+                let id = components[1].components(separatedBy: "?")[0].components(separatedBy: "/")[0]
+                return URL(string: "https://img.youtube.com/vi/\(id)/hqdefault.jpg")
+            }
+        }
+        return nil
+    }
+}
+
+// MARK: - Main Media Links View (2-Column Grid)
 
 struct LinksView: View {
     @ObservedObject private var store = LinkStore.shared
@@ -6,8 +36,8 @@ struct LinksView: View {
     @State private var showAddSheet: Bool = false
 
     private let columns = [
-        GridItem(.flexible(), spacing: 14),
-        GridItem(.flexible(), spacing: 14)
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
     ]
 
     var body: some View {
@@ -52,11 +82,15 @@ struct LinksView: View {
     }
 }
 
-// MARK: - 2-Column Link Card View
+// MARK: - 2-Column Rich Thumbnail Link Card View
 
 private struct LinkCardView: View {
     let link: SavedLink
     @ObservedObject private var themeManager = ThemeManager.shared
+
+    private var thumbnailURL: URL? {
+        LinkMetadataHelper.getYouTubeThumbnailURL(from: link.urlString)
+    }
 
     private var platformIcon: String {
         switch link.platform {
@@ -68,36 +102,69 @@ private struct LinkCardView: View {
 
     private var platformColor: Color {
         switch link.platform {
-        case "YouTube": return .red
-        case "Instagram": return .purple
+        case "YouTube": return Color(red: 0.90, green: 0.15, blue: 0.15)
+        case "Instagram": return Color(red: 0.70, green: 0.20, blue: 0.65)
         default: return themeManager.currentTheme.accentColor
         }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                ZStack {
-                    Circle()
-                        .fill(platformColor.opacity(0.12))
-                        .frame(width: 36, height: 36)
-
-                    Image(systemName: platformIcon)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(platformColor)
+        VStack(alignment: .leading, spacing: 0) {
+            // Top Thumbnail Preview Container
+            ZStack {
+                if let thumbnailURL = thumbnailURL {
+                    AsyncImage(url: thumbnailURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure, .empty:
+                            thumbnailPlaceholder
+                        @unknown default:
+                            thumbnailPlaceholder
+                        }
+                    }
+                    .frame(height: 115)
+                    .clipped()
+                } else {
+                    thumbnailPlaceholder
                 }
 
-                Spacer()
+                // Dark overlay gradient for contrast
+                Color.black.opacity(0.2)
 
-                Text(link.platform)
-                    .font(.caption2.bold())
-                    .foregroundStyle(platformColor)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background(platformColor.opacity(0.1))
-                    .clipShape(Capsule())
+                // Overlay Play Button Icon
+                ZStack {
+                    Circle()
+                        .fill(Color.black.opacity(0.55))
+                        .frame(width: 38, height: 38)
+
+                    Image(systemName: "play.fill")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+
+                // Platform Badge at Top Right
+                VStack {
+                    HStack {
+                        Spacer()
+                        Text(link.platform)
+                            .font(.caption2.bold())
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(platformColor.opacity(0.9))
+                            .clipShape(Capsule())
+                            .padding(6)
+                    }
+                    Spacer()
+                }
             }
+            .frame(height: 115)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
 
+            // Bottom Title & Meta Info Container
             VStack(alignment: .leading, spacing: 4) {
                 Text(link.title)
                     .font(themeManager.fontSizeScale.bodyFont.bold())
@@ -110,16 +177,25 @@ private struct LinkCardView: View {
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                     .lineLimit(1)
             }
-
-            HStack {
-                Spacer()
-                Image(systemName: "play.circle.fill")
-                    .font(.caption.bold())
-                    .foregroundStyle(themeManager.currentTheme.accentColor)
-            }
+            .padding(10)
         }
-        .padding(12)
         .appNeumorphicCard(cornerRadius: 14)
+    }
+
+    @ViewBuilder
+    private var thumbnailPlaceholder: some View {
+        ZStack {
+            LinearGradient(
+                colors: [platformColor.opacity(0.8), platformColor.opacity(0.4)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            Image(systemName: platformIcon)
+                .font(.system(size: 34, weight: .bold))
+                .foregroundStyle(.white.opacity(0.85))
+        }
+        .frame(height: 115)
     }
 }
 
