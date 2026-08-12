@@ -13,17 +13,32 @@ final class LinkStore: ObservableObject {
     static let shared = LinkStore()
     @Published var links: [SavedLink] = []
 
-    private let storageKey = "SavedMediaLinksKey_v1"
+    private let storageKey = "SavedMediaLinksKey_v2"
 
     private init() {
         loadLinks()
     }
 
     func loadLinks() {
+        let newInstagramURL = "https://www.instagram.com/reel/DZM4KtGsu-y/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+
         if let data = UserDefaults.standard.data(forKey: storageKey),
-           let decoded = try? JSONDecoder().decode([SavedLink].self, from: data),
+           var decoded = try? JSONDecoder().decode([SavedLink].self, from: data),
            !decoded.isEmpty {
+            // Automatically update any existing Instagram links to the new Reel URL
+            for i in 0..<decoded.count {
+                if decoded[i].platform == "Instagram" || decoded[i].urlString.contains("instagram.com") {
+                    decoded[i] = SavedLink(
+                        id: decoded[i].id,
+                        urlString: newInstagramURL,
+                        title: "French Instagram Reel",
+                        platform: "Instagram",
+                        dateAdded: decoded[i].dateAdded
+                    )
+                }
+            }
             self.links = decoded
+            saveLinks()
         } else {
             // Default pre-populated links requested by user
             self.links = [
@@ -34,8 +49,8 @@ final class LinkStore: ObservableObject {
                     dateAdded: Date()
                 ),
                 SavedLink(
-                    urlString: "https://www.instagram.com/p/DZM4KtGsu-y/",
-                    title: "French Instagram Lesson",
+                    urlString: newInstagramURL,
+                    title: "French Instagram Reel",
                     platform: "Instagram",
                     dateAdded: Date()
                 )
