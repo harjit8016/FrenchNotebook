@@ -87,51 +87,9 @@ struct InstagramEmbedHelper {
         }
         return nil
     }
-
-    static func generateEmbedHTML(for reelID: String) -> String {
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-            <style>
-                html, body {
-                    margin: 0;
-                    padding: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: #000000;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    overflow: hidden;
-                }
-                iframe {
-                    border: none;
-                    width: 100%;
-                    height: 100%;
-                }
-            </style>
-        </head>
-        <body>
-            <iframe id="insta-frame"
-                    src="https://www.instagram.com/p/\(reelID)/embed/"
-                    width="100%"
-                    height="100%"
-                    frameborder="0"
-                    scrolling="no"
-                    allowtransparency="true"
-                    allowfullscreen="true"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-            </iframe>
-            <script async src="https://www.instagram.com/embed.js"></script>
-        </body>
-        </html>
-        """
-    }
 }
 
-// MARK: - Native Web View with YouTube & Instagram Embed Support
+// MARK: - Native Web View with Interactive Navigation & Delegate Support
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
@@ -142,11 +100,18 @@ struct AppWebView: UIViewRepresentable {
         self.webView = webView
     }
 
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
     func makeUIView(context: Context) -> WKWebView {
         let config = webView.configuration
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         config.allowsPictureInPictureMediaPlayback = true
+
+        webView.uiDelegate = context.coordinator
+        webView.navigationDelegate = context.coordinator
 
         webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
         webView.scrollView.showsHorizontalScrollIndicator = false
@@ -157,8 +122,12 @@ struct AppWebView: UIViewRepresentable {
             let html = YouTubeEmbedHelper.generateEmbedHTML(for: videoID)
             webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube-nocookie.com"))
         } else if let reelID = InstagramEmbedHelper.extractReelID(from: urlString) {
-            let html = InstagramEmbedHelper.generateEmbedHTML(for: reelID)
-            webView.loadHTMLString(html, baseURL: URL(string: "https://www.instagram.com"))
+            // Load direct Instagram embed URL via URLRequest so touches and play commands respond instantly
+            if let embedURL = URL(string: "https://www.instagram.com/reel/\(reelID)/embed/") {
+                webView.load(URLRequest(url: embedURL))
+            } else {
+                webView.load(URLRequest(url: url))
+            }
         } else {
             let request = URLRequest(url: url)
             webView.load(request)
@@ -167,6 +136,19 @@ struct AppWebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {}
+
+    class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
+        func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+            if navigationAction.targetFrame == nil {
+                webView.load(navigationAction.request)
+            }
+            return nil
+        }
+
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            decisionHandler(.allow)
+        }
+    }
 }
 
 // MARK: - Dedicated Web Detail Screen with Native Video Controls
