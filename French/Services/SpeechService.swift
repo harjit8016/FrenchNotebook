@@ -10,8 +10,7 @@ final class SpeechService: NSObject, ObservableObject {
     @Published var currentlySpeakingItemID: UUID? = nil
     @Published var currentWordRange: NSRange? = nil
 
-    private var lastSpokenText: String? = nil
-    private var lastSpokenTime: Date = Date.distantPast
+    private var activeUtterance: AVSpeechUtterance? = nil
 
     private override init() {
         super.init()
@@ -30,60 +29,68 @@ final class SpeechService: NSObject, ObservableObject {
 
     /// Speak a French word/phrase with item tracking and real-time word range updates.
     func speak(_ text: String, itemID: UUID? = nil, rate: Float = 0.42, pitch: Float = 1.0) {
-        let now = Date()
-        if lastSpokenText == text && now.timeIntervalSince(lastSpokenTime) < 0.35 {
-            return
-        }
-        lastSpokenText = text
-        lastSpokenTime = now
-
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
-
-        currentlySpeakingItemID = itemID
-        currentWordRange = nil
 
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "fr-FR")
         utterance.rate = rate
         utterance.pitchMultiplier = pitch
+
+        activeUtterance = utterance
+        currentlySpeakingItemID = itemID
+        currentWordRange = nil
+        isSpeaking = true
+
         synthesizer.speak(utterance)
     }
 
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
+        activeUtterance = nil
         currentlySpeakingItemID = nil
         currentWordRange = nil
+        isSpeaking = false
     }
 }
 
 extension SpeechService: AVSpeechSynthesizerDelegate {
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
-            self.isSpeaking = true
+            if self.activeUtterance === utterance {
+                self.isSpeaking = true
+            }
         }
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
-            self.currentWordRange = characterRange
+            if self.activeUtterance === utterance {
+                self.currentWordRange = characterRange
+            }
         }
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
-            self.isSpeaking = false
-            self.currentlySpeakingItemID = nil
-            self.currentWordRange = nil
+            if self.activeUtterance === utterance {
+                self.isSpeaking = false
+                self.currentlySpeakingItemID = nil
+                self.currentWordRange = nil
+                self.activeUtterance = nil
+            }
         }
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
-            self.isSpeaking = false
-            self.currentlySpeakingItemID = nil
-            self.currentWordRange = nil
+            if self.activeUtterance === utterance {
+                self.isSpeaking = false
+                self.currentlySpeakingItemID = nil
+                self.currentWordRange = nil
+                self.activeUtterance = nil
+            }
         }
     }
 }
