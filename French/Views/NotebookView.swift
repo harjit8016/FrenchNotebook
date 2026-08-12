@@ -3,54 +3,25 @@ import SwiftUI
 struct NotebookView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @StateObject private var speech = SpeechService.shared
-    @State private var searchText: String = ""
 
     private let sections = NotebookData.allSections
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Reusable App Search Bar Component (DRY)
-                AppSearchBarView(searchText: $searchText, placeholder: "Search topics or words...")
-
-                // Main Content: Category List or Filtered Search
-                if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    ScrollView(showsIndicators: false) {
-                        LazyVStack(spacing: 12) {
-                            ForEach(sections) { section in
-                                NavigationLink(destination: NotebookSectionDetailView(section: section)) {
-                                    CategoryRowView(section: section)
-                                }
-                                .buttonStyle(.plain)
-                            }
+            ScrollView(showsIndicators: false) {
+                LazyVStack(spacing: 12) {
+                    ForEach(sections) { section in
+                        NavigationLink(destination: NotebookSectionDetailView(section: section)) {
+                            CategoryRowView(section: section)
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                } else {
-                    ScrollView(showsIndicators: false) {
-                        LazyVStack(spacing: 12) {
-                            ForEach(searchResults) { item in
-                                NotebookItemCard(item: item, speech: speech)
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
+                        .buttonStyle(.plain)
                     }
                 }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
             }
             .appBackground()
-            .appNavigationStyle(title: "French Notebook", displayMode: .large)
-        }
-    }
-
-    private var searchResults: [NotebookItem] {
-        let query = searchText.lowercased()
-        return sections.flatMap { $0.items }.filter { item in
-            item.french.lowercased().contains(query) ||
-            item.english.lowercased().contains(query) ||
-            item.phonetic.lowercased().contains(query) ||
-            (item.grammarNote?.lowercased().contains(query) ?? false)
+            .appNavigationStyle(title: "French Notebook", displayMode: .inline)
         }
     }
 }
@@ -123,7 +94,7 @@ struct NotebookSectionDetailView: View {
                 }
                 .padding(.horizontal)
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 10)
         }
         .appBackground()
         .appNavigationStyle(title: section.title, displayMode: .inline)
@@ -161,14 +132,12 @@ private struct HighlightedTextView: View {
     }
 }
 
-// MARK: - Notebook Item Card
+// MARK: - Notebook Item Card (Clean & Focused)
 
 private struct NotebookItemCard: View {
     let item: NotebookItem
     @ObservedObject var speech: SpeechService
     @ObservedObject private var themeManager = ThemeManager.shared
-    @StateObject private var stt = SpeechToTextService.shared
-    @State private var showMic: Bool = false
 
     private var activeRange: NSRange? {
         if speech.currentlySpeakingItemID == item.id {
@@ -179,7 +148,7 @@ private struct NotebookItemCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 5) {
                     // Header Title
                     Text(item.french)
@@ -236,56 +205,22 @@ private struct NotebookItemCard: View {
 
                 Spacer()
 
-                // Audio Action Buttons
-                VStack(spacing: 8) {
-                    // Speaker Button
-                    Button {
-                        speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .fill(themeManager.currentTheme.cardBackgroundColor)
-                                .frame(width: 40, height: 40)
-                                .appNeumorphicCard(cornerRadius: 20, isPressed: speech.currentlySpeakingItemID == item.id)
+                // Prominent Speaker Button
+                Button {
+                    speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(themeManager.currentTheme.cardBackgroundColor)
+                            .frame(width: 44, height: 44)
+                            .appNeumorphicCard(cornerRadius: 22, isPressed: speech.currentlySpeakingItemID == item.id)
 
-                            Image(systemName: speech.currentlySpeakingItemID == item.id ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(speech.currentlySpeakingItemID == item.id ? themeManager.currentTheme.accentColor : themeManager.currentTheme.primaryTextColor)
-                        }
+                        Image(systemName: speech.currentlySpeakingItemID == item.id ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(speech.currentlySpeakingItemID == item.id ? themeManager.currentTheme.accentColor : themeManager.currentTheme.primaryTextColor)
                     }
-                    .buttonStyle(.plain)
-
-                    // Optional Mic Practice Toggle Button
-                    Button {
-                        showMic.toggle()
-                        if showMic {
-                            stt.toggleListening(for: item.id, targetText: item.spokenFrench)
-                        } else {
-                            stt.stopListening()
-                        }
-                    } label: {
-                        Image(systemName: showMic ? "mic.fill" : "mic")
-                            .font(.caption)
-                            .foregroundStyle(showMic ? .red : themeManager.currentTheme.secondaryTextColor)
-                            .padding(4)
-                    }
-                    .buttonStyle(.plain)
                 }
-            }
-
-            // Real-time Mic Speech Banner
-            if showMic && stt.activeItemID == item.id {
-                HStack(spacing: 8) {
-                    Image(systemName: "waveform.circle.fill")
-                        .foregroundStyle(.red)
-                    Text("You said: \"\(stt.recognizedText)\"")
-                        .font(.caption.bold())
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .padding(8)
-                .background(Color.red.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 14)

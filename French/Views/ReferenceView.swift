@@ -3,64 +3,57 @@ import SwiftUI
 struct ReferenceView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @StateObject private var speech = SpeechService.shared
-    @State private var searchText: String = ""
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Reusable App Search Bar Component (DRY)
-                AppSearchBarView(searchText: $searchText, placeholder: "Search grammar rules or words...")
-
-                // Screen 1: Clean Reference Category List
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 12) {
-                        NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
-                            RuleCardView(card: ReferenceData.pronounRule, speech: speech)
-                        }) {
-                            ReferenceCategoryRow(title: "Subject Pronouns", subtitle: "je, tu, il, elle, nous, vous, ils, elles", iconName: "person.2.fill", countText: "1 rule")
-                        }
-                        .buttonStyle(.plain)
-
-                        NavigationLink(destination: ReferenceCategoryDetailView(title: "Liaison Rules", iconName: "link") {
-                            ForEach(ReferenceData.liaisonRules) { card in
-                                RuleCardView(card: card, speech: speech)
-                            }
-                        }) {
-                            ReferenceCategoryRow(title: "Liaison Rules", subtitle: "Word linking & silent H rules", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules")
-                        }
-                        .buttonStyle(.plain)
-
-                        NavigationLink(destination: ReferenceCategoryDetailView(title: "Verb Basics", iconName: "character.book.closed.fill") {
-                            VerbCardView(card: ReferenceData.etreCard, speech: speech)
-                            VerbCardView(card: ReferenceData.avoirCard, speech: speech)
-                            VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
-                        }) {
-                            ReferenceCategoryRow(title: "Verb Basics & Conjugations", subtitle: "être, avoir, parler (-ER pattern)", iconName: "character.book.closed.fill", countText: "3 verbs")
-                        }
-                        .buttonStyle(.plain)
-
-                        NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals (can/must/will)", iconName: "questionmark.circle") {
-                            RuleCardView(card: ReferenceData.modalNote, speech: speech)
-                        }) {
-                            ReferenceCategoryRow(title: "Modals (can / must / will)", subtitle: "pouvoir, devoir, near future", iconName: "questionmark.circle", countText: "1 note")
-                        }
-                        .buttonStyle(.plain)
-
-                        NavigationLink(destination: ReferenceCategoryDetailView(title: "Cognate Hacks", iconName: "equal.circle") {
-                            ForEach(ReferenceData.cognateHacks) { card in
-                                RuleCardView(card: card, speech: speech)
-                            }
-                        }) {
-                            ReferenceCategoryRow(title: "Word Ending Hacks (Cognates)", subtitle: "-tion, -eur, -té, -ique, -eux, -able", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks")
-                        }
-                        .buttonStyle(.plain)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 12) {
+                    NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
+                        RuleCardView(card: ReferenceData.pronounRule, speech: speech)
+                    }) {
+                        ReferenceCategoryRow(title: "Subject Pronouns", subtitle: "je, tu, il, elle, nous, vous, ils, elles", iconName: "person.2.fill", countText: "1 rule")
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
+                    .buttonStyle(.plain)
+
+                    NavigationLink(destination: ReferenceCategoryDetailView(title: "Liaison Rules", iconName: "link") {
+                        ForEach(ReferenceData.liaisonRules) { card in
+                            RuleCardView(card: card, speech: speech)
+                        }
+                    }) {
+                        ReferenceCategoryRow(title: "Liaison Rules", subtitle: "Word linking & silent H rules", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules")
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink(destination: ReferenceCategoryDetailView(title: "Verb Basics", iconName: "character.book.closed.fill") {
+                        VerbCardView(card: ReferenceData.etreCard, speech: speech)
+                        VerbCardView(card: ReferenceData.avoirCard, speech: speech)
+                        VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
+                    }) {
+                        ReferenceCategoryRow(title: "Verb Basics & Conjugations", subtitle: "être, avoir, parler (-ER pattern)", iconName: "character.book.closed.fill", countText: "3 verbs")
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals (can/must/will)", iconName: "questionmark.circle") {
+                        RuleCardView(card: ReferenceData.modalNote, speech: speech)
+                    }) {
+                        ReferenceCategoryRow(title: "Modals (can / must / will)", subtitle: "pouvoir, devoir, near future", iconName: "questionmark.circle", countText: "1 note")
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink(destination: ReferenceCategoryDetailView(title: "Cognate Hacks", iconName: "equal.circle") {
+                        ForEach(ReferenceData.cognateHacks) { card in
+                            RuleCardView(card: card, speech: speech)
+                        }
+                    }) {
+                        ReferenceCategoryRow(title: "Word Ending Hacks (Cognates)", subtitle: "-tion, -eur, -té, -ique, -eux, -able", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks")
+                    }
+                    .buttonStyle(.plain)
                 }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
             }
             .appBackground()
-            .appNavigationStyle(title: "Grammar Reference", displayMode: .large)
+            .appNavigationStyle(title: "Grammar Reference", displayMode: .inline)
         }
     }
 }
@@ -130,7 +123,7 @@ struct ReferenceCategoryDetailView<Content: View>: View {
                 content()
             }
             .padding(.horizontal)
-            .padding(.vertical, 8)
+            .padding(.vertical, 10)
         }
         .appBackground()
         .appNavigationStyle(title: title, displayMode: .inline)

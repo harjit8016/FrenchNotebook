@@ -79,35 +79,3 @@ extension View {
         self.modifier(NeumorphicCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
     }
 }
-
-// MARK: - Reusable Search Bar Component (DRY)
-
-struct AppSearchBarView: View {
-    @Binding var searchText: String
-    let placeholder: String
-    @ObservedObject private var themeManager = ThemeManager.shared
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-            
-            TextField(placeholder, text: $searchText)
-                .font(themeManager.fontSizeScale.bodyFont)
-                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-            
-            if !searchText.isEmpty {
-                Button(action: { searchText = "" }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                }
-            }
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .appNeumorphicCard(cornerRadius: 14)
-        .padding(.horizontal)
-        .padding(.top, 8)
-        .padding(.bottom, 10)
-    }
-}

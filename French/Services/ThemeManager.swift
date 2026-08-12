@@ -26,33 +26,33 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     // Canvas Background
     var backgroundColor: Color {
         switch self {
-        case .systemLight: return Color(red: 0.93, green: 0.94, blue: 0.96) // Crisp soft off-white #ECF0F5
-        case .systemDark: return Color(red: 0.11, green: 0.12, blue: 0.15)  // Rich dark #1C1E26
-        case .creamSepia: return Color(red: 0.97, green: 0.93, blue: 0.84)  // Warm sepia #F7EDD6
-        case .mintSage: return Color(red: 0.90, green: 0.94, blue: 0.91)    // Visual comfort sage #E6F0E8
-        case .midnightSlate: return Color(red: 0.10, green: 0.13, blue: 0.18) // Midnight slate #1A212E
+        case .systemLight: return Color(red: 0.93, green: 0.94, blue: 0.96)
+        case .systemDark: return Color(red: 0.11, green: 0.12, blue: 0.15)
+        case .creamSepia: return Color(red: 0.97, green: 0.93, blue: 0.84)
+        case .mintSage: return Color(red: 0.90, green: 0.94, blue: 0.91)
+        case .midnightSlate: return Color(red: 0.10, green: 0.13, blue: 0.18)
         }
     }
 
     // Card Surface Background
     var cardBackgroundColor: Color {
         switch self {
-        case .systemLight: return Color(red: 0.98, green: 0.98, blue: 0.99) // #FBFBFD
-        case .systemDark: return Color(red: 0.16, green: 0.18, blue: 0.22)  // #292E38
-        case .creamSepia: return Color(red: 0.93, green: 0.88, blue: 0.77)  // #EDE0C4
-        case .mintSage: return Color(red: 0.83, green: 0.89, blue: 0.85)    // #D4E3D9
-        case .midnightSlate: return Color(red: 0.15, green: 0.19, blue: 0.26) // #263042
+        case .systemLight: return Color(red: 0.98, green: 0.98, blue: 0.99)
+        case .systemDark: return Color(red: 0.16, green: 0.18, blue: 0.22)
+        case .creamSepia: return Color(red: 0.93, green: 0.88, blue: 0.77)
+        case .mintSage: return Color(red: 0.83, green: 0.89, blue: 0.85)
+        case .midnightSlate: return Color(red: 0.15, green: 0.19, blue: 0.26)
         }
     }
 
     // Primary Text (High Contrast 7:1+)
     var primaryTextColor: Color {
         switch self {
-        case .systemLight: return Color(red: 0.10, green: 0.12, blue: 0.18) // Deep Navy Black
-        case .systemDark: return Color(red: 0.96, green: 0.97, blue: 0.99)  // Pure Ice White
-        case .creamSepia: return Color(red: 0.22, green: 0.15, blue: 0.08)  // Dark Espresso
-        case .mintSage: return Color(red: 0.06, green: 0.18, blue: 0.12)    // Deep Pine Black
-        case .midnightSlate: return Color(red: 0.92, green: 0.95, blue: 0.98) // Bright Ice White
+        case .systemLight: return Color(red: 0.10, green: 0.12, blue: 0.18)
+        case .systemDark: return Color(red: 0.96, green: 0.97, blue: 0.99)
+        case .creamSepia: return Color(red: 0.22, green: 0.15, blue: 0.08)
+        case .mintSage: return Color(red: 0.06, green: 0.18, blue: 0.12)
+        case .midnightSlate: return Color(red: 0.92, green: 0.95, blue: 0.98)
         }
     }
 
@@ -67,14 +67,14 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    // Accent Color (Action Buttons, Phonetics, Highlights)
+    // Accent Color (Action Buttons, Highlights, Active Tab Icon)
     var accentColor: Color {
         switch self {
-        case .systemLight: return Color(red: 0.00, green: 0.45, blue: 0.90) // Royal Blue
-        case .systemDark: return Color(red: 0.30, green: 0.65, blue: 1.00)  // Electric Blue
-        case .creamSepia: return Color(red: 0.75, green: 0.42, blue: 0.10)  // Burnt Amber
-        case .mintSage: return Color(red: 0.10, green: 0.50, blue: 0.32)    // Deep Emerald Green
-        case .midnightSlate: return Color(red: 0.38, green: 0.72, blue: 0.98) // Ice Blue
+        case .systemLight: return Color(red: 0.00, green: 0.45, blue: 0.90)
+        case .systemDark: return Color(red: 0.30, green: 0.65, blue: 1.00)
+        case .creamSepia: return Color(red: 0.75, green: 0.42, blue: 0.10)
+        case .mintSage: return Color(red: 0.10, green: 0.50, blue: 0.32)
+        case .midnightSlate: return Color(red: 0.38, green: 0.72, blue: 0.98)
         }
     }
 
@@ -163,12 +163,29 @@ final class ThemeManager: ObservableObject {
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
 
-        // Force main window scene redraw
+        // Force in-place window & tab bar redraw on main thread without view hierarchy destruction
         DispatchQueue.main.async {
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             for window in windowScene.windows {
                 window.overrideUserInterfaceStyle = theme.isDark ? .dark : .light
+                if let rootVC = window.rootViewController {
+                    self.updateVC(rootVC, theme: theme, appearance: tabBarAppearance)
+                }
             }
+        }
+    }
+
+    private func updateVC(_ vc: UIViewController, theme: AppTheme, appearance: UITabBarAppearance) {
+        if let tabBarVC = vc as? UITabBarController {
+            tabBarVC.tabBar.standardAppearance = appearance
+            tabBarVC.tabBar.scrollEdgeAppearance = appearance
+            tabBarVC.tabBar.tintColor = UIColor(theme.accentColor)
+            tabBarVC.tabBar.unselectedItemTintColor = UIColor(theme.secondaryTextColor)
+            tabBarVC.tabBar.setNeedsLayout()
+            tabBarVC.tabBar.layoutIfNeeded()
+        }
+        for child in vc.children {
+            updateVC(child, theme: theme, appearance: appearance)
         }
     }
 }
