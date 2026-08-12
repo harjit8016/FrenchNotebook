@@ -96,22 +96,20 @@ private let safeAutoPlayJS = """
     'use strict';
     function safeExecute() {
         try {
-            // Keywords to match "Continue on web", "Watch on web", "Not now", etc.
-            const keywords = ['continue', 'web', 'watch', 'play', 'open', 'not now', 'stay', 'view', 'proceed', 'accept', 'allow'];
-
-            const elements = document.querySelectorAll('button, a, div[role="button"], span[role="button"], p, div, input[type="button"]');
-            for (let i = 0; i < elements.length; i++) {
-                const el = elements[i];
+            // Target exact "Continue on web", "Watch on web", or similar prompts
+            const allNodes = document.querySelectorAll('button, a, div, span, p, input[type="button"]');
+            for (let i = 0; i < allNodes.length; i++) {
+                const el = allNodes[i];
                 if (!el || typeof el.innerText !== 'string') continue;
                 const text = el.innerText.trim().toLowerCase();
-                if (text.length > 0 && text.length < 80) {
-                    const matches = keywords.some(function(k) { return text.indexOf(k) !== -1; });
-                    if (matches) {
-                        try {
-                            el.click();
-                            el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-                        } catch(e) {}
-                    }
+
+                if (text === 'continue on web' || text.includes('continue on web') || text.includes('watch on web') || text === 'continue' || text === 'not now') {
+                    try {
+                        el.click();
+                        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+                        el.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, cancelable: true }));
+                        el.dispatchEvent(new TouchEvent('touchend', { bubbles: true, cancelable: true }));
+                    } catch(e) {}
                 }
             }
 
@@ -148,8 +146,8 @@ private let safeAutoPlayJS = """
     var timer = setInterval(function() {
         safeExecute();
         attempts++;
-        if (attempts > 15) clearInterval(timer);
-    }, 300);
+        if (attempts > 20) clearInterval(timer);
+    }, 250);
 })();
 """
 
@@ -217,6 +215,14 @@ struct AppWebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            if let targetURL = navigationAction.request.url {
+                let scheme = targetURL.scheme?.lowercased() ?? ""
+                // Block external app redirects (e.g. instagram:// or app store links)
+                if scheme == "instagram" || scheme == "youtube" || scheme == "fb" {
+                    decisionHandler(.cancel)
+                    return
+                }
+            }
             decisionHandler(.allow)
         }
     }
