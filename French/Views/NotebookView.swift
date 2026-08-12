@@ -9,7 +9,7 @@ struct NotebookView: View {
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 12) {
+                LazyVStack(spacing: 14) {
                     ForEach(sections) { section in
                         NavigationLink(destination: NotebookSectionDetailView(section: section)) {
                             CategoryRowView(section: section)
@@ -17,8 +17,8 @@ struct NotebookView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             }
             .appBackground()
             .appNavigationStyle(title: "French Notebook", displayMode: .inline)
@@ -67,9 +67,9 @@ private struct CategoryRowView: View {
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .appNeumorphicCard(cornerRadius: 14)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .appNeumorphicCard(cornerRadius: 18)
     }
 }
 
@@ -82,19 +82,19 @@ struct NotebookSectionDetailView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 14) {
                 Text(section.description)
                     .font(themeManager.fontSizeScale.captionFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 16)
                     .padding(.top, 4)
 
                 ForEach(section.items) { item in
                     NotebookItemCard(item: item, speech: speech)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 16)
             }
-            .padding(.vertical, 10)
+            .padding(.vertical, 12)
         }
         .appBackground()
         .appNavigationStyle(title: section.title, displayMode: .inline)
@@ -132,7 +132,7 @@ private struct HighlightedTextView: View {
     }
 }
 
-// MARK: - Notebook Item Card (Clean & Focused)
+// MARK: - Notebook Item Card (Soft Depth Box Architecture)
 
 private struct NotebookItemCard: View {
     let item: NotebookItem
@@ -147,20 +147,20 @@ private struct NotebookItemCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .center, spacing: 12) {
-                VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
                     // Header Title
                     Text(item.french)
                         .font(themeManager.fontSizeScale.titleFont)
                         .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    // Target Spoken Word Pill
+                    // Target Spoken Word Panel (Recessed Depth Box like .code-panel)
                     if item.audioText != nil {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Audio:")
-                                .font(.caption.bold())
+                                .font(.caption2.bold())
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
 
                             HighlightedTextView(
@@ -171,9 +171,8 @@ private struct NotebookItemCard: View {
                             .fixedSize(horizontal: false, vertical: true)
                         }
                         .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(themeManager.currentTheme.accentColor.opacity(speech.currentlySpeakingItemID == item.id ? 0.18 : 0.08))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .padding(.vertical, 6)
+                        .appRecessedWell(cornerRadius: 10)
                     }
 
                     // English Meaning
@@ -223,10 +222,9 @@ private struct NotebookItemCard: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .appNeumorphicCard(cornerRadius: 14, isPressed: speech.currentlySpeakingItemID == item.id)
-        .animation(.easeInOut(duration: 0.2), value: speech.currentlySpeakingItemID)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .appNeumorphicCard(cornerRadius: 18, isPressed: speech.currentlySpeakingItemID == item.id)
     }
 }
 

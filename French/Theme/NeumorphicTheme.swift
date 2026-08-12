@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Single Source of Truth Skeuomorphic & Theme System Modifiers
+// MARK: - Single Source of Truth Theme System Modifiers
 
 struct AppBackgroundModifier: ViewModifier {
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -29,70 +29,61 @@ struct AppNavigationModifier: ViewModifier {
     }
 }
 
-// MARK: - Rich Skeuomorphic Depth Card & Button Surface Modifier
+// MARK: - Soft Depth Box Modifier (Inspired by HTML Soft Depth Box Design)
 
-struct SkeuomorphicCardModifier: ViewModifier {
-    var cornerRadius: CGFloat = 14
+struct SoftDepthBoxModifier: ViewModifier {
+    var cornerRadius: CGFloat = 18
     var isPressed: Bool = false
+    var isRecessed: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
 
     func body(content: Content) -> some View {
         let theme = themeManager.currentTheme
         let isDark = theme.isDark
 
-        // 1. Subtle Skeuomorphic Bevel Surface Gradient
-        let surfaceGradient = LinearGradient(
-            colors: isPressed ? [
-                theme.cardBackgroundColor.opacity(0.88),
-                theme.cardBackgroundColor
-            ] : [
-                theme.cardBackgroundColor,
-                theme.cardBackgroundColor.opacity(isDark ? 0.82 : 0.93)
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-
-        // 2. Bevel Border Stroke Colors (Top Specular Highlight Rim & Bottom Base Rim)
-        let topRimColor = isDark ? Color.white.opacity(0.22) : Color.white.opacity(0.85)
-        let bottomRimColor = isDark ? Color.black.opacity(0.65) : Color.black.opacity(0.18)
-
-        // 3. Multi-layer Skeuomorphic 3D Drop Shadows
-        let shadowColor = isDark ? Color.black.opacity(0.70) : Color(red: 0.18, green: 0.22, blue: 0.32).opacity(0.22)
-        let ambientShadow = isDark ? Color.black.opacity(0.40) : Color.black.opacity(0.08)
+        let highlightColor = isDark ? Color.white.opacity(0.09) : Color.white.opacity(0.95)
+        let shadowColor    = isDark ? Color.black.opacity(0.65) : Color(red: 0.65, green: 0.69, blue: 0.77).opacity(0.55)
 
         return content
             .background(
                 ZStack {
-                    // Tactile Surface Fill with Bevel Gradient
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(surfaceGradient)
-
-                    // Top Specular Highlight Rim & Bottom Bevel Edge
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: isPressed ? [bottomRimColor, topRimColor] : [topRimColor, bottomRimColor],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 1.2
-                        )
+                    if isRecessed || isPressed {
+                        // Recessed/Sunken Depth Well (like .code-panel inset box)
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .fill(theme.cardBackgroundColor)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                                    .stroke(shadowColor, lineWidth: 1.5)
+                                    .blur(radius: 2)
+                                    .offset(x: 2, y: 2)
+                                    .mask(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                                    .stroke(highlightColor, lineWidth: 1.5)
+                                    .blur(radius: 2)
+                                    .offset(x: -2, y: -2)
+                                    .mask(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                            )
+                    } else {
+                        // Soft Extruded Elevated Depth Box (like .row-card outer box)
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .fill(theme.cardBackgroundColor)
+                            .shadow(
+                                color: highlightColor,
+                                radius: 7,
+                                x: -6,
+                                y: -6
+                            )
+                            .shadow(
+                                color: shadowColor,
+                                radius: 7,
+                                x: 6,
+                                y: 6
+                            )
+                    }
                 }
-                .shadow(
-                    color: shadowColor,
-                    radius: isPressed ? 2 : 7,
-                    x: 0,
-                    y: isPressed ? 1 : 4
-                )
-                .shadow(
-                    color: ambientShadow,
-                    radius: isPressed ? 1 : 2,
-                    x: 0,
-                    y: isPressed ? 1 : 1
-                )
             )
-            .offset(y: isPressed ? 2 : 0) // Physical tactile button depression on touch!
             .animation(.easeInOut(duration: 0.15), value: isPressed)
     }
 }
@@ -110,13 +101,13 @@ extension View {
         self.modifier(AppNavigationModifier(title: title, displayMode: displayMode))
     }
 
-    /// Applies Rich Skeuomorphic Depth Card & Button Surface styling.
-    func appNeumorphicCard(cornerRadius: CGFloat = 14, isPressed: Bool = false) -> some View {
-        self.modifier(SkeuomorphicCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
+    /// Applies Soft Extruded / Recessed Depth Box styling matching swift-vs-kotlin-neumorphic depth box design.
+    func appNeumorphicCard(cornerRadius: CGFloat = 18, isPressed: Bool = false) -> some View {
+        self.modifier(SoftDepthBoxModifier(cornerRadius: cornerRadius, isPressed: isPressed, isRecessed: false))
     }
 
-    /// Alias for explicit Skeuomorphic card naming.
-    func appSkeuomorphicCard(cornerRadius: CGFloat = 14, isPressed: Bool = false) -> some View {
-        self.modifier(SkeuomorphicCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
+    /// Explicit helper for sunken/recessed depth wells (like code/audio panels).
+    func appRecessedWell(cornerRadius: CGFloat = 12) -> some View {
+        self.modifier(SoftDepthBoxModifier(cornerRadius: cornerRadius, isPressed: false, isRecessed: true))
     }
 }
