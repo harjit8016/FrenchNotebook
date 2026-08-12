@@ -67,91 +67,7 @@ struct YouTubeEmbedHelper {
     }
 }
 
-// MARK: - Instagram Embed Helper
-
-struct InstagramEmbedHelper {
-    static func extractReelID(from urlString: String) -> String? {
-        if urlString.contains("instagram.com/reel/") {
-            let components = urlString.components(separatedBy: "instagram.com/reel/")
-            if components.count > 1 {
-                let rawID = components[1].components(separatedBy: "?")[0].components(separatedBy: "/")[0]
-                if !rawID.isEmpty { return rawID }
-            }
-        }
-        if urlString.contains("instagram.com/p/") {
-            let components = urlString.components(separatedBy: "instagram.com/p/")
-            if components.count > 1 {
-                let rawID = components[1].components(separatedBy: "?")[0].components(separatedBy: "/")[0]
-                if !rawID.isEmpty { return rawID }
-            }
-        }
-        return nil
-    }
-}
-
-// MARK: - Safe Future-Proof Auto-Bypass & Auto-Play Script
-
-private let safeAutoPlayJS = """
-(function() {
-    'use strict';
-    function safeExecute() {
-        try {
-            // Target exact "Continue on web", "Watch on web", or similar prompts
-            const allNodes = document.querySelectorAll('button, a, div, span, p, input[type="button"]');
-            for (let i = 0; i < allNodes.length; i++) {
-                const el = allNodes[i];
-                if (!el || typeof el.innerText !== 'string') continue;
-                const text = el.innerText.trim().toLowerCase();
-
-                if (text === 'continue on web' || text.includes('continue on web') || text.includes('watch on web') || text === 'continue' || text === 'not now') {
-                    try {
-                        el.click();
-                        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-                        el.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, cancelable: true }));
-                        el.dispatchEvent(new TouchEvent('touchend', { bubbles: true, cancelable: true }));
-                    } catch(e) {}
-                }
-            }
-
-            // Safely auto-play HTML5 video elements
-            const videos = document.getElementsByTagName('video');
-            for (let i = 0; i < videos.length; i++) {
-                const vid = videos[i];
-                if (vid && vid.paused) {
-                    vid.playsInline = true;
-                    vid.setAttribute('playsinline', '');
-                    vid.setAttribute('webkit-playsinline', '');
-                    const promise = vid.play();
-                    if (promise !== undefined) {
-                        promise.catch(function() {
-                            vid.muted = true;
-                            vid.play().catch(function(){});
-                        });
-                    }
-                }
-            }
-        } catch(err) {}
-    }
-
-    safeExecute();
-
-    try {
-        const observer = new MutationObserver(function() { safeExecute(); });
-        if (document.body) {
-            observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-        }
-    } catch(e) {}
-
-    var attempts = 0;
-    var timer = setInterval(function() {
-        safeExecute();
-        attempts++;
-        if (attempts > 20) clearInterval(timer);
-    }, 250);
-})();
-"""
-
-// MARK: - Native Web View with Interactive Navigation & Safe Script Injection
+// MARK: - Native Web View with Interactive Navigation & Media Controls
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
@@ -172,14 +88,9 @@ struct AppWebView: UIViewRepresentable {
         config.mediaTypesRequiringUserActionForPlayback = []
         config.allowsPictureInPictureMediaPlayback = true
 
-        // Inject safe future-proof auto-play script into all frames
-        let userScript = WKUserScript(source: safeAutoPlayJS, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
-        config.userContentController.addUserScript(userScript)
-
         webView.uiDelegate = context.coordinator
         webView.navigationDelegate = context.coordinator
 
-        webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
         webView.scrollView.showsHorizontalScrollIndicator = false
         webView.scrollView.showsVerticalScrollIndicator = false
 
@@ -187,13 +98,8 @@ struct AppWebView: UIViewRepresentable {
         if let videoID = YouTubeEmbedHelper.extractVideoID(from: urlString) {
             let html = YouTubeEmbedHelper.generateEmbedHTML(for: videoID)
             webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube-nocookie.com"))
-        } else if let reelID = InstagramEmbedHelper.extractReelID(from: urlString) {
-            if let embedURL = URL(string: "https://www.instagram.com/reel/\(reelID)/embed/") {
-                webView.load(URLRequest(url: embedURL))
-            } else {
-                webView.load(URLRequest(url: url))
-            }
         } else {
+            // Load direct native URL for Instagram Reels and web media
             let request = URLRequest(url: url)
             webView.load(request)
         }
@@ -204,7 +110,37 @@ struct AppWebView: UIViewRepresentable {
 
     class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            webView.evaluateJavaScript(safeAutoPlayJS, completionHandler: nil)
+            let js = """
+            (function() {
+                function tryAutoPlay() {
+                    // Click "Continue on web" or "Continue" if present
+                    const buttons = document.querySelectorAll('button, a, div[role="button"]');
+                    for (let btn of buttons) {
+                        const text = (btn.innerText || '').toLowerCase();
+                        if (text.includes('continue on web') || text.includes('watch on web') || text === 'continue' || text === 'not now') {
+                            try { btn.click(); } catch(e) {}
+                        }
+                    }
+                    // Auto-play video
+                    const videos = document.getElementsByTagName('video');
+                    for (let vid of videos) {
+                        vid.playsInline = true;
+                        vid.play().catch(function() {
+                            vid.muted = true;
+                            vid.play().catch(function(){});
+                        });
+                    }
+                }
+                tryAutoPlay();
+                var count = 0;
+                var interval = setInterval(function() {
+                    tryAutoPlay();
+                    count++;
+                    if (count > 10) clearInterval(interval);
+                }, 350);
+            })();
+            """
+            webView.evaluateJavaScript(js, completionHandler: nil)
         }
 
         func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
@@ -217,8 +153,7 @@ struct AppWebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             if let targetURL = navigationAction.request.url {
                 let scheme = targetURL.scheme?.lowercased() ?? ""
-                // Block external app redirects (e.g. instagram:// or app store links)
-                if scheme == "instagram" || scheme == "youtube" || scheme == "fb" {
+                if scheme == "instagram" || scheme == "youtube" {
                     decisionHandler(.cancel)
                     return
                 }
@@ -346,12 +281,6 @@ private struct DirectAppWebView: UIViewRepresentable {
         let config = webView.configuration
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
-
-        // Inject safe future-proof auto-play script into direct web view as well
-        let userScript = WKUserScript(source: safeAutoPlayJS, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
-        config.userContentController.addUserScript(userScript)
-
-        webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
         webView.load(URLRequest(url: url))
         return webView
     }
