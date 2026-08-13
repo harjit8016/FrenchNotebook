@@ -3,32 +3,16 @@ import UIKit
 import AVFoundation
 import Combine
 
-// MARK: - Custom Font Helper (Literata / Bookerly / Georgia / System Serif Fallback)
+// MARK: - Custom Font Helper (Authentic Georgia Book Serif - Preinstalled on iOS)
 
 extension Font {
     static func kindleContentFont(size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        // Check for Literata (Google Play Books Bookerly counterpart) -> Bookerly -> Georgia -> System Serif
-        if UIFont(name: "Literata-Regular", size: size) != nil || UIFont(name: "Literata", size: size) != nil {
-            let fontName = (weight == .bold || weight == .semibold) ? "Literata-Bold" : "Literata-Regular"
-            if UIFont(name: fontName, size: size) != nil {
-                return .custom(fontName, size: size)
-            }
-            return .custom("Literata", size: size)
-        }
-        if UIFont(name: "Bookerly-Regular", size: size) != nil || UIFont(name: "Bookerly", size: size) != nil {
-            let fontName = (weight == .bold || weight == .semibold) ? "Bookerly-Bold" : "Bookerly-Regular"
-            if UIFont(name: fontName, size: size) != nil {
-                return .custom(fontName, size: size)
-            }
-            return .custom("Bookerly", size: size)
-        }
-        if UIFont(name: "Georgia-Bold", size: size) != nil && (weight == .bold || weight == .semibold) {
+        // Georgia is built into iOS and provides the exact sturdy slab-serif & high x-height of Kindle Bookerly
+        if weight == .bold || weight == .semibold {
             return .custom("Georgia-Bold", size: size)
-        }
-        if UIFont(name: "Georgia", size: size) != nil {
+        } else {
             return .custom("Georgia", size: size)
         }
-        return .system(size: size, weight: weight, design: .serif)
     }
 }
 
@@ -58,7 +42,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.93, green: 0.94, blue: 0.96)
         case .systemDark: return Color(red: 0.11, green: 0.12, blue: 0.15)
-        case .creamSepia: return Color(red: 0.96, green: 0.93, blue: 0.85)
+        case .creamSepia: return Color(red: 0.96, green: 0.93, blue: 0.85) // Kindle Warm Paper
         case .mintSage: return Color(red: 0.90, green: 0.94, blue: 0.91)
         case .midnightSlate: return Color(red: 0.10, green: 0.13, blue: 0.18)
         }
@@ -75,12 +59,12 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    // Primary Text (High Contrast 7:1+)
+    // Primary Text (Deep Ink Charcoal - High Contrast 7:1+)
     var primaryTextColor: Color {
         switch self {
         case .systemLight: return Color(red: 0.10, green: 0.12, blue: 0.18)
         case .systemDark: return Color(red: 0.96, green: 0.97, blue: 0.99)
-        case .creamSepia: return Color(red: 0.18, green: 0.14, blue: 0.08)
+        case .creamSepia: return Color(red: 0.14, green: 0.11, blue: 0.06) // Deep Kindle Charcoal
         case .mintSage: return Color(red: 0.06, green: 0.18, blue: 0.12)
         case .midnightSlate: return Color(red: 0.92, green: 0.95, blue: 0.98)
         }
@@ -91,7 +75,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.40, green: 0.44, blue: 0.52)
         case .systemDark: return Color(red: 0.65, green: 0.70, blue: 0.78)
-        case .creamSepia: return Color(red: 0.44, green: 0.35, blue: 0.22)
+        case .creamSepia: return Color(red: 0.40, green: 0.32, blue: 0.18)
         case .mintSage: return Color(red: 0.22, green: 0.36, blue: 0.28)
         case .midnightSlate: return Color(red: 0.62, green: 0.70, blue: 0.78)
         }
@@ -113,7 +97,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-// MARK: - Font Size Scale Options (Separated UI Sans-Serif & Content Literata/Bookerly Serif)
+// MARK: - Font Size Scale Options (Authentic Georgia Book Serif Typography)
 
 enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     case small = "Compact"
@@ -132,24 +116,24 @@ enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    // 1. UI Navigation & Action Control Typography (Roboto / Modern System Sans-Serif)
+    // 1. UI Controls & Navigation (Roboto / System Sans-Serif)
     var uiTitleFont: Font { Font.system(size: 17 * scaleFactor, weight: .bold, design: .default) }
     var uiButtonFont: Font { Font.system(size: 15 * scaleFactor, weight: .semibold, design: .default) }
     var uiLabelFont: Font { Font.system(size: 13.5 * scaleFactor, weight: .medium, design: .default) }
 
-    // 2. Learning Reading Content Typography (Literata / Bookerly / Georgia / System Serif)
-    var contentTitleFont: Font { Font.kindleContentFont(size: 19.5 * scaleFactor, weight: .bold) }
-    var contentBodyFont: Font { Font.kindleContentFont(size: 16.0 * scaleFactor, weight: .regular) }
-    var contentPhoneticFont: Font { Font.kindleContentFont(size: 14.5 * scaleFactor, weight: .medium) }
+    // 2. Kindle Book Serif Content Typography (Authentic Georgia Book Serif)
+    var contentTitleFont: Font { Font.kindleContentFont(size: 20.0 * scaleFactor, weight: .bold) }
+    var contentBodyFont: Font { Font.kindleContentFont(size: 17.5 * scaleFactor, weight: .regular) }
+    var contentPhoneticFont: Font { Font.kindleContentFont(size: 15.0 * scaleFactor, weight: .medium) }
 
-    // Backward compatibility aliases
+    // Aliases
     var titleFont: Font { contentTitleFont }
     var bodyFont: Font { contentBodyFont }
     var captionFont: Font { uiLabelFont }
 
-    // Line spacing tuned for Kindle reading
-    var lineSpacing: CGFloat { 5.5 * scaleFactor }
-    var tracking: CGFloat { 0.3 }
+    // Generous Kindle E-Reader line height (1.50x) & relaxed tracking (+0.2pt)
+    var lineSpacing: CGFloat { 7.5 * scaleFactor }
+    var tracking: CGFloat { 0.2 }
 }
 
 // MARK: - Voice Model Helper
@@ -264,15 +248,9 @@ final class ThemeManager: ObservableObject {
         let itemAppearance = UITabBarItemAppearance()
         let tabFont = UIFont.systemFont(ofSize: 10.5, weight: .semibold)
         itemAppearance.normal.iconColor = UIColor(theme.secondaryTextColor)
-        itemAppearance.normal.titleTextAttributes = [
-            .foregroundColor: UIColor(theme.secondaryTextColor),
-            .font: tabFont
-        ]
+        itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(theme.secondaryTextColor), .font: tabFont]
         itemAppearance.selected.iconColor = UIColor(theme.accentColor)
-        itemAppearance.selected.titleTextAttributes = [
-            .foregroundColor: UIColor(theme.accentColor),
-            .font: tabFont
-        ]
+        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(theme.accentColor), .font: tabFont]
         
         tabBarAppearance.stackedLayoutAppearance = itemAppearance
         tabBarAppearance.inlineLayoutAppearance = itemAppearance

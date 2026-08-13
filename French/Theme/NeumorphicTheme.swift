@@ -77,11 +77,11 @@ struct InsetDepthCardModifier: ViewModifier {
     }
 }
 
-// MARK: - Kindle E-Reader Typography Formatting Modifier
+// MARK: - Kindle E-Reader Typography Formatting Modifier (Generous 7.5pt Line Spacing & 0.2pt Tracking)
 
 struct KindleReaderTextModifier: ViewModifier {
-    var lineSpacing: CGFloat = 5.5
-    var tracking: CGFloat = 0.3
+    var lineSpacing: CGFloat = 7.5
+    var tracking: CGFloat = 0.2
 
     func body(content: Content) -> some View {
         content
@@ -118,8 +118,8 @@ extension View {
         self.modifier(InsetDepthCardModifier(cornerRadius: cornerRadius, isPressed: false))
     }
 
-    /// Applies Kindle E-Reader line height (1.45x) and relaxed character tracking (+0.3pt).
-    func kindleTextFormatting(lineSpacing: CGFloat = 5.5, tracking: CGFloat = 0.3) -> some View {
+    /// Applies Kindle E-Reader line height (7.5pt spacing) and relaxed character tracking (+0.2pt).
+    func kindleTextFormatting(lineSpacing: CGFloat = 7.5, tracking: CGFloat = 0.2) -> some View {
         self.modifier(KindleReaderTextModifier(lineSpacing: lineSpacing, tracking: tracking))
     }
 }
