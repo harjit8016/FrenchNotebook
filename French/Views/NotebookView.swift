@@ -160,7 +160,7 @@ struct NotebookSectionDetailView: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 14) {
                 Text(section.description)
                     .font(.system(size: 13, weight: .medium))

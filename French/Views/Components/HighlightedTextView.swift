@@ -25,10 +25,12 @@ struct HighlightedTextView: View {
                     .font(font)
                     .foregroundColor(normalColor)
             )
+            .fixedSize(horizontal: false, vertical: true)
         } else {
             Text(fullText)
                 .font(font)
                 .foregroundColor(normalColor)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

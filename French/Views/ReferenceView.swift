@@ -158,12 +158,16 @@ struct ReferenceCategoryDetailView<Content: View>: View {
     @StateObject private var speech = SpeechService.shared
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 14) {
-                content()
+        GeometryReader { geo in
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(alignment: .leading, spacing: 14) {
+                    content()
+                }
+                .frame(width: geo.size.width - 32, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .frame(width: geo.size.width)
         }
         .appBackground()
         .appNavigationStyle(title: title, displayMode: .inline)
@@ -179,9 +183,16 @@ struct RuleCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(card.title, systemImage: card.iconName)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(themeManager.currentTheme.accentColor)
+            HStack(spacing: 8) {
+                Image(systemName: card.iconName)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(themeManager.currentTheme.accentColor)
+
+                Text(card.title)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(themeManager.currentTheme.accentColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             Text(card.explanation)
                 .font(themeManager.fontSizeScale.bodyFont)
@@ -266,7 +277,7 @@ struct VerbCardView: View {
                             speech.speak(row.pronoun, itemID: row.id, rate: Float(themeManager.speechRate))
                         }
                     } label: {
-                        HStack {
+                        HStack(alignment: .center, spacing: 8) {
                             HighlightedTextView(
                                 fullText: row.pronoun,
                                 activeRange: isRowSpeaking ? speech.currentWordRange : nil,
@@ -274,12 +285,12 @@ struct VerbCardView: View {
                                 normalColor: themeManager.currentTheme.primaryTextColor,
                                 highlightColor: themeManager.currentTheme.accentColor
                             )
-
-                            Spacer()
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                             Text(row.punjabiSound)
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                                .multilineTextAlignment(.trailing)
 
                             Image(systemName: isRowSpeaking ? "stop.circle.fill" : "speaker.wave.2")
                                 .font(.system(size: 13, weight: .semibold))
@@ -324,7 +335,7 @@ private struct ExampleRow: View {
                 speech.speak(example.french, itemID: example.id, rate: Float(themeManager.speechRate))
             }
         } label: {
-            HStack {
+            HStack(alignment: .center, spacing: 8) {
                 VStack(alignment: .leading, spacing: 2) {
                     HighlightedTextView(
                         fullText: example.french,
@@ -337,13 +348,14 @@ private struct ExampleRow: View {
                     Text(example.english)
                         .font(.system(size: 12, weight: .regular))
                         .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Text(example.punjabiSound)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(themeManager.currentTheme.accentColor)
+                    .multilineTextAlignment(.trailing)
 
                 Image(systemName: isSpeakingThis ? "stop.circle.fill" : "speaker.wave.2")
                     .font(.system(size: 13, weight: .semibold))

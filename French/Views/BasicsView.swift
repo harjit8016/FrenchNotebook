@@ -173,7 +173,7 @@ struct AlphabetDetailView: View {
     ]
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 14) {
                 Text("Tap any letter to hear its French pronunciation and example word!")
                     .font(.system(size: 13, weight: .medium))
@@ -256,7 +256,7 @@ struct BasicsCategoryDetailView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 14) {
                 Text(category.description)
                     .font(.system(size: 13, weight: .medium))
