@@ -52,38 +52,33 @@ struct NotebookView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 16) {
-                        // Hero Header with Streak & XP Stats
-                        HeroHeaderView(
-                            title: "French Notebook",
-                            subtitle: "Master grammar, sounds & hacks"
-                        )
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    // Hero Header with Streak & XP Stats
+                    HeroHeaderView(
+                        title: "French Notebook",
+                        subtitle: "Master grammar, sounds & hacks"
+                    )
 
-                        // Live Search & Filter Bar
-                        SearchBarView(searchText: $searchText, placeholder: "Search French, English, Punjabi...")
+                    // Live Search & Filter Bar
+                    SearchBarView(searchText: $searchText, placeholder: "Search French, English, Punjabi...")
 
-                        // Category Filter Chips
-                        FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
+                    // Category Filter Chips
+                    FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
 
-                        // 2-Column Compact Category Grid
-                        LazyVGrid(columns: gridColumns, spacing: 12) {
-                            ForEach(Array(filteredSections.enumerated()), id: \.element.id) { index, section in
-                                NavigationLink(destination: NotebookSectionDetailView(section: section)) {
-                                    GridCategoryCard(section: section, gradientIndex: index)
-                                }
-                                .buttonStyle(.plain)
+                    // 2-Column Compact Category Grid
+                    LazyVGrid(columns: gridColumns, spacing: 12) {
+                        ForEach(Array(filteredSections.enumerated()), id: \.element.id) { index, section in
+                            NavigationLink(destination: NotebookSectionDetailView(section: section)) {
+                                GridCategoryCard(section: section, gradientIndex: index)
                             }
+                            .buttonStyle(.plain)
                         }
-                        .padding(.top, 4)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .padding(.bottom, speech.isSpeaking ? 75 : 12)
+                    .padding(.top, 4)
                 }
-
-                FloatingAudioBar(speech: speech)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             }
             .appBackground()
             .toolbar(.hidden, for: .navigationBar)
@@ -174,29 +169,24 @@ struct NotebookSectionDetailView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 14) {
-                    SearchBarView(searchText: $searchText, placeholder: "Search inside \(section.title)...")
-                        .padding(.top, 6)
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 14) {
+                SearchBarView(searchText: $searchText, placeholder: "Search inside \(section.title)...")
+                    .padding(.top, 6)
 
-                    Text(section.description)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                        .padding(.horizontal, 4)
+                Text(section.description)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .padding(.horizontal, 4)
 
-                    LazyVStack(spacing: 12) {
-                        ForEach(filteredItems) { item in
-                            ModernNotebookItemCard(item: item, speech: speech)
-                        }
+                LazyVStack(spacing: 12) {
+                    ForEach(filteredItems) { item in
+                        ModernNotebookItemCard(item: item, speech: speech)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .padding(.bottom, speech.isSpeaking ? 75 : 12)
             }
-
-            FloatingAudioBar(speech: speech)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
         }
         .appBackground()
         .appNavigationStyle(title: section.title, displayMode: .inline)
@@ -241,10 +231,14 @@ private struct ModernNotebookItemCard: View {
                 Spacer()
             }
 
-            // MARK: - Actionable Spoken Audio Pill Card with Real-Time Word Highlighting
+            // MARK: - Actionable Spoken Audio Pill Card with Real-Time Word Highlighting & Inline Stop Toggle
             Button {
                 HapticManager.shared.tapWord()
-                speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+                if isSpeaking {
+                    speech.stop()
+                } else {
+                    speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+                }
             } label: {
                 HStack(spacing: 10) {
                     ZStack {
@@ -253,8 +247,8 @@ private struct ModernNotebookItemCard: View {
                             .frame(width: 36, height: 36)
                             .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
 
-                        Image(systemName: isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
-                            .font(.system(size: 15, weight: .bold))
+                        Image(systemName: isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
+                            .font(.system(size: 14, weight: .bold))
                             .foregroundStyle(.white)
                     }
 
@@ -277,7 +271,7 @@ private struct ModernNotebookItemCard: View {
 
                     Spacer(minLength: 0)
 
-                    Image(systemName: isSpeaking ? "pause.circle.fill" : "play.circle.fill")
+                    Image(systemName: isSpeaking ? "stop.circle.fill" : "play.circle.fill")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(themeManager.currentTheme.accentColor)
                 }

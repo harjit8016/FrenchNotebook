@@ -15,84 +15,79 @@ struct ReferenceView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 16) {
-                        // Hero Header with Stats
-                        HeroHeaderView(
-                            title: "Grammar & Rules",
-                            subtitle: "Quick rules, liaisons & verb tables"
-                        )
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    // Hero Header with Stats
+                    HeroHeaderView(
+                        title: "Grammar & Rules",
+                        subtitle: "Quick rules, liaisons & verb tables"
+                    )
 
-                        // Live Search Bar
-                        SearchBarView(searchText: $searchText, placeholder: "Search rules, conjugations & hacks...")
+                    // Live Search Bar
+                    SearchBarView(searchText: $searchText, placeholder: "Search rules, conjugations & hacks...")
 
-                        // Category Filter Chips
-                        FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
+                    // Category Filter Chips
+                    FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
 
-                        // 2-Column Grid Cards for Reference Categories
-                        LazyVGrid(columns: gridColumns, spacing: 12) {
-                            if matchesFilter("Pronouns") {
-                                NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
-                                    RuleCardView(card: ReferenceData.pronounRule, speech: speech)
-                                }) {
-                                    RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule", gradient: AppGradients.indigoViolet)
-                                }
-                                .buttonStyle(.plain)
+                    // 2-Column Grid Cards for Reference Categories
+                    LazyVGrid(columns: gridColumns, spacing: 12) {
+                        if matchesFilter("Pronouns") {
+                            NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
+                                RuleCardView(card: ReferenceData.pronounRule, speech: speech)
+                            }) {
+                                RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule", gradient: AppGradients.indigoViolet)
                             }
-
-                            if matchesFilter("Liaison") {
-                                NavigationLink(destination: ReferenceCategoryDetailView(title: "Liaison Rules", iconName: "link") {
-                                    ForEach(ReferenceData.liaisonRules) { card in
-                                        RuleCardView(card: card, speech: speech)
-                                    }
-                                }) {
-                                    RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules", gradient: AppGradients.emeraldTeal)
-                                }
-                                .buttonStyle(.plain)
-                            }
-
-                            if matchesFilter("Verbs") {
-                                NavigationLink(destination: ReferenceCategoryDetailView(title: "Verb Basics", iconName: "character.book.closed.fill") {
-                                    VerbCardView(card: ReferenceData.etreCard, speech: speech)
-                                    VerbCardView(card: ReferenceData.avoirCard, speech: speech)
-                                    VerbCardView(card: ReferenceData.allerCard, speech: speech)
-                                    VerbCardView(card: ReferenceData.faireCard, speech: speech)
-                                    VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
-                                }) {
-                                    RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs", gradient: AppGradients.sunsetRose)
-                                }
-                                .buttonStyle(.plain)
-                            }
-
-                            if matchesFilter("Modals") {
-                                NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals", iconName: "questionmark.circle") {
-                                    RuleCardView(card: ReferenceData.modalNote, speech: speech)
-                                }) {
-                                    RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note", gradient: AppGradients.oceanCyan)
-                                }
-                                .buttonStyle(.plain)
-                            }
-
-                            if matchesFilter("Cognates") {
-                                NavigationLink(destination: ReferenceCategoryDetailView(title: "Cognate Hacks", iconName: "equal.circle") {
-                                    ForEach(ReferenceData.cognateHacks) { card in
-                                        RuleCardView(card: card, speech: speech)
-                                    }
-                                }) {
-                                    RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks", gradient: AppGradients.amberGold)
-                                }
-                                .buttonStyle(.plain)
-                            }
+                            .buttonStyle(.plain)
                         }
-                        .padding(.top, 4)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .padding(.bottom, speech.isSpeaking ? 75 : 12)
-                }
 
-                FloatingAudioBar(speech: speech)
+                        if matchesFilter("Liaison") {
+                            NavigationLink(destination: ReferenceCategoryDetailView(title: "Liaison Rules", iconName: "link") {
+                                ForEach(ReferenceData.liaisonRules) { card in
+                                    RuleCardView(card: card, speech: speech)
+                                }
+                            }) {
+                                RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules", gradient: AppGradients.emeraldTeal)
+                            }
+                            .buttonStyle(.plain)
+                        }
+
+                        if matchesFilter("Verbs") {
+                            NavigationLink(destination: ReferenceCategoryDetailView(title: "Verb Basics", iconName: "character.book.closed.fill") {
+                                VerbCardView(card: ReferenceData.etreCard, speech: speech)
+                                VerbCardView(card: ReferenceData.avoirCard, speech: speech)
+                                VerbCardView(card: ReferenceData.allerCard, speech: speech)
+                                VerbCardView(card: ReferenceData.faireCard, speech: speech)
+                                VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
+                            }) {
+                                RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs", gradient: AppGradients.sunsetRose)
+                            }
+                            .buttonStyle(.plain)
+                        }
+
+                        if matchesFilter("Modals") {
+                            NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals", iconName: "questionmark.circle") {
+                                RuleCardView(card: ReferenceData.modalNote, speech: speech)
+                            }) {
+                                RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note", gradient: AppGradients.oceanCyan)
+                            }
+                            .buttonStyle(.plain)
+                        }
+
+                        if matchesFilter("Cognates") {
+                            NavigationLink(destination: ReferenceCategoryDetailView(title: "Cognate Hacks", iconName: "equal.circle") {
+                                ForEach(ReferenceData.cognateHacks) { card in
+                                    RuleCardView(card: card, speech: speech)
+                                }
+                            }) {
+                                RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks", gradient: AppGradients.amberGold)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
             }
             .appBackground()
             .toolbar(.hidden, for: .navigationBar)
@@ -168,17 +163,12 @@ struct ReferenceCategoryDetailView<Content: View>: View {
     @StateObject private var speech = SpeechService.shared
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 14) {
-                    content()
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .padding(.bottom, speech.isSpeaking ? 75 : 12)
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 14) {
+                content()
             }
-
-            FloatingAudioBar(speech: speech)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
         }
         .appBackground()
         .appNavigationStyle(title: title, displayMode: .inline)
@@ -221,6 +211,10 @@ struct VerbCardView: View {
     @ObservedObject var speech: SpeechService
     @ObservedObject private var themeManager = ThemeManager.shared
 
+    private var isVerbSpeaking: Bool {
+        speech.currentlySpeakingItemID == card.id
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
@@ -238,14 +232,18 @@ struct VerbCardView: View {
 
                 Button {
                     HapticManager.shared.tapWord()
-                    speech.speak(card.infinitive, rate: Float(themeManager.speechRate))
+                    if isVerbSpeaking {
+                        speech.stop()
+                    } else {
+                        speech.speak(card.infinitive, itemID: card.id, rate: Float(themeManager.speechRate))
+                    }
                 } label: {
                     ZStack {
                         Circle()
-                            .fill(AppGradients.sunsetRose)
+                            .fill(isVerbSpeaking ? AppGradients.emeraldTeal : AppGradients.sunsetRose)
                             .frame(width: 36, height: 36)
 
-                        Image(systemName: "speaker.wave.2.fill")
+                        Image(systemName: isVerbSpeaking ? "stop.fill" : "speaker.wave.2.fill")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundStyle(.white)
                     }
@@ -267,7 +265,11 @@ struct VerbCardView: View {
                     let isRowSpeaking = speech.currentlySpeakingItemID == row.id
                     Button {
                         HapticManager.shared.tapWord()
-                        speech.speak(row.pronoun, itemID: row.id, rate: Float(themeManager.speechRate))
+                        if isRowSpeaking {
+                            speech.stop()
+                        } else {
+                            speech.speak(row.pronoun, itemID: row.id, rate: Float(themeManager.speechRate))
+                        }
                     } label: {
                         HStack {
                             HighlightedTextView(
@@ -284,8 +286,8 @@ struct VerbCardView: View {
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
-                            Image(systemName: isRowSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2")
-                                .font(.system(size: 12))
+                            Image(systemName: isRowSpeaking ? "stop.circle.fill" : "speaker.wave.2")
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                         }
                         .padding(.horizontal, 12)
@@ -321,7 +323,11 @@ private struct ExampleRow: View {
     var body: some View {
         Button {
             HapticManager.shared.tapWord()
-            speech.speak(example.french, itemID: example.id, rate: Float(themeManager.speechRate))
+            if isSpeakingThis {
+                speech.stop()
+            } else {
+                speech.speak(example.french, itemID: example.id, rate: Float(themeManager.speechRate))
+            }
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
@@ -344,8 +350,8 @@ private struct ExampleRow: View {
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                Image(systemName: isSpeakingThis ? "speaker.wave.3.fill" : "speaker.wave.2")
-                    .font(.system(size: 12))
+                Image(systemName: isSpeakingThis ? "stop.circle.fill" : "speaker.wave.2")
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(themeManager.currentTheme.accentColor)
             }
             .padding(10)
