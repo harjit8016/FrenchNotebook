@@ -27,13 +27,40 @@ final class SpeechService: NSObject, ObservableObject {
         }
     }
 
+    /// Sanitizes text for natural French speech synthesis:
+    /// - Strips parenthetical notes (e.g. Punjabi phonetics "(ਪਾਖ਼ਲੇ)" or English notes)
+    /// - Converts slashes ('/') into natural pauses (', ') so TTS never pronounces "slash" or "barre oblique"
+    /// - Cleans up duplicate spaces and punctuation
+    static func cleanTextForSpeech(_ text: String) -> String {
+        var clean = text
+
+        // 1. Remove parenthetical notes e.g. "(ਪਾਖ਼ਲੇ)", "(to be)", "(am/is/are)"
+        let stripped = clean.replacingOccurrences(of: "\\([^)]*\\)", with: "", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if !stripped.isEmpty {
+            clean = stripped
+        }
+
+        // 2. Replace slashes '/' with natural pause ', '
+        clean = clean.replacingOccurrences(of: "/", with: ", ")
+
+        // 3. Clean up multiple punctuation/spaces
+        clean = clean.replacingOccurrences(of: "\\s*,\\s*", with: ", ", options: .regularExpression)
+        clean = clean.replacingOccurrences(of: ",+", with: ",", options: .regularExpression)
+        clean = clean.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+
+        return clean.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     /// Speak a French word/phrase with item tracking and real-time word range updates.
     func speak(_ text: String, itemID: UUID? = nil, rate: Float = 0.42, pitch: Float = 1.0) {
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
 
-        let utterance = AVSpeechUtterance(string: text)
+        let printableText = SpeechService.cleanTextForSpeech(text)
+        let utterance = AVSpeechUtterance(string: printableText)
 
         // Apply chosen French Voice identifier if selected
         let voiceID = ThemeManager.shared.selectedVoiceIdentifier
