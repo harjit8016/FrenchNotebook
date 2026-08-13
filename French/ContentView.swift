@@ -1,12 +1,13 @@
 import SwiftUI
-import Playgrounds
 
-@main struct MyApp: App {
+@main
+struct FrenchApp: App {
     var body: some Scene {
         WindowGroup {
             RootTabView()
         }
     }
 }
+
 
  
