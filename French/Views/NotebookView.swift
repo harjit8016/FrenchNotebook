@@ -4,150 +4,196 @@ struct NotebookView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @StateObject private var speech = SpeechService.shared
     @State private var searchText: String = ""
+    @State private var selectedFilterTag: String = "All"
 
     private let sections = NotebookData.allSections
+    private let filterTags = ["All", "Accents", "Gender", "Cognates", "Verbs", "Conversation", "Bistro", "Directions", "Emergency"]
 
     private var filteredSections: [NotebookSection] {
-        if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return sections
-        }
-        let query = searchText.lowercased()
-        return sections.compactMap { sec in
-            let matchingItems = sec.items.filter { item in
-                item.french.lowercased().contains(query) ||
-                item.english.lowercased().contains(query) ||
-                item.phonetic.lowercased().contains(query) ||
-                (item.grammarNote?.lowercased().contains(query) ?? false)
+        var result = sections
+
+        // 1. Tag Filtering
+        if selectedFilterTag != "All" {
+            result = result.filter { sec in
+                sec.title.localizedCaseInsensitiveContains(selectedFilterTag) ||
+                sec.description.localizedCaseInsensitiveContains(selectedFilterTag)
             }
-            if !matchingItems.isEmpty || sec.title.lowercased().contains(query) || sec.description.lowercased().contains(query) {
-                return NotebookSection(
-                    id: sec.id,
-                    title: sec.title,
-                    iconName: sec.iconName,
-                    description: sec.description,
-                    items: matchingItems.isEmpty ? sec.items : matchingItems
-                )
-            }
-            return nil
         }
+
+        // 2. Search Text Filtering
+        if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let query = searchText.lowercased()
+            result = result.compactMap { sec in
+                let matchingItems = sec.items.filter { item in
+                    item.french.lowercased().contains(query) ||
+                    item.english.lowercased().contains(query) ||
+                    item.phonetic.lowercased().contains(query) ||
+                    (item.grammarNote?.lowercased().contains(query) ?? false)
+                }
+                if !matchingItems.isEmpty || sec.title.lowercased().contains(query) || sec.description.lowercased().contains(query) {
+                    return NotebookSection(
+                        id: sec.id,
+                        title: sec.title,
+                        iconName: sec.iconName,
+                        description: sec.description,
+                        items: matchingItems.isEmpty ? sec.items : matchingItems
+                    )
+                }
+                return nil
+            }
+        }
+        return result
     }
+
+    private let gridColumns = [
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
 
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 14) {
-                        SearchBarView(searchText: $searchText, placeholder: "Search Notebook (French, English, Punjabi)...")
-                            .padding(.top, 4)
+                    VStack(spacing: 16) {
+                        // Hero Header with Streak & XP Stats
+                        HeroHeaderView(
+                            title: "French Notebook",
+                            subtitle: "Master grammar, sounds & hacks"
+                        )
 
-                        LazyVStack(spacing: 14) {
-                            ForEach(filteredSections) { section in
+                        // Live Search & Filter Bar
+                        SearchBarView(searchText: $searchText, placeholder: "Search French, English, Punjabi...")
+
+                        // Category Filter Chips
+                        FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
+
+                        // 2-Column Compact Category Grid
+                        LazyVGrid(columns: gridColumns, spacing: 12) {
+                            ForEach(Array(filteredSections.enumerated()), id: \.element.id) { index, section in
                                 NavigationLink(destination: NotebookSectionDetailView(section: section)) {
-                                    CategoryRowView(section: section)
+                                    GridCategoryCard(section: section, gradientIndex: index)
                                 }
                                 .buttonStyle(.plain)
                             }
                         }
+                        .padding(.top, 4)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .padding(.bottom, speech.isSpeaking ? 70 : 0)
+                    .padding(.bottom, speech.isSpeaking ? 75 : 12)
                 }
 
                 FloatingAudioBar(speech: speech)
             }
             .appBackground()
-            .appNavigationStyle(title: "French Notebook", displayMode: .inline)
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }
 
-// MARK: - Category Row View (Screen 1 - Untouched)
+// MARK: - 2-Column Modern Grid Category Card
 
-private struct CategoryRowView: View {
+private struct GridCategoryCard: View {
     let section: NotebookSection
+    let gradientIndex: Int
     @ObservedObject private var themeManager = ThemeManager.shared
 
-    var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(themeManager.currentTheme.cardBackgroundColor)
-                    .frame(width: 44, height: 44)
-                    .appNeumorphicCard(cornerRadius: 22)
+    private var cardGradient: LinearGradient {
+        let gradients = [
+            AppGradients.indigoViolet,
+            AppGradients.emeraldTeal,
+            AppGradients.sunsetRose,
+            AppGradients.oceanCyan,
+            AppGradients.amberGold
+        ]
+        return gradients[gradientIndex % gradients.count]
+    }
 
-                Image(systemName: section.iconName)
-                    .font(.system(size: 18, weight: .bold))
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                ZStack {
+                    Circle()
+                        .fill(cardGradient)
+                        .frame(width: 40, height: 40)
+                        .shadow(color: Color.black.opacity(0.12), radius: 4, x: 0, y: 2)
+
+                    Image(systemName: section.iconName)
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundStyle(.white)
+                }
+
+                Spacer()
+
+                Text("\(section.items.count)")
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundStyle(themeManager.currentTheme.accentColor)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                    .clipShape(Capsule())
             }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(section.title)
-                    .font(themeManager.fontSizeScale.uiTitleFont)
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                    .lineLimit(1)
 
                 Text(section.description)
-                    .font(themeManager.fontSizeScale.uiLabelFont)
+                    .font(.system(size: 12, weight: .regular))
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: 4) {
-                Text("\(section.items.count) cards")
-                    .font(themeManager.fontSizeScale.uiLabelFont.bold())
-                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                Image(systemName: "chevron.right")
-                    .font(.caption.bold())
-                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .appNeumorphicCard(cornerRadius: 18)
+        .padding(14)
+        .glassCard(cornerRadius: 18)
     }
 }
 
-// MARK: - Dedicated Detail View (Screen 2 - Full-Width Edge-to-Edge Separator Layout)
+// MARK: - Dedicated Detail View (Screen 2: Modern Compact Card List)
 
 struct NotebookSectionDetailView: View {
     let section: NotebookSection
     @ObservedObject private var themeManager = ThemeManager.shared
     @StateObject private var speech = SpeechService.shared
+    @State private var searchText: String = ""
+
+    private var filteredItems: [NotebookItem] {
+        if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return section.items
+        }
+        let query = searchText.lowercased()
+        return section.items.filter { item in
+            item.french.lowercased().contains(query) ||
+            item.english.lowercased().contains(query) ||
+            item.phonetic.lowercased().contains(query) ||
+            (item.grammarNote?.lowercased().contains(query) ?? false)
+        }
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 0) {
-                    // UI Category Header Subtitle
+                VStack(alignment: .leading, spacing: 14) {
+                    SearchBarView(searchText: $searchText, placeholder: "Search inside \(section.title)...")
+                        .padding(.top, 6)
+
                     Text(section.description)
-                        .font(themeManager.fontSizeScale.uiLabelFont)
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.85))
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .padding(.bottom, 12)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                        .padding(.horizontal, 4)
 
-                    ForEach(Array(section.items.enumerated()), id: \.element.id) { index, item in
-                        VStack(spacing: 0) {
-                            // Full-Width Separator Line (Very left to very right)
-                            Rectangle()
-                                .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
-                                .frame(height: 1)
-
-                            // Item Content Cell (Full Screen Width with 16pt Content Padding)
-                            NotebookItemRow(item: item, speech: speech)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 14)
+                    LazyVStack(spacing: 12) {
+                        ForEach(filteredItems) { item in
+                            ModernNotebookItemCard(item: item, speech: speech)
                         }
                     }
-
-                    // Bottom closing separator line
-                    Rectangle()
-                        .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
-                        .frame(height: 1)
                 }
-                .padding(.bottom, speech.isSpeaking ? 70 : 0)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .padding(.bottom, speech.isSpeaking ? 75 : 12)
             }
 
             FloatingAudioBar(speech: speech)
@@ -157,40 +203,9 @@ struct NotebookSectionDetailView: View {
     }
 }
 
-// MARK: - Real-time Word Highlighting Text View
+// MARK: - Modern Notebook Item Card
 
-private struct HighlightedTextView: View {
-    let fullText: String
-    let activeRange: NSRange?
-    let font: Font
-    @ObservedObject private var themeManager = ThemeManager.shared
-
-    var body: some View {
-        if let activeRange = activeRange,
-           let swiftRange = Range(activeRange, in: fullText) {
-            let prefix = String(fullText[..<swiftRange.lowerBound])
-            let highlighted = String(fullText[swiftRange])
-            let suffix = String(fullText[swiftRange.upperBound...])
-
-            (
-                Text(prefix)
-                    .font(font) +
-                Text(highlighted)
-                    .font(font.bold())
-                    .foregroundColor(themeManager.currentTheme.accentColor) +
-                Text(suffix)
-                    .font(font)
-            )
-        } else {
-            Text(fullText)
-                .font(font)
-        }
-    }
-}
-
-// MARK: - Notebook Item Row (Screen 2: Clean, Actionable Audio Button, High-Contrast Dark Reading Text)
-
-private struct NotebookItemRow: View {
+private struct ModernNotebookItemCard: View {
     let item: NotebookItem
     @ObservedObject var speech: SpeechService
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -199,82 +214,75 @@ private struct NotebookItemRow: View {
         speech.currentlySpeakingItemID == item.id
     }
 
-    private var activeRange: NSRange? {
-        if isSpeaking {
-            return speech.currentWordRange
-        }
-        return nil
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Header Title (Kindle Book Serif - High Contrast Primary Dark Text)
-            Text(item.french)
-                .font(themeManager.fontSizeScale.contentTitleFont)
-                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                .kindleTextFormatting(lineSpacing: 4)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.french)
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        .kindleTextFormatting(lineSpacing: 3)
 
-            // MARK: - Actionable Audio Button Section (Tappable Content Pill)
-            Button {
-                HapticManager.shared.tapWord()
-                speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
-
-                    HighlightedTextView(
-                        fullText: item.spokenFrench,
-                        activeRange: activeRange,
-                        font: themeManager.fontSizeScale.contentBodyFont.bold()
-                    )
-                    .kindleTextFormatting(lineSpacing: 4)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                    Spacer(minLength: 0)
-
-                    Image(systemName: "play.circle.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor.opacity(0.85))
+                    // Phonetic Chip Pill
+                    HStack(spacing: 4) {
+                        Image(systemName: "waveform")
+                            .font(.system(size: 10, weight: .bold))
+                        Text(item.phonetic)
+                            .font(.system(size: 12, weight: .medium))
+                    }
+                    .foregroundStyle(themeManager.currentTheme.accentColor)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                    .clipShape(Capsule())
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .appNeumorphicCard(cornerRadius: 12, isPressed: isSpeaking)
-            }
-            .buttonStyle(.plain)
 
-            // English Meaning (Kindle Book Serif - High Contrast Dark Text for Zero Eye Strain!)
+                Spacer()
+
+                // Circular Audio Play Button with Gradient Sheen
+                Button {
+                    HapticManager.shared.tapWord()
+                    speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(isSpeaking ? AppGradients.emeraldTeal : AppGradients.indigoViolet)
+                            .frame(width: 42, height: 42)
+                            .shadow(color: Color.black.opacity(0.18), radius: 4, x: 0, y: 2)
+
+                        Image(systemName: isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+
             Text(item.english)
                 .font(themeManager.fontSizeScale.contentBodyFont)
-                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                .kindleTextFormatting(lineSpacing: 5)
-                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                .kindleTextFormatting(lineSpacing: 3)
 
-            // Phonetic Guide (Kindle Book Serif - Sharp Readable Text)
-            HStack(alignment: .top, spacing: 4) {
-                Image(systemName: "text.phonetic")
-                    .font(.caption2)
-                    .padding(.top, 3)
-                Text(item.phonetic)
-                    .font(themeManager.fontSizeScale.contentPhoneticFont)
-                    .kindleTextFormatting(lineSpacing: 3)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.88))
-
-            // Optional Grammar Note (High Contrast Readable Text)
             if let note = item.grammarNote {
-                Text(note)
-                    .font(themeManager.fontSizeScale.uiLabelFont)
-                    .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.80))
-                    .kindleTextFormatting(lineSpacing: 3)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 1)
+                HStack(alignment: .top, spacing: 6) {
+                    Text("HACK")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(AppGradients.sunsetRose)
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+
+                    Text(note)
+                        .font(.system(size: 12.5, weight: .regular))
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.82))
+                        .kindleTextFormatting(lineSpacing: 2)
+                }
+                .padding(.top, 2)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .glassCard(cornerRadius: 18, isPressed: isSpeaking)
     }
 }
 
