@@ -26,7 +26,7 @@ struct NotebookView: View {
     }
 }
 
-// MARK: - Category Row View (Screen 1)
+// MARK: - Category Row View (UI Navigation - Roboto / Sans-Serif)
 
 private struct CategoryRowView: View {
     let section: NotebookSection
@@ -45,16 +45,16 @@ private struct CategoryRowView: View {
                     .foregroundStyle(themeManager.currentTheme.accentColor)
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 3) {
+                // UI Header Title (Roboto / Sans-Serif)
                 Text(section.title)
-                    .font(themeManager.fontSizeScale.titleFont)
+                    .font(themeManager.fontSizeScale.uiTitleFont)
                     .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                    .kindleTextFormatting(lineSpacing: 2)
 
+                // UI Description Subtitle (Roboto / Sans-Serif)
                 Text(section.description)
-                    .font(themeManager.fontSizeScale.captionFont)
+                    .font(themeManager.fontSizeScale.uiLabelFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    .kindleTextFormatting(lineSpacing: 3)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -62,7 +62,7 @@ private struct CategoryRowView: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 Text("\(section.items.count) cards")
-                    .font(.caption2.bold())
+                    .font(themeManager.fontSizeScale.uiLabelFont.bold())
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                 Image(systemName: "chevron.right")
                     .font(.caption.bold())
@@ -85,10 +85,10 @@ struct NotebookSectionDetailView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 14) {
+                // UI Category Header Subtitle (Roboto / Sans-Serif)
                 Text(section.description)
-                    .font(themeManager.fontSizeScale.captionFont)
+                    .font(themeManager.fontSizeScale.uiLabelFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    .kindleTextFormatting(lineSpacing: 3)
                     .padding(.horizontal, 16)
                     .padding(.top, 4)
 
@@ -135,7 +135,7 @@ private struct HighlightedTextView: View {
     }
 }
 
-// MARK: - Notebook Item Card (Kindle Reader Formatting & Carved Inset Box)
+// MARK: - Notebook Item Card (Learning Reading Content - Kindle Book Serif)
 
 private struct NotebookItemCard: View {
     let item: NotebookItem
@@ -155,22 +155,22 @@ private struct NotebookItemCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     // Header Title (Kindle Book Serif)
                     Text(item.french)
-                        .font(themeManager.fontSizeScale.titleFont)
+                        .font(themeManager.fontSizeScale.contentTitleFont)
                         .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         .kindleTextFormatting(lineSpacing: 4)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    // Target Spoken Word Panel (Recessed Depth Box with Kindle Formatting)
+                    // Target Spoken Word Panel (Kindle Book Serif Content)
                     if item.audioText != nil {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Audio:")
-                                .font(.caption2.bold())
+                                .font(themeManager.fontSizeScale.uiLabelFont.bold())
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
 
                             HighlightedTextView(
                                 fullText: item.spokenFrench,
                                 activeRange: activeRange,
-                                font: themeManager.fontSizeScale.bodyFont.bold()
+                                font: themeManager.fontSizeScale.contentBodyFont.bold()
                             )
                             .kindleTextFormatting(lineSpacing: 4)
                             .fixedSize(horizontal: false, vertical: true)
@@ -182,7 +182,7 @@ private struct NotebookItemCard: View {
 
                     // English Meaning (Kindle Book Serif)
                     Text(item.english)
-                        .font(themeManager.fontSizeScale.bodyFont)
+                        .font(themeManager.fontSizeScale.contentBodyFont)
                         .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                         .kindleTextFormatting(lineSpacing: 5)
                         .fixedSize(horizontal: false, vertical: true)
@@ -193,16 +193,16 @@ private struct NotebookItemCard: View {
                             .font(.caption2)
                             .padding(.top, 3)
                         Text(item.phonetic)
-                            .font(themeManager.fontSizeScale.phoneticFont)
+                            .font(themeManager.fontSizeScale.contentPhoneticFont)
                             .kindleTextFormatting(lineSpacing: 3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                    // Optional Grammar Note
+                    // Optional Grammar Note (Kindle Book Serif)
                     if let note = item.grammarNote {
                         Text(note)
-                            .font(themeManager.fontSizeScale.captionFont)
+                            .font(themeManager.fontSizeScale.uiLabelFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                             .kindleTextFormatting(lineSpacing: 3)
                             .fixedSize(horizontal: false, vertical: true)
@@ -212,7 +212,7 @@ private struct NotebookItemCard: View {
 
                 Spacer()
 
-                // Prominent Speaker Button
+                // Prominent Speaker Button (Roboto UI Button)
                 Button {
                     speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
                 } label: {

@@ -29,7 +29,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.93, green: 0.94, blue: 0.96)
         case .systemDark: return Color(red: 0.11, green: 0.12, blue: 0.15)
-        case .creamSepia: return Color(red: 0.96, green: 0.93, blue: 0.85) // Kindle Warm Paper
+        case .creamSepia: return Color(red: 0.96, green: 0.93, blue: 0.85)
         case .mintSage: return Color(red: 0.90, green: 0.94, blue: 0.91)
         case .midnightSlate: return Color(red: 0.10, green: 0.13, blue: 0.18)
         }
@@ -51,7 +51,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.10, green: 0.12, blue: 0.18)
         case .systemDark: return Color(red: 0.96, green: 0.97, blue: 0.99)
-        case .creamSepia: return Color(red: 0.18, green: 0.14, blue: 0.08) // Deep Charcoal Ink
+        case .creamSepia: return Color(red: 0.18, green: 0.14, blue: 0.08)
         case .mintSage: return Color(red: 0.06, green: 0.18, blue: 0.12)
         case .midnightSlate: return Color(red: 0.92, green: 0.95, blue: 0.98)
         }
@@ -84,7 +84,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-// MARK: - Kindle-Grade Reader Font Size Scale Options
+// MARK: - Font Size Scale Options (Separated UI Sans-Serif & Content Book Serif)
 
 enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     case small = "Compact"
@@ -103,13 +103,22 @@ enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    // High-legibility Kindle Book Serif & Humanistic Typography
-    var titleFont: Font { Font.system(size: 19.5 * scaleFactor, weight: .bold, design: .serif) }
-    var bodyFont: Font { Font.system(size: 16.0 * scaleFactor, weight: .regular, design: .serif) }
-    var captionFont: Font { Font.system(size: 13.5 * scaleFactor, weight: .medium, design: .default) }
-    var phoneticFont: Font { Font.system(size: 14.5 * scaleFactor, weight: .medium, design: .serif) }
+    // 1. UI Navigation & Action Control Typography (Roboto / Modern System Sans-Serif)
+    var uiTitleFont: Font { Font.system(size: 17 * scaleFactor, weight: .bold, design: .default) }
+    var uiButtonFont: Font { Font.system(size: 15 * scaleFactor, weight: .semibold, design: .default) }
+    var uiLabelFont: Font { Font.system(size: 13.5 * scaleFactor, weight: .medium, design: .default) }
 
-    // Generous Kindle E-Reader line height (1.45x) & relaxed tracking (+0.3pt)
+    // 2. Learning Reading Content Typography (Kindle Book Serif)
+    var contentTitleFont: Font { Font.system(size: 19.5 * scaleFactor, weight: .bold, design: .serif) }
+    var contentBodyFont: Font { Font.system(size: 16.0 * scaleFactor, weight: .regular, design: .serif) }
+    var contentPhoneticFont: Font { Font.system(size: 14.5 * scaleFactor, weight: .medium, design: .serif) }
+
+    // Backward compatibility aliases
+    var titleFont: Font { contentTitleFont }
+    var bodyFont: Font { contentBodyFont }
+    var captionFont: Font { uiLabelFont }
+
+    // Line spacing tuned for Kindle reading
     var lineSpacing: CGFloat { 5.5 * scaleFactor }
     var tracking: CGFloat { 0.3 }
 }
@@ -200,27 +209,41 @@ final class ThemeManager: ObservableObject {
     func updateSystemAppearances() {
         let theme = currentTheme
 
-        // Navigation Bar Appearance
+        // Navigation Bar Appearance (Roboto / System Sans-Serif)
         let navAppearance = UINavigationBarAppearance()
         navAppearance.configureWithOpaqueBackground()
         navAppearance.backgroundColor = UIColor(theme.backgroundColor)
-        navAppearance.titleTextAttributes = [.foregroundColor: UIColor(theme.primaryTextColor)]
-        navAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(theme.primaryTextColor)]
+        let navFont = UIFont.systemFont(ofSize: 17, weight: .bold)
+        navAppearance.titleTextAttributes = [
+            .foregroundColor: UIColor(theme.primaryTextColor),
+            .font: navFont
+        ]
+        navAppearance.largeTitleTextAttributes = [
+            .foregroundColor: UIColor(theme.primaryTextColor),
+            .font: UIFont.systemFont(ofSize: 26, weight: .bold)
+        ]
         
         UINavigationBar.appearance().standardAppearance = navAppearance
         UINavigationBar.appearance().compactAppearance = navAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
 
-        // Tab Bar Appearance
+        // Tab Bar Appearance (Roboto / System Sans-Serif)
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
         tabBarAppearance.backgroundColor = UIColor(theme.backgroundColor)
         
         let itemAppearance = UITabBarItemAppearance()
+        let tabFont = UIFont.systemFont(ofSize: 10.5, weight: .semibold)
         itemAppearance.normal.iconColor = UIColor(theme.secondaryTextColor)
-        itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(theme.secondaryTextColor)]
+        itemAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor(theme.secondaryTextColor),
+            .font: tabFont
+        ]
         itemAppearance.selected.iconColor = UIColor(theme.accentColor)
-        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(theme.accentColor)]
+        itemAppearance.selected.titleTextAttributes = [
+            .foregroundColor: UIColor(theme.accentColor),
+            .font: tabFont
+        ]
         
         tabBarAppearance.stackedLayoutAppearance = itemAppearance
         tabBarAppearance.inlineLayoutAppearance = itemAppearance
