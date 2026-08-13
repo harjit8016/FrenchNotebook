@@ -288,11 +288,18 @@ private struct FullNumberGrid100View: View {
 
     @State private var selectedNumber: Int? = nil
 
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 5)
+    private let rows: [[Int]] = stride(from: 1, through: 100, by: 5).map { start in
+        Array(start..<min(start + 5, 101))
+    }
+
+    private var activeRowIndex: Int? {
+        guard let num = selectedNumber else { return nil }
+        return (num - 1) / 5
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Header Title & Active Spoken Banner
+            // Header Title
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text("1 to 100 Full Counting Grid")
@@ -315,79 +322,91 @@ private struct FullNumberGrid100View: View {
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
             }
 
-            // Currently Active Spoken Number Banner
-            if let num = selectedNumber {
-                HStack(spacing: 10) {
-                    Text("\(num)")
-                        .font(.system(size: 22, weight: .heavy, design: .rounded))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
+            // 20 Rows of 5 Mini Buttons with Dynamic Inline Row Banner
+            VStack(spacing: 8) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { rowIndex, rowNumbers in
+                    VStack(spacing: 8) {
+                        // Dynamic Inline Active Banner directly above this row!
+                        if activeRowIndex == rowIndex, let num = selectedNumber {
+                            HStack(spacing: 10) {
+                                Text("\(num)")
+                                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                                    .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(frenchSpokenNumber(num).capitalized)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(frenchSpokenNumber(num).capitalized)
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
 
-                        Text("Spoken French Pronunciation")
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    }
+                                    Text("Spoken French Pronunciation")
+                                        .font(.system(size: 11, weight: .medium))
+                                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                                }
 
-                    Spacer()
+                                Spacer()
 
-                    Button {
-                        speech.stop()
-                        selectedNumber = nil
-                    } label: {
-                        Image(systemName: "stop.circle.fill")
-                            .font(.system(size: 24))
-                            .foregroundStyle(themeManager.currentTheme.accentColor)
-                    }
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(themeManager.currentTheme.accentColor.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(themeManager.currentTheme.accentColor.opacity(0.30), lineWidth: 1)
-                )
-            }
-
-            // 5-Column Mini Button Grid for Numbers 1 to 100
-            LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(1...100, id: \.self) { num in
-                    let isSelected = selectedNumber == num
-
-                    Button {
-                        HapticManager.shared.tapWord()
-                        let frenchText = frenchSpokenNumber(num)
-                        selectedNumber = num
-                        let speakID = UUID()
-                        speech.speak(frenchText, itemID: speakID, rate: Float(themeManager.speechRate))
-                    } label: {
-                        VStack(spacing: 2) {
-                            Text("\(num)")
-                                .font(.system(size: 15, weight: .bold, design: .rounded))
-                                .foregroundStyle(isSelected ? .white : themeManager.currentTheme.primaryTextColor)
-
-                            Text(frenchSpokenNumber(num))
-                                .font(.system(size: 9.5, weight: .semibold))
-                                .foregroundStyle(isSelected ? .white.opacity(0.95) : themeManager.currentTheme.secondaryTextColor)
-                                .multilineTextAlignment(.center)
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.70)
-                                .padding(.horizontal, 4)
+                                Button {
+                                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                        speech.stop()
+                                        selectedNumber = nil
+                                    }
+                                } label: {
+                                    Image(systemName: "stop.circle.fill")
+                                        .font(.system(size: 24))
+                                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                                }
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 10)
+                            .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .strokeBorder(themeManager.currentTheme.accentColor.opacity(0.30), lineWidth: 1)
+                            )
+                            .transition(.scale.combined(with: .opacity))
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 58)
-                        .background(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.cardBackgroundColor.opacity(0.80))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.15), lineWidth: 1)
-                        )
+
+                        // 5 Mini Buttons for this row
+                        HStack(spacing: 8) {
+                            ForEach(rowNumbers, id: \.self) { num in
+                                let isSelected = selectedNumber == num
+
+                                Button {
+                                    HapticManager.shared.tapWord()
+                                    let frenchText = frenchSpokenNumber(num)
+                                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                        selectedNumber = num
+                                    }
+                                    let speakID = UUID()
+                                    speech.speak(frenchText, itemID: speakID, rate: Float(themeManager.speechRate))
+                                } label: {
+                                    VStack(spacing: 2) {
+                                        Text("\(num)")
+                                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                                            .foregroundStyle(isSelected ? .white : themeManager.currentTheme.primaryTextColor)
+
+                                        Text(frenchSpokenNumber(num))
+                                            .font(.system(size: 9.5, weight: .semibold))
+                                            .foregroundStyle(isSelected ? .white.opacity(0.95) : themeManager.currentTheme.secondaryTextColor)
+                                            .multilineTextAlignment(.center)
+                                            .lineLimit(2)
+                                            .minimumScaleFactor(0.70)
+                                            .padding(.horizontal, 4)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.cardBackgroundColor.opacity(0.80))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.15), lineWidth: 1)
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }
