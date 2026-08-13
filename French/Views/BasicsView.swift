@@ -267,12 +267,181 @@ struct BasicsCategoryDetailView: View {
                         BasicsItemCard(item: item, speech: speech)
                     }
                 }
+
+                if category.title.localizedCaseInsensitiveContains("Numbers") {
+                    FullNumberGrid100View(speech: speech)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
         }
         .appBackground()
         .appNavigationStyle(title: category.title, displayMode: .inline)
+    }
+}
+
+// MARK: - 1 to 100 Mini Button Grid View
+
+private struct FullNumberGrid100View: View {
+    @ObservedObject var speech: SpeechService
+    @ObservedObject private var themeManager = ThemeManager.shared
+
+    @State private var selectedNumber: Int? = nil
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 5)
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header Title & Active Spoken Banner
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("1 to 100 Full Counting Grid")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+
+                    Spacer()
+
+                    Text("100 Numbers")
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                        .clipShape(Capsule())
+                }
+
+                Text("Tap any number button to hear its exact French pronunciation!")
+                    .font(.system(size: 12.5, weight: .regular))
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+            }
+
+            // Currently Active Spoken Number Banner
+            if let num = selectedNumber {
+                HStack(spacing: 10) {
+                    Text("\(num)")
+                        .font(.system(size: 22, weight: .heavy, design: .rounded))
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(frenchSpokenNumber(num).capitalized)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+
+                        Text("Spoken French Pronunciation")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    }
+
+                    Spacer()
+
+                    Button {
+                        speech.stop()
+                        selectedNumber = nil
+                    } label: {
+                        Image(systemName: "stop.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundStyle(themeManager.currentTheme.accentColor)
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(themeManager.currentTheme.accentColor.opacity(0.30), lineWidth: 1)
+                )
+            }
+
+            // 5-Column Mini Button Grid for Numbers 1 to 100
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(1...100, id: \.self) { num in
+                    let isSelected = selectedNumber == num
+
+                    Button {
+                        HapticManager.shared.tapWord()
+                        let frenchText = frenchSpokenNumber(num)
+                        selectedNumber = num
+                        let speakID = UUID()
+                        speech.speak(frenchText, itemID: speakID, rate: Float(themeManager.speechRate))
+                    } label: {
+                        VStack(spacing: 2) {
+                            Text("\(num)")
+                                .font(.system(size: 15, weight: .bold, design: .rounded))
+                                .foregroundStyle(isSelected ? .white : themeManager.currentTheme.primaryTextColor)
+
+                            Text(frenchSpokenNumber(num))
+                                .font(.system(size: 8, weight: .semibold))
+                                .foregroundStyle(isSelected ? .white.opacity(0.9) : themeManager.currentTheme.secondaryTextColor)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.65)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .background(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.cardBackgroundColor.opacity(0.80))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .strokeBorder(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.15), lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(14)
+        .glassCard(cornerRadius: 18)
+        .padding(.top, 8)
+    }
+}
+
+// MARK: - French Number Pronunciation Helper (1 to 100)
+
+private func frenchSpokenNumber(_ n: Int) -> String {
+    let units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"]
+    if n <= 19 {
+        return units[n]
+    }
+    if n == 100 {
+        return "cent"
+    }
+
+    let tens = n / 10
+    let remainder = n % 10
+
+    switch tens {
+    case 2: // 20-29
+        if remainder == 0 { return "vingt" }
+        if remainder == 1 { return "vingt et un" }
+        return "vingt-" + units[remainder]
+    case 3: // 30-39
+        if remainder == 0 { return "trente" }
+        if remainder == 1 { return "trente et un" }
+        return "trente-" + units[remainder]
+    case 4: // 40-49
+        if remainder == 0 { return "quarante" }
+        if remainder == 1 { return "quarante et un" }
+        return "quarante-" + units[remainder]
+    case 5: // 50-59
+        if remainder == 0 { return "cinquante" }
+        if remainder == 1 { return "cinquante et un" }
+        return "cinquante-" + units[remainder]
+    case 6: // 60-69
+        if remainder == 0 { return "soixante" }
+        if remainder == 1 { return "soixante et un" }
+        return "soixante-" + units[remainder]
+    case 7: // 70-79
+        if remainder == 0 { return "soixante-dix" }
+        if remainder == 1 { return "soixante et onze" }
+        return "soixante-" + units[10 + remainder]
+    case 8: // 80-89
+        if remainder == 0 { return "quatre-vingts" }
+        return "quatre-vingt-" + units[remainder]
+    case 9: // 90-99
+        if remainder == 0 { return "quatre-vingt-dix" }
+        return "quatre-vingt-" + units[10 + remainder]
+    default:
+        return "\(n)"
     }
 }
 
