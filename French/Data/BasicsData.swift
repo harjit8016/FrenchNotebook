@@ -55,7 +55,7 @@ enum BasicsData {
         AlphabetItem(letter: "C", frenchWord: "Chat", englishMeaning: "Cat", phonetic: "seh · shah", punjabiSound: "ਸੇ · ਸ਼ਾ", iconName: "cat.fill"),
         AlphabetItem(letter: "D", frenchWord: "Dauphin", englishMeaning: "Dolphin", phonetic: "deh · doh-fahn", punjabiSound: "ਦੇ · ਦੋਫਾਂ", iconName: "fish.fill"),
         AlphabetItem(letter: "E", frenchWord: "Éléphant", englishMeaning: "Elephant", phonetic: "uh · eh-lay-fahn", punjabiSound: "ਉ · ਏਲੇਫਾਂ", iconName: "circle.grid.cross.fill"),
-        AlphabetItem(letter: "F", frenchWord: "Fleur", englishMeaning: "Flower", phonetic: "eff · fluhr", punjabiSound: "ਐਫ · ਫਲੂਖ਼", iconName: "flower.bunch.fill"),
+        AlphabetItem(letter: "F", frenchWord: "Fleur", englishMeaning: "Flower", phonetic: "eff · fluhr", punjabiSound: "ਐਫ · ਫਲੂਖ਼", iconName: "camera.macro"),
         AlphabetItem(letter: "G", frenchWord: "Gâteau", englishMeaning: "Cake", phonetic: "zheh · gah-toh", punjabiSound: "ਜ਼ੇ · ਗਾਤੋ", iconName: "birthday.cake.fill"),
         AlphabetItem(letter: "H", frenchWord: "Horloge", englishMeaning: "Clock", phonetic: "ash · or-lozh", punjabiSound: "ਆਸ਼ · ਓਰਲੋਜ਼", iconName: "clock.fill"),
         AlphabetItem(letter: "I", frenchWord: "Île", englishMeaning: "Island", phonetic: "ee · eel", punjabiSound: "ਈ · ਈਲ", iconName: "sun.max.fill"),
@@ -241,7 +241,7 @@ enum BasicsData {
                         BasicsItem(french: "L'Été", english: "Summer", phonetic: "lay-tay", punjabiSound: "ਲੇਤੇ", iconName: "sun.max.fill"),
                         BasicsItem(french: "L'Hiver", english: "Winter", phonetic: "lee-vair", punjabiSound: "ਲੀਵੇਖ਼", iconName: "snowflake"),
                         BasicsItem(french: "L'Automne", english: "Autumn / Fall", phonetic: "loh-tuhn", punjabiSound: "ਲੋਤਨ", iconName: "leaf.fill"),
-                        BasicsItem(french: "Le Printemps", english: "Spring", phonetic: "luh prahn-tahn", punjabiSound: "ਲੁ ਪ੍ਰਾਂਤਾਂ", iconName: "flower.bunch.fill"),
+                        BasicsItem(french: "Le Printemps", english: "Spring", phonetic: "luh prahn-tahn", punjabiSound: "ਲੁ ਪ੍ਰਾਂਤਾਂ", iconName: "camera.macro"),
                         BasicsItem(french: "Il fait beau", english: "The weather is nice", phonetic: "eel feh boh", punjabiSound: "ਈਲ ਫੇ ਬੋ", iconName: "sun.max.fill"),
                         BasicsItem(french: "Il pleut", english: "It is raining", phonetic: "eel pluh", punjabiSound: "ਈਲ ਪਲੂ", iconName: "cloud.rain.fill")
                     ]
@@ -277,7 +277,7 @@ enum BasicsData {
                         BasicsItem(french: "La Lune", english: "Moon", phonetic: "lah loon", punjabiSound: "ਲਾ ਲੂਨ", iconName: "moon.fill"),
                         BasicsItem(french: "Les Étoiles", english: "Stars", phonetic: "leh-zay-twahl", punjabiSound: "ਲੇਜ਼ੇਤਵਾਲ", iconName: "sparkles"),
                         BasicsItem(french: "L'Arbre", english: "Tree", phonetic: "lahr-brə", punjabiSound: "ਲਾਰਬ੍ਰ", iconName: "tree.fill"),
-                        BasicsItem(french: "La Fleur", english: "Flower", phonetic: "lah fluhr", punjabiSound: "ਲਾ ਫਲੂਖ਼", iconName: "flower.bunch.fill")
+                        BasicsItem(french: "La Fleur", english: "Flower", phonetic: "lah fluhr", punjabiSound: "ਲਾ ਫਲੂਖ਼", iconName: "camera.macro")
                     ]
                 )
             ]
