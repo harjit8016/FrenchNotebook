@@ -9,18 +9,18 @@ struct SettingsView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
 
-                    // MARK: - 1. Color Themes Section
+                    // MARK: - 1. Color Themes Section (Roboto UI Font)
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "paintpalette.fill")
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                             Text("Reading Themes (5 Palettes)")
-                                .font(themeManager.fontSizeScale.bodyFont.bold())
+                                .font(themeManager.fontSizeScale.uiTitleFont)
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         }
 
                         Text("Choose the best visual background for comfortable reading and minimal eye strain.")
-                            .font(themeManager.fontSizeScale.captionFont)
+                            .font(themeManager.fontSizeScale.uiLabelFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
                         VStack(spacing: 10) {
@@ -38,18 +38,18 @@ struct SettingsView: View {
                     .padding(14)
                     .appNeumorphicCard(cornerRadius: 16)
 
-                    // MARK: - 2. French Voice Options Section
+                    // MARK: - 2. French Voice Options Section (Roboto UI Font)
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "waveform.circle.fill")
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                             Text("French Speaker Voice")
-                                .font(themeManager.fontSizeScale.bodyFont.bold())
+                                .font(themeManager.fontSizeScale.uiTitleFont)
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         }
 
                         Text("Select your preferred French speaker voice (Female / Male / Enhanced).")
-                            .font(themeManager.fontSizeScale.captionFont)
+                            .font(themeManager.fontSizeScale.uiLabelFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
                         VStack(spacing: 10) {
@@ -66,20 +66,20 @@ struct SettingsView: View {
                         }
 
                         Text("💡 Tip: Apple Personal Voice (iOS 17+) and additional high-quality voices can be enabled in iPhone Settings → Accessibility → Spoken Content → Voices.")
-                            .font(themeManager.fontSizeScale.captionFont)
+                            .font(themeManager.fontSizeScale.uiLabelFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                             .padding(.top, 4)
                     }
                     .padding(14)
                     .appNeumorphicCard(cornerRadius: 16)
 
-                    // MARK: - 3. Font Size Section
+                    // MARK: - 3. Font Size Section (Roboto UI Font)
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "textformat.size")
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                             Text("Text Font Size")
-                                .font(themeManager.fontSizeScale.bodyFont.bold())
+                                .font(themeManager.fontSizeScale.uiTitleFont)
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         }
 
@@ -93,19 +93,22 @@ struct SettingsView: View {
                         // Live Preview Card
                         VStack(alignment: .leading, spacing: 6) {
                             Text("LIVE PREVIEW")
-                                .font(.caption2.bold())
+                                .font(themeManager.fontSizeScale.uiLabelFont.bold())
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
 
+                            // Reading content sample (Book Serif)
                             Text("Bonjour ! Je m'appelle Harjit.")
-                                .font(themeManager.fontSizeScale.titleFont)
+                                .font(themeManager.fontSizeScale.contentTitleFont)
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                                .kindleTextFormatting(lineSpacing: 3)
 
                             Text("Hello! My name is Harjit.")
-                                .font(themeManager.fontSizeScale.bodyFont)
+                                .font(themeManager.fontSizeScale.contentBodyFont)
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                                .kindleTextFormatting(lineSpacing: 3)
 
                             Text("Bon-zhoo-kh · ਬੋਂਜ਼ੂਖ਼")
-                                .font(themeManager.fontSizeScale.captionFont)
+                                .font(themeManager.fontSizeScale.contentPhoneticFont)
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                         }
                         .padding(14)
@@ -120,27 +123,27 @@ struct SettingsView: View {
                     .padding(14)
                     .appNeumorphicCard(cornerRadius: 16)
 
-                    // MARK: - 4. Beginner Slow Audio Speed Section
+                    // MARK: - 4. Beginner Slow Audio Speed Section (Roboto UI Font)
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Image(systemName: "speaker.wave.2.fill")
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                             Text("Pronunciation Speed (Beginner Friendly)")
-                                .font(themeManager.fontSizeScale.bodyFont.bold())
+                                .font(themeManager.fontSizeScale.uiTitleFont)
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                         }
 
                         HStack {
                             Text("Very Slow (0.15x)")
-                                .font(themeManager.fontSizeScale.captionFont)
+                                .font(themeManager.fontSizeScale.uiLabelFont)
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                             Spacer()
                             Text("Beginner Slow (0.30x)")
-                                .font(themeManager.fontSizeScale.captionFont)
+                                .font(themeManager.fontSizeScale.uiLabelFont)
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                             Spacer()
                             Text("Normal (0.45x)")
-                                .font(themeManager.fontSizeScale.captionFont)
+                                .font(themeManager.fontSizeScale.uiLabelFont)
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                         }
 
@@ -154,7 +157,7 @@ struct SettingsView: View {
                             HStack {
                                 Image(systemName: "play.fill")
                                 Text("Test Audio Speed")
-                                    .font(themeManager.fontSizeScale.bodyFont.bold())
+                                    .font(themeManager.fontSizeScale.uiButtonFont)
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
@@ -175,7 +178,7 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Theme Swatch Row View
+// MARK: - Theme Swatch Row View (Roboto UI Font)
 
 private struct ThemeSwatchRow: View {
     let theme: AppTheme
@@ -196,11 +199,11 @@ private struct ThemeSwatchRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(theme.rawValue)
-                    .font(themeManager.fontSizeScale.bodyFont.bold())
+                    .font(themeManager.fontSizeScale.uiTitleFont)
                     .foregroundStyle(themeManager.currentTheme.primaryTextColor)
 
                 Text(theme.isDark ? "Dark theme" : "Light theme")
-                    .font(themeManager.fontSizeScale.captionFont)
+                    .font(themeManager.fontSizeScale.uiLabelFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
             }
 
@@ -236,7 +239,7 @@ private struct ThemeSwatchRow: View {
     }
 }
 
-// MARK: - Voice Option Row View
+// MARK: - Voice Option Row View (Roboto UI Font)
 
 private struct VoiceOptionRow: View {
     let option: FrenchVoiceOption
@@ -257,11 +260,11 @@ private struct VoiceOptionRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(option.name)
-                    .font(themeManager.fontSizeScale.bodyFont.bold())
+                    .font(themeManager.fontSizeScale.uiTitleFont)
                     .foregroundStyle(themeManager.currentTheme.primaryTextColor)
 
                 Text(option.genderName)
-                    .font(themeManager.fontSizeScale.captionFont)
+                    .font(themeManager.fontSizeScale.uiLabelFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
             }
 
