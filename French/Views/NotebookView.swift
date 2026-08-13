@@ -86,7 +86,7 @@ struct NotebookSectionDetailView: View {
                 // UI Category Header Subtitle
                 Text(section.description)
                     .font(themeManager.fontSizeScale.uiLabelFont)
-                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.85))
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .padding(.bottom, 12)
@@ -147,7 +147,7 @@ private struct HighlightedTextView: View {
     }
 }
 
-// MARK: - Notebook Item Row (Screen 2: Clean, Actionable Audio Button, Edge-to-Edge Layout)
+// MARK: - Notebook Item Row (Screen 2: Clean, Actionable Audio Button, High-Contrast Dark Reading Text)
 
 private struct NotebookItemRow: View {
     let item: NotebookItem
@@ -167,7 +167,7 @@ private struct NotebookItemRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Header Title (Kindle Book Serif)
+            // Header Title (Kindle Book Serif - High Contrast Primary Dark Text)
             Text(item.french)
                 .font(themeManager.fontSizeScale.contentTitleFont)
                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
@@ -204,14 +204,14 @@ private struct NotebookItemRow: View {
             }
             .buttonStyle(.plain)
 
-            // English Meaning (Kindle Book Serif)
+            // English Meaning (Kindle Book Serif - High Contrast Dark Text for Zero Eye Strain!)
             Text(item.english)
                 .font(themeManager.fontSizeScale.contentBodyFont)
-                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
                 .kindleTextFormatting(lineSpacing: 5)
                 .fixedSize(horizontal: false, vertical: true)
 
-            // Phonetic Guide (Kindle Book Serif)
+            // Phonetic Guide (Kindle Book Serif - Sharp Readable Text)
             HStack(alignment: .top, spacing: 4) {
                 Image(systemName: "text.phonetic")
                     .font(.caption2)
@@ -221,13 +221,13 @@ private struct NotebookItemRow: View {
                     .kindleTextFormatting(lineSpacing: 3)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .foregroundStyle(themeManager.currentTheme.accentColor)
+            .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.88))
 
-            // Optional Grammar Note (Roboto UI Subtitle)
+            // Optional Grammar Note (High Contrast Readable Text)
             if let note = item.grammarNote {
                 Text(note)
                     .font(themeManager.fontSizeScale.uiLabelFont)
-                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.80))
                     .kindleTextFormatting(lineSpacing: 3)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 1)
