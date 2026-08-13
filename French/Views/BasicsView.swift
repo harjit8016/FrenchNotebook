@@ -25,10 +25,14 @@ struct BasicsView: View {
                         ForEach(Array(BasicsData.sections.enumerated()), id: \.element.id) { groupIndex, group in
                             VStack(alignment: .leading, spacing: 10) {
                                 // Section Group Header Label
-                                Label(group.title, systemImage: group.iconName)
-                                    .font(.system(size: 15, weight: .bold))
-                                    .foregroundStyle(themeManager.currentTheme.accentColor)
-                                    .padding(.horizontal, 4)
+                                HStack(spacing: 6) {
+                                    Text(group.emojiIcon)
+                                        .font(.system(size: 16))
+                                    Text(group.title)
+                                        .font(.system(size: 15, weight: .bold))
+                                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                                }
+                                .padding(.horizontal, 4)
 
                                 LazyVStack(spacing: 10) {
                                     ForEach(Array(group.categories.enumerated()), id: \.element.id) { categoryIndex, category in
@@ -120,9 +124,8 @@ private struct BasicsCategoryListRow: View {
                     .frame(width: 44, height: 44)
                     .shadow(color: Color.black.opacity(0.10), radius: 3, x: 0, y: 2)
 
-                Image(systemName: category.iconName)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(.white)
+                Text(category.emojiIcon)
+                    .font(.system(size: 20))
             }
 
             VStack(alignment: .leading, spacing: 3) {
@@ -216,9 +219,8 @@ private struct AlphabetCardItem: View {
 
                     Spacer()
 
-                    Image(systemName: item.iconName)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                    Text(item.emojiIcon)
+                        .font(.system(size: 22))
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -307,9 +309,8 @@ private struct BasicsItemCard: View {
                                     )
                                     .shadow(color: Color.black.opacity(0.10), radius: 2, x: 0, y: 1)
                             } else {
-                                Image(systemName: item.iconName)
-                                    .font(.system(size: 16, weight: .bold))
-                                    .foregroundStyle(themeManager.currentTheme.accentColor)
+                                Text(item.emojiIcon)
+                                    .font(.system(size: 18))
                             }
 
                             Text(item.french)
