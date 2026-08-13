@@ -371,13 +371,15 @@ private struct FullNumberGrid100View: View {
                                 .foregroundStyle(isSelected ? .white : themeManager.currentTheme.primaryTextColor)
 
                             Text(frenchSpokenNumber(num))
-                                .font(.system(size: 8, weight: .semibold))
-                                .foregroundStyle(isSelected ? .white.opacity(0.9) : themeManager.currentTheme.secondaryTextColor)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.65)
+                                .font(.system(size: 9.5, weight: .semibold))
+                                .foregroundStyle(isSelected ? .white.opacity(0.95) : themeManager.currentTheme.secondaryTextColor)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.70)
+                                .padding(.horizontal, 4)
                         }
                         .frame(maxWidth: .infinity)
-                        .frame(height: 48)
+                        .frame(height: 58)
                         .background(isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.cardBackgroundColor.opacity(0.80))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .overlay(
