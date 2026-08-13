@@ -97,7 +97,7 @@ enum BasicsData {
                         BasicsItem(french: "S'il vous plaît", english: "Please (formal)", phonetic: "seel-voo-pleh", punjabiSound: "ਸੀਲ-ਵੂ-ਪਲੇ", iconName: "heart.fill"),
                         BasicsItem(french: "Merci beaucoup", english: "Thank you very much", phonetic: "mair-see boh-koo", punjabiSound: "ਮੈਖ਼ਸੀ ਬੋਕੂ", iconName: "checkmark.circle.fill"),
                         BasicsItem(french: "De rien", english: "You're welcome", phonetic: "duh-ryen", punjabiSound: "ਦੁ-ਰਿਆਂ", iconName: "hand.thumbsup.fill"),
-                        BasicsItem(french: "Pardon / Désolé", english: "Sorry / Excuse me", phonetic: "par-dohn / day-zoh-lay", punjabiSound: "ਪਾਰਦੋਂ / ਦੇਜ਼ੋਲੇ", iconName: "exclamationmark.circle.fill")
+                        BasicsItem(french: "Pardon / Désolé", english: "Sorry / Excuse me", phonetic: "par-dohn / day-zoh-lay", punjabiSound: "ਪਾਰਦੋਂ / ਦੇਜ਼ੋਲੇ", iconName: "exclamationmark.circle.fill", spokenText: "Pardon, Désolé")
                     ]
                 ),
                 BasicsCategory(
@@ -109,9 +109,9 @@ enum BasicsData {
                         BasicsItem(french: "Six, Sept, Huit, Neuf, Dix", english: "6, 7, 8, 9, 10", phonetic: "sees, set, weet, nuhf, dees", punjabiSound: "ਸੀਸ, ਸੈਤ, ਵੀਤ, ਨੂਫ, ਦੀਸ", iconName: "6.square.fill"),
                         BasicsItem(french: "Onze, Douze, Treize, Quatorze, Quinze, Seize", english: "11 to 16", phonetic: "ohnz, dooz, trehz, kah-torz, kanz, sehz", punjabiSound: "ਓਂਜ਼, ਦੂਜ਼, ਤ੍ਰੈਜ਼, ਕਾਤੋਖ਼ਜ਼, ਕੈਂਜ਼, ਸੈਜ਼", iconName: "10.square.fill"),
                         BasicsItem(french: "Vingt, Trente, Quarante, Cinquante, Soixante", english: "20, 30, 40, 50, 60", phonetic: "vahn, trahnt, kah-rahnt, san-kahnt, swah-sahnt", punjabiSound: "ਵੇਂ, ਤ੍ਰਾਂਤ, ਕਾਰਾਂਤ, ਸੈਂਕਾਂਤ, ਸਵਾਸਾਂਤ", iconName: "chart.bar.fill"),
-                        BasicsItem(french: "Soixante-dix (70)", english: "70 (60 + 10 = Soixante-dix)", phonetic: "swah-sahnt-dees", punjabiSound: "ਸਵਾਸਾਂਤ-ਦੀਸ", iconName: "plus.circle.fill", grammarNote: "70 in French is 60+10 (Soixante-dix), 71 is Soixante-et-onze!"),
-                        BasicsItem(french: "Quatre-vingts (80)", english: "80 (4 × 20 = Quatre-vingts)", phonetic: "katr-vahn", punjabiSound: "ਕਾਤ੍ਰ-ਵੇਂ", iconName: "multiply.circle.fill", grammarNote: "80 in French is 4 times 20 (Quatre-vingts)!"),
-                        BasicsItem(french: "Quatre-vingt-dix (90)", english: "90 (4 × 20 + 10 = Quatre-vingt-dix)", phonetic: "katr-vahn-dees", punjabiSound: "ਕਾਤ੍ਰ-ਵੇਂ-ਦੀਸ", iconName: "function", grammarNote: "90 is (4×20)+10. 99 is Quatre-vingt-dix-neuf!"),
+                        BasicsItem(french: "Soixante-dix (70)", english: "70 (60 + 10 = Soixante-dix)", phonetic: "swah-sahnt-dees", punjabiSound: "ਸਵਾਸਾਂਤ-ਦੀਸ", iconName: "plus.circle.fill", grammarNote: "70 in French is 60+10 (Soixante-dix), 71 is Soixante-et-onze!", spokenText: "Soixante-dix"),
+                        BasicsItem(french: "Quatre-vingts (80)", english: "80 (4 × 20 = Quatre-vingts)", phonetic: "katr-vahn", punjabiSound: "ਕਾਤ੍ਰ-ਵੇਂ", iconName: "multiply.circle.fill", grammarNote: "80 in French is 4 times 20 (Quatre-vingts)!", spokenText: "Quatre-vingts"),
+                        BasicsItem(french: "Quatre-vingt-dix (90)", english: "90 (4 × 20 + 10 = Quatre-vingt-dix)", phonetic: "katr-vahn-dees", punjabiSound: "ਕਾਤ੍ਰ-ਵੇਂ-ਦੀਸ", iconName: "function", grammarNote: "90 is (4×20)+10. 99 is Quatre-vingt-dix-neuf!", spokenText: "Quatre-vingt-dix"),
                         BasicsItem(french: "Cent", english: "100", phonetic: "sahn", punjabiSound: "ਸਾਂ", iconName: "100.square.fill")
                     ]
                 ),
@@ -126,7 +126,7 @@ enum BasicsData {
                         BasicsItem(french: "Jaune", english: "Yellow", phonetic: "zhohn", punjabiSound: "ਜ਼ੋਨ", iconName: "paintpalette.fill"),
                         BasicsItem(french: "Blanc", english: "White", phonetic: "blahn", punjabiSound: "ਬਲਾਂ", iconName: "paintpalette.fill"),
                         BasicsItem(french: "Noir", english: "Black", phonetic: "nwahr", punjabiSound: "ਨਵਾਖ਼", iconName: "paintpalette.fill"),
-                        BasicsItem(french: "Orange / Rose", english: "Orange / Pink", phonetic: "oh-rahnzh / rohz", punjabiSound: "ਓਰਾਂਜ਼ / ਰੋਜ਼", iconName: "paintpalette.fill")
+                        BasicsItem(french: "Orange / Rose", english: "Orange / Pink", phonetic: "oh-rahnzh / rohz", punjabiSound: "ਓਰਾਂਜ਼ / ਰੋਜ਼", iconName: "paintpalette.fill", spokenText: "Orange, Rose")
                     ]
                 ),
                 BasicsCategory(
@@ -167,8 +167,8 @@ enum BasicsData {
                     iconName: "house.circle.fill",
                     description: "Parents, siblings, and relatives.",
                     items: [
-                        BasicsItem(french: "La Mère (Maman)", english: "Mother (Mom)", phonetic: "lah mair-kh", punjabiSound: "ਲਾ ਮੇਖ਼ (ਮਾਮਾਂ)", iconName: "heart.circle.fill"),
-                        BasicsItem(french: "Le Père (Papa)", english: "Father (Dad)", phonetic: "luh pair-kh", punjabiSound: "ਲੁ ਪੇਖ਼ (ਪਾਪਾ)", iconName: "person.crop.circle.fill"),
+                        BasicsItem(french: "La Mère (Maman)", english: "Mother (Mom)", phonetic: "lah mair-kh", punjabiSound: "ਲਾ ਮੇਖ਼ (ਮਾਮਾਂ)", iconName: "heart.circle.fill", spokenText: "La Mère, Maman"),
+                        BasicsItem(french: "Le Père (Papa)", english: "Father (Dad)", phonetic: "luh pair-kh", punjabiSound: "ਲੁ ਪੇਖ਼ (ਪਾਪਾ)", iconName: "person.crop.circle.fill", spokenText: "Le Père, Papa"),
                         BasicsItem(french: "Le Frère", english: "Brother", phonetic: "luh frehr", punjabiSound: "ਲੁ ਫ੍ਰੇਖ਼", iconName: "person.fill"),
                         BasicsItem(french: "La Sœur", english: "Sister", phonetic: "lah suhr", punjabiSound: "ਲਾ ਸੂਖ਼", iconName: "person.fill"),
                         BasicsItem(french: "Le Grand-père", english: "Grandfather", phonetic: "luh grahn-pair-kh", punjabiSound: "ਲੁ ਗ੍ਰਾਂ-ਪੇਖ਼", iconName: "person.crop.square.fill"),
@@ -180,9 +180,9 @@ enum BasicsData {
                     iconName: "smiley.fill",
                     description: "Express how you feel.",
                     items: [
-                        BasicsItem(french: "Je suis heureux / heureuse", english: "I am happy", phonetic: "zhuh swee uh-ruh", punjabiSound: "ਜ਼ੁ ਸੁਈ ਊਰੂ", iconName: "face.smiling.fill"),
+                        BasicsItem(french: "Je suis heureux / heureuse", english: "I am happy", phonetic: "zhuh swee uh-ruh", punjabiSound: "ਜ਼ੁ ਸੁਈ ਊਰੂ", iconName: "face.smiling.fill", spokenText: "Je suis heureux, heureuse"),
                         BasicsItem(french: "Je suis triste", english: "I am sad", phonetic: "zhuh swee treest", punjabiSound: "ਜ਼ੁ ਸੁਈ ਤ੍ਰੀਸਤ", iconName: "cloud.rain.fill"),
-                        BasicsItem(french: "Je suis fatigué(e)", english: "I am tired", phonetic: "zhuh swee fah-tee-gay", punjabiSound: "ਜ਼ੁ ਸੁਈ ਫਾਤੀਗੇ", iconName: "bed.double.fill"),
+                        BasicsItem(french: "Je suis fatigué(e)", english: "I am tired", phonetic: "zhuh swee fah-tee-gay", punjabiSound: "ਜ਼ੁ ਸੁਈ ਫਾਤੀਗੇ", iconName: "bed.double.fill", spokenText: "Je suis fatigué"),
                         BasicsItem(french: "J'ai faim", english: "I am hungry (I have hunger)", phonetic: "zhay fahn", punjabiSound: "ਜ਼ੇ ਫੈਂ", iconName: "fork.knife"),
                         BasicsItem(french: "J'ai soif", english: "I am thirsty (I have thirst)", phonetic: "zhay swahf", punjabiSound: "ਜ਼ੇ ਸਵਾਫ", iconName: "cup.and.saucer.fill")
                     ]
@@ -252,10 +252,10 @@ enum BasicsData {
                     description: "Learn how to ask and tell time in French.",
                     items: [
                         BasicsItem(french: "Quelle heure est-il ?", english: "What time is it?", phonetic: "kel uhr eh-teel", punjabiSound: "ਕੈਲ ਊਖ਼ ਐ-ਤੀਲ", iconName: "questionmark.circle.fill"),
-                        BasicsItem(french: "Il est huit heures (8h00)", english: "It is 8 o'clock", phonetic: "eel eh weet uhr", punjabiSound: "ਈਲ ਐ ਵੀਤ ਊਖ਼", iconName: "clock.fill"),
-                        BasicsItem(french: "Il est huit heures et quart (8h15)", english: "It is 8:15 (quarter past 8)", phonetic: "eel eh weet uhr ay kar", punjabiSound: "ਈਲ ਐ ਵੀਤ ਊਖ਼ ਏ ਕਾਰ", iconName: "clock.fill"),
-                        BasicsItem(french: "Il est huit heures et demie (8h30)", english: "It is 8:30 (half past 8)", phonetic: "eel eh weet uhr ay duh-mee", punjabiSound: "ਈਲ ਐ ਵੀਤ ਊਖ਼ ਏ ਦੁਮੀ", iconName: "clock.fill"),
-                        BasicsItem(french: "Il est neuf heures moins le quart (8h45)", english: "It is 8:45 (quarter to 9)", phonetic: "eel eh nuhf uhr mwahn luh kar", punjabiSound: "ਈਲ ਐ ਨੂਫ ਊਖ਼ ਮਵਾਂ ਲੁ ਕਾਰ", iconName: "clock.fill")
+                        BasicsItem(french: "Il est huit heures (8h00)", english: "It is 8 o'clock", phonetic: "eel eh weet uhr", punjabiSound: "ਈਲ ਐ ਵੀਤ ਊਖ਼", iconName: "clock.fill", spokenText: "Il est huit heures"),
+                        BasicsItem(french: "Il est huit heures et quart (8h15)", english: "It is 8:15 (quarter past 8)", phonetic: "eel eh weet uhr ay kar", punjabiSound: "ਈਲ ਐ ਵੀਤ ਊਖ਼ ਏ ਕਾਰ", iconName: "clock.fill", spokenText: "Il est huit heures et quart"),
+                        BasicsItem(french: "Il est huit heures et demie (8h30)", english: "It is 8:30 (half past 8)", phonetic: "eel eh weet uhr ay duh-mee", punjabiSound: "ਈਲ ਐ ਵੀਤ ਊਖ਼ ਏ ਦੁਮੀ", iconName: "clock.fill", spokenText: "Il est huit heures et demie"),
+                        BasicsItem(french: "Il est neuf heures moins le quart (8h45)", english: "It is 8:45 (quarter to 9)", phonetic: "eel eh nuhf uhr mwahn luh kar", punjabiSound: "ਈਲ ਐ ਨੂਫ ਊਖ਼ ਮਵਾਂ ਲੁ ਕਾਰ", iconName: "clock.fill", spokenText: "Il est neuf heures moins le quart")
                     ]
                 ),
                 BasicsCategory(

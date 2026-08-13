@@ -205,7 +205,7 @@ private struct AlphabetCardItem: View {
             if isSpeaking {
                 speech.stop()
             } else {
-                speech.speak("\(item.letter). \(item.frenchWord)", itemID: item.id, rate: Float(themeManager.speechRate))
+                speech.speak(item.frenchWord, itemID: item.id, rate: Float(themeManager.speechRate))
             }
         } label: {
             VStack(spacing: 8) {
