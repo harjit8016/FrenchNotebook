@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		A718A31953C34891A92619EB /* Literata-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = font; name = "Literata-Regular.ttf"; path = "French/Resources/Fonts/Literata-Regular.ttf"; sourceTree = "<group>"; };
+		9C6C6749DF704E85841061EA /* Literata-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = font; name = "Literata-Bold.ttf"; path = "French/Resources/Fonts/Literata-Bold.ttf"; sourceTree = "<group>"; };
+		3840168B5D734E05A630BF53 /* Literata-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = font; name = "Literata-Italic.ttf"; path = "French/Resources/Fonts/Literata-Italic.ttf"; sourceTree = "<group>"; };
 		000000000000000000000120 /* French.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = French.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -102,6 +105,10 @@
 		000000000000000140000000 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				7965A59D0FF3449BB586D86B /* Literata-Regular.ttf in Resources */,
+				E79F00FDAAEA40C1B3970200 /* Literata-Bold.ttf in Resources */,
+				544337E9699840DFB58D5633 /* Literata-Italic.ttf in Resources */,
+
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -258,6 +265,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIAppFonts = "Literata-Regular.ttf Literata-Bold.ttf Literata-Italic.ttf";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access is required to practice French pronunciation.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Speech recognition is used to practice French pronunciation.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -303,6 +311,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIAppFonts = "Literata-Regular.ttf Literata-Bold.ttf Literata-Italic.ttf";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Microphone access is required to practice French pronunciation.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Speech recognition is used to practice French pronunciation.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;

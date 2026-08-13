@@ -1,18 +1,35 @@
 import SwiftUI
 import UIKit
+import CoreText
 import AVFoundation
 import Combine
 
-// MARK: - Custom Font Helper (Authentic Georgia Book Serif - Preinstalled on iOS)
+// MARK: - Custom Font Helper (Bundled Official Literata TTF - Exact Kindle Bookerly Counterpart)
 
 extension Font {
-    static func kindleContentFont(size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        // Georgia is built into iOS and provides the exact sturdy slab-serif & high x-height of Kindle Bookerly
-        if weight == .bold || weight == .semibold {
-            return .custom("Georgia-Bold", size: size)
-        } else {
-            return .custom("Georgia", size: size)
+    static func registerLiterataFonts() {
+        let fontFiles = ["Literata-Regular", "Literata-Bold", "Literata-Italic"]
+        for file in fontFiles {
+            if let url = Bundle.main.url(forResource: file, withExtension: "ttf"),
+               let provider = CGDataProvider(url: url as CFURL),
+               let font = CGFont(provider) {
+                var error: Unmanaged<CFError>?
+                CTFontManagerRegisterGraphicsFont(font, &error)
+            }
         }
+    }
+
+    static func kindleContentFont(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        if weight == .bold || weight == .semibold {
+            if UIFont(name: "Literata-Bold", size: size) != nil {
+                return .custom("Literata-Bold", size: size)
+            }
+        }
+        if UIFont(name: "Literata-Regular", size: size) != nil {
+            return .custom("Literata-Regular", size: size)
+        }
+        // Fallback to Georgia if needed
+        return .custom(weight == .bold ? "Georgia-Bold" : "Georgia", size: size)
     }
 }
 
@@ -64,7 +81,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.10, green: 0.12, blue: 0.18)
         case .systemDark: return Color(red: 0.96, green: 0.97, blue: 0.99)
-        case .creamSepia: return Color(red: 0.14, green: 0.11, blue: 0.06) // Deep Kindle Charcoal
+        case .creamSepia: return Color(red: 0.14, green: 0.11, blue: 0.06) // Deep Kindle Charcoal Ink
         case .mintSage: return Color(red: 0.06, green: 0.18, blue: 0.12)
         case .midnightSlate: return Color(red: 0.92, green: 0.95, blue: 0.98)
         }
@@ -97,7 +114,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-// MARK: - Font Size Scale Options (Authentic Georgia Book Serif Typography)
+// MARK: - Font Size Scale Options (Bundled Official Literata E-Reader Typography)
 
 enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     case small = "Compact"
@@ -121,10 +138,10 @@ enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     var uiButtonFont: Font { Font.system(size: 15 * scaleFactor, weight: .semibold, design: .default) }
     var uiLabelFont: Font { Font.system(size: 13.5 * scaleFactor, weight: .medium, design: .default) }
 
-    // 2. Kindle Book Serif Content Typography (Authentic Georgia Book Serif)
+    // 2. Kindle Content Typography (Official Literata Regular / Bold)
     var contentTitleFont: Font { Font.kindleContentFont(size: 20.0 * scaleFactor, weight: .bold) }
     var contentBodyFont: Font { Font.kindleContentFont(size: 17.5 * scaleFactor, weight: .regular) }
-    var contentPhoneticFont: Font { Font.kindleContentFont(size: 15.0 * scaleFactor, weight: .medium) }
+    var contentPhoneticFont: Font { Font.kindleContentFont(size: 15.0 * scaleFactor, weight: .regular) }
 
     // Aliases
     var titleFont: Font { contentTitleFont }
@@ -171,6 +188,7 @@ final class ThemeManager: ObservableObject {
     }
 
     private init() {
+        Font.registerLiterataFonts()
         updateSystemAppearances()
     }
 
