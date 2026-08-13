@@ -29,9 +29,9 @@ struct AppNavigationModifier: ViewModifier {
     }
 }
 
-// MARK: - Sharp Razor-Clean Inset Depth Box Modifier
+// MARK: - Contemporary Neumorphic & Soft Depth Modifiers
 
-struct InsetDepthCardModifier: ViewModifier {
+struct ModernNeumorphicCardModifier: ViewModifier {
     var cornerRadius: CGFloat = 16
     var isPressed: Bool = false
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -40,44 +40,46 @@ struct InsetDepthCardModifier: ViewModifier {
         let theme = themeManager.currentTheme
         let isDark = theme.isDark
 
-        // 1. Sharp Inset Shadow Colors
-        let darkShadow     = isDark ? Color.black.opacity(0.90) : Color(red: 0.45, green: 0.49, blue: 0.58).opacity(0.75)
-        let lightHighlight = isDark ? Color.white.opacity(0.22) : Color.white.opacity(0.95)
-        
-        // 2. Razor-Sharp Boundary Edge Line
-        let sharpEdgeColor = isDark ? Color.white.opacity(0.14) : Color.black.opacity(0.14)
+        let lightHighlight = isDark ? Color.white.opacity(0.12) : Color.white.opacity(0.85)
+        let darkShadow     = isDark ? Color.black.opacity(0.50) : Color(red: 0.35, green: 0.40, blue: 0.50).opacity(0.16)
+        let subtleBorder   = isDark ? Color.white.opacity(0.10) : Color.black.opacity(0.06)
 
         return content
             .background(
-                ZStack {
-                    // Base Card Surface Fill
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(theme.cardBackgroundColor)
-
-                    // Sharp Top-Left Dark Inset Shadow (Low 0.8pt blur for crisp precision)
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(darkShadow, lineWidth: isPressed ? 2.5 : 2.0)
-                        .blur(radius: 0.8)
-                        .offset(x: 1.5, y: 1.5)
-
-                    // Sharp Bottom-Right Light Inset Highlight
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(lightHighlight, lineWidth: isPressed ? 2.0 : 1.5)
-                        .blur(radius: 0.8)
-                        .offset(x: -1.5, y: -1.5)
-
-                    // Razor-Sharp Edge Boundary (Unblurred 1.0pt stroke border)
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .strokeBorder(sharpEdgeColor, lineWidth: 1.0)
-                }
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(theme.cardBackgroundColor)
+                    .shadow(color: lightHighlight, radius: isPressed ? 2 : 6, x: isPressed ? -1.5 : -4, y: isPressed ? -1.5 : -4)
+                    .shadow(color: darkShadow, radius: isPressed ? 2 : 7, x: isPressed ? 1.5 : 4, y: isPressed ? 1.5 : 5)
             )
-            .scaleEffect(isPressed ? 0.985 : 1.0)
-            .animation(.easeInOut(duration: 0.15), value: isPressed)
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(subtleBorder, lineWidth: 1.0)
+            )
+            .scaleEffect(isPressed ? 0.97 : 1.0)
+            .animation(.spring(response: 0.28, dampingFraction: 0.68), value: isPressed)
     }
 }
 
-// MARK: - Kindle E-Reader Typography Formatting Modifier (Generous 7.5pt Line Spacing & 0.2pt Tracking)
+struct FloatingCardModifier: ViewModifier {
+    var cornerRadius: CGFloat = 20
+    @ObservedObject private var themeManager = ThemeManager.shared
+
+    func body(content: Content) -> some View {
+        let theme = themeManager.currentTheme
+        let isDark = theme.isDark
+
+        return content
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(theme.cardBackgroundColor.opacity(0.94))
+                    .shadow(color: Color.black.opacity(isDark ? 0.45 : 0.12), radius: 12, x: 0, y: 6)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(isDark ? Color.white.opacity(0.14) : Color.black.opacity(0.08), lineWidth: 1.0)
+            )
+    }
+}
 
 struct KindleReaderTextModifier: ViewModifier {
     var lineSpacing: CGFloat = 7.5
@@ -90,7 +92,7 @@ struct KindleReaderTextModifier: ViewModifier {
     }
 }
 
-// MARK: - Reusable View Extensions (DRY Principle)
+// MARK: - Reusable View Extensions (DRY & Clean Architecture)
 
 extension View {
     /// Applies the SSOT app background color to safe area boundaries.
@@ -103,19 +105,14 @@ extension View {
         self.modifier(AppNavigationModifier(title: title, displayMode: displayMode))
     }
 
-    /// Applies Sharp Razor-Clean Inset Depth Card styling.
+    /// Applies Modern Soft-Elevation Neumorphic Card styling with spring touch physics.
     func appNeumorphicCard(cornerRadius: CGFloat = 16, isPressed: Bool = false) -> some View {
-        self.modifier(InsetDepthCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
+        self.modifier(ModernNeumorphicCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
     }
 
-    /// Alias for explicit Inset Depth Card naming.
-    func appCarvedDepthCard(cornerRadius: CGFloat = 16, isPressed: Bool = false) -> some View {
-        self.modifier(InsetDepthCardModifier(cornerRadius: cornerRadius, isPressed: isPressed))
-    }
-
-    /// Helper for inner sunken wells.
-    func appRecessedWell(cornerRadius: CGFloat = 12) -> some View {
-        self.modifier(InsetDepthCardModifier(cornerRadius: cornerRadius, isPressed: false))
+    /// Floating glassmorphic card container for floating bars & sticky controllers.
+    func appFloatingCard(cornerRadius: CGFloat = 20) -> some View {
+        self.modifier(FloatingCardModifier(cornerRadius: cornerRadius))
     }
 
     /// Applies Kindle E-Reader line height (7.5pt spacing) and relaxed character tracking (+0.2pt).

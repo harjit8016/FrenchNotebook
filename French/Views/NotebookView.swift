@@ -3,22 +3,58 @@ import SwiftUI
 struct NotebookView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @StateObject private var speech = SpeechService.shared
+    @State private var searchText: String = ""
 
     private let sections = NotebookData.allSections
 
+    private var filteredSections: [NotebookSection] {
+        if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return sections
+        }
+        let query = searchText.lowercased()
+        return sections.compactMap { sec in
+            let matchingItems = sec.items.filter { item in
+                item.french.lowercased().contains(query) ||
+                item.english.lowercased().contains(query) ||
+                item.phonetic.lowercased().contains(query) ||
+                (item.grammarNote?.lowercased().contains(query) ?? false)
+            }
+            if !matchingItems.isEmpty || sec.title.lowercased().contains(query) || sec.description.lowercased().contains(query) {
+                return NotebookSection(
+                    id: sec.id,
+                    title: sec.title,
+                    iconName: sec.iconName,
+                    description: sec.description,
+                    items: matchingItems.isEmpty ? sec.items : matchingItems
+                )
+            }
+            return nil
+        }
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 14) {
-                    ForEach(sections) { section in
-                        NavigationLink(destination: NotebookSectionDetailView(section: section)) {
-                            CategoryRowView(section: section)
+            ZStack(alignment: .bottom) {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 14) {
+                        SearchBarView(searchText: $searchText, placeholder: "Search Notebook (French, English, Punjabi)...")
+                            .padding(.top, 4)
+
+                        LazyVStack(spacing: 14) {
+                            ForEach(filteredSections) { section in
+                                NavigationLink(destination: NotebookSectionDetailView(section: section)) {
+                                    CategoryRowView(section: section)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
-                        .buttonStyle(.plain)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .padding(.bottom, speech.isSpeaking ? 70 : 0)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+
+                FloatingAudioBar(speech: speech)
             }
             .appBackground()
             .appNavigationStyle(title: "French Notebook", displayMode: .inline)
@@ -81,35 +117,40 @@ struct NotebookSectionDetailView: View {
     @StateObject private var speech = SpeechService.shared
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                // UI Category Header Subtitle
-                Text(section.description)
-                    .font(themeManager.fontSizeScale.uiLabelFont)
-                    .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.85))
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 12)
+        ZStack(alignment: .bottom) {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    // UI Category Header Subtitle
+                    Text(section.description)
+                        .font(themeManager.fontSizeScale.uiLabelFont)
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.85))
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .padding(.bottom, 12)
 
-                ForEach(Array(section.items.enumerated()), id: \.element.id) { index, item in
-                    VStack(spacing: 0) {
-                        // Full-Width Separator Line (Very left to very right)
-                        Rectangle()
-                            .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
-                            .frame(height: 1)
+                    ForEach(Array(section.items.enumerated()), id: \.element.id) { index, item in
+                        VStack(spacing: 0) {
+                            // Full-Width Separator Line (Very left to very right)
+                            Rectangle()
+                                .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
+                                .frame(height: 1)
 
-                        // Item Content Cell (Full Screen Width with 16pt Content Padding)
-                        NotebookItemRow(item: item, speech: speech)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
+                            // Item Content Cell (Full Screen Width with 16pt Content Padding)
+                            NotebookItemRow(item: item, speech: speech)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 14)
+                        }
                     }
-                }
 
-                // Bottom closing separator line
-                Rectangle()
-                    .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
-                    .frame(height: 1)
+                    // Bottom closing separator line
+                    Rectangle()
+                        .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
+                        .frame(height: 1)
+                }
+                .padding(.bottom, speech.isSpeaking ? 70 : 0)
             }
+
+            FloatingAudioBar(speech: speech)
         }
         .appBackground()
         .appNavigationStyle(title: section.title, displayMode: .inline)
