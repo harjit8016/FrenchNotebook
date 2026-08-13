@@ -128,7 +128,11 @@ enum BasicsData {
                         BasicsItem(french: "Jaune", english: "Yellow (m/f invariable)", phonetic: "zhohn", punjabiSound: "ਜ਼ੋਨ", iconName: "paintpalette.fill", colorHex: "#FFCC00", genderTag: "MASC & FEM"),
                         BasicsItem(french: "Blanc / Blanche", english: "White (m: Blanc | f: Blanche)", phonetic: "blahn / blahnsh", punjabiSound: "ਬਲਾਂ / ਬਲਾਂਸ਼", iconName: "paintpalette.fill", spokenText: "Blanc, Blanche", colorHex: "#FFFFFF", genderTag: "MASC & FEM"),
                         BasicsItem(french: "Noir / Noire", english: "Black (m: Noir | f: Noire)", phonetic: "nwahr", punjabiSound: "ਨਵਾਖ਼", iconName: "paintpalette.fill", spokenText: "Noir, Noire", colorHex: "#1C1C1E", genderTag: "MASC & FEM"),
-                        BasicsItem(french: "Orange / Rose", english: "Orange (m/f) & Pink (m/f)", phonetic: "oh-rahnzh / rohz", punjabiSound: "ਓਰਾਂਜ਼ / ਰੋਜ਼", iconName: "paintpalette.fill", spokenText: "Orange, Rose", colorHex: "#FF9500", genderTag: "MASC & FEM")
+                        BasicsItem(french: "Orange", english: "Orange (m/f invariable)", phonetic: "oh-rahnzh", punjabiSound: "ਓਰਾਂਜ਼", iconName: "paintpalette.fill", colorHex: "#FF9500", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Rose", english: "Pink (m/f invariable)", phonetic: "rohz", punjabiSound: "ਰੋਜ਼", iconName: "paintpalette.fill", colorHex: "#FF2D55", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Violet / Violette", english: "Purple (m: Violet | f: Violette)", phonetic: "vyoh-leh / vyoh-let", punjabiSound: "ਵੀਓਲੇ / ਵੀਓਲੇਤ", iconName: "paintpalette.fill", spokenText: "Violet, Violette", colorHex: "#AF52DE", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Gris / Grise", english: "Grey (m: Gris | f: Grise)", phonetic: "gree / greez", punjabiSound: "ਗ੍ਰੀ / ਗ੍ਰੀਜ਼", iconName: "paintpalette.fill", spokenText: "Gris, Grise", colorHex: "#8E8E93", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Marron", english: "Brown (m/f invariable)", phonetic: "mah-rohn", punjabiSound: "ਮਾਰੋਂ", iconName: "paintpalette.fill", colorHex: "#A2845E", genderTag: "MASC & FEM")
                     ]
                 ),
                 BasicsCategory(
