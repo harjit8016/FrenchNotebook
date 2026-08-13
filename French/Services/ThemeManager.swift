@@ -3,7 +3,7 @@ import UIKit
 import AVFoundation
 import Combine
 
-// MARK: - App Theme Options (5 Readers' Favorites)
+// MARK: - App Theme Options (Kindle-Inspired Palettes)
 
 enum AppTheme: String, CaseIterable, Identifiable, Codable {
     case systemLight = "Soft Light"
@@ -29,7 +29,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.93, green: 0.94, blue: 0.96)
         case .systemDark: return Color(red: 0.11, green: 0.12, blue: 0.15)
-        case .creamSepia: return Color(red: 0.97, green: 0.93, blue: 0.84)
+        case .creamSepia: return Color(red: 0.96, green: 0.93, blue: 0.85) // Kindle Warm Paper
         case .mintSage: return Color(red: 0.90, green: 0.94, blue: 0.91)
         case .midnightSlate: return Color(red: 0.10, green: 0.13, blue: 0.18)
         }
@@ -40,7 +40,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.98, green: 0.98, blue: 0.99)
         case .systemDark: return Color(red: 0.16, green: 0.18, blue: 0.22)
-        case .creamSepia: return Color(red: 0.93, green: 0.88, blue: 0.77)
+        case .creamSepia: return Color(red: 0.91, green: 0.87, blue: 0.78)
         case .mintSage: return Color(red: 0.83, green: 0.89, blue: 0.85)
         case .midnightSlate: return Color(red: 0.15, green: 0.19, blue: 0.26)
         }
@@ -51,7 +51,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.10, green: 0.12, blue: 0.18)
         case .systemDark: return Color(red: 0.96, green: 0.97, blue: 0.99)
-        case .creamSepia: return Color(red: 0.22, green: 0.15, blue: 0.08)
+        case .creamSepia: return Color(red: 0.18, green: 0.14, blue: 0.08) // Deep Charcoal Ink
         case .mintSage: return Color(red: 0.06, green: 0.18, blue: 0.12)
         case .midnightSlate: return Color(red: 0.92, green: 0.95, blue: 0.98)
         }
@@ -62,7 +62,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.40, green: 0.44, blue: 0.52)
         case .systemDark: return Color(red: 0.65, green: 0.70, blue: 0.78)
-        case .creamSepia: return Color(red: 0.46, green: 0.36, blue: 0.24)
+        case .creamSepia: return Color(red: 0.44, green: 0.35, blue: 0.22)
         case .mintSage: return Color(red: 0.22, green: 0.36, blue: 0.28)
         case .midnightSlate: return Color(red: 0.62, green: 0.70, blue: 0.78)
         }
@@ -73,7 +73,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .systemLight: return Color(red: 0.00, green: 0.45, blue: 0.90)
         case .systemDark: return Color(red: 0.30, green: 0.65, blue: 1.00)
-        case .creamSepia: return Color(red: 0.75, green: 0.42, blue: 0.10)
+        case .creamSepia: return Color(red: 0.72, green: 0.38, blue: 0.08)
         case .mintSage: return Color(red: 0.10, green: 0.50, blue: 0.32)
         case .midnightSlate: return Color(red: 0.38, green: 0.72, blue: 0.98)
         }
@@ -84,7 +84,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-// MARK: - Font Size Scale Options
+// MARK: - Kindle-Grade Reader Font Size Scale Options
 
 enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     case small = "Compact"
@@ -103,9 +103,15 @@ enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    var titleFont: Font { Font.system(size: 19 * scaleFactor, weight: .bold) }
-    var bodyFont: Font { Font.system(size: 15 * scaleFactor) }
-    var captionFont: Font { Font.system(size: 13 * scaleFactor, weight: .medium) }
+    // High-legibility Kindle Book Serif & Humanistic Typography
+    var titleFont: Font { Font.system(size: 19.5 * scaleFactor, weight: .bold, design: .serif) }
+    var bodyFont: Font { Font.system(size: 16.0 * scaleFactor, weight: .regular, design: .serif) }
+    var captionFont: Font { Font.system(size: 13.5 * scaleFactor, weight: .medium, design: .default) }
+    var phoneticFont: Font { Font.system(size: 14.5 * scaleFactor, weight: .medium, design: .serif) }
+
+    // Generous Kindle E-Reader line height (1.45x) & relaxed tracking (+0.3pt)
+    var lineSpacing: CGFloat { 5.5 * scaleFactor }
+    var tracking: CGFloat { 0.3 }
 }
 
 // MARK: - Voice Model Helper
@@ -166,7 +172,6 @@ final class ThemeManager: ObservableObject {
         for voice in allFrench {
             if options.count >= 5 { break }
 
-            // Deduplicate by base voice name so names never repeat!
             let baseName = voice.name.trimmingCharacters(in: .whitespacesAndNewlines)
             if seenNames.contains(baseName) { continue }
             seenNames.insert(baseName)
@@ -224,7 +229,6 @@ final class ThemeManager: ObservableObject {
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
 
-        // Force in-place window & tab bar redraw on main thread without view hierarchy destruction
         DispatchQueue.main.async {
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             for window in windowScene.windows {

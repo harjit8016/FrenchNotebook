@@ -45,14 +45,16 @@ private struct CategoryRowView: View {
                     .foregroundStyle(themeManager.currentTheme.accentColor)
             }
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(section.title)
-                    .font(themeManager.fontSizeScale.bodyFont.bold())
+                    .font(themeManager.fontSizeScale.titleFont)
                     .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                    .kindleTextFormatting(lineSpacing: 2)
 
                 Text(section.description)
                     .font(themeManager.fontSizeScale.captionFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .kindleTextFormatting(lineSpacing: 3)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -86,6 +88,7 @@ struct NotebookSectionDetailView: View {
                 Text(section.description)
                     .font(themeManager.fontSizeScale.captionFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .kindleTextFormatting(lineSpacing: 3)
                     .padding(.horizontal, 16)
                     .padding(.top, 4)
 
@@ -132,7 +135,7 @@ private struct HighlightedTextView: View {
     }
 }
 
-// MARK: - Notebook Item Card (Soft Depth Box Architecture)
+// MARK: - Notebook Item Card (Kindle Reader Formatting & Carved Inset Box)
 
 private struct NotebookItemCard: View {
     let item: NotebookItem
@@ -150,13 +153,14 @@ private struct NotebookItemCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
-                    // Header Title
+                    // Header Title (Kindle Book Serif)
                     Text(item.french)
                         .font(themeManager.fontSizeScale.titleFont)
                         .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        .kindleTextFormatting(lineSpacing: 4)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    // Target Spoken Word Panel (Recessed Depth Box like .code-panel)
+                    // Target Spoken Word Panel (Recessed Depth Box with Kindle Formatting)
                     if item.audioText != nil {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Audio:")
@@ -168,6 +172,7 @@ private struct NotebookItemCard: View {
                                 activeRange: activeRange,
                                 font: themeManager.fontSizeScale.bodyFont.bold()
                             )
+                            .kindleTextFormatting(lineSpacing: 4)
                             .fixedSize(horizontal: false, vertical: true)
                         }
                         .padding(.horizontal, 10)
@@ -175,19 +180,21 @@ private struct NotebookItemCard: View {
                         .appRecessedWell(cornerRadius: 10)
                     }
 
-                    // English Meaning
+                    // English Meaning (Kindle Book Serif)
                     Text(item.english)
                         .font(themeManager.fontSizeScale.bodyFont)
                         .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                        .kindleTextFormatting(lineSpacing: 5)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    // Phonetic Guide
+                    // Phonetic Guide (Kindle Book Serif)
                     HStack(alignment: .top, spacing: 4) {
                         Image(systemName: "text.phonetic")
                             .font(.caption2)
-                            .padding(.top, 2)
+                            .padding(.top, 3)
                         Text(item.phonetic)
-                            .font(themeManager.fontSizeScale.captionFont)
+                            .font(themeManager.fontSizeScale.phoneticFont)
+                            .kindleTextFormatting(lineSpacing: 3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .foregroundStyle(themeManager.currentTheme.accentColor)
@@ -197,6 +204,7 @@ private struct NotebookItemCard: View {
                         Text(note)
                             .font(themeManager.fontSizeScale.captionFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                            .kindleTextFormatting(lineSpacing: 3)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.top, 1)
                     }
