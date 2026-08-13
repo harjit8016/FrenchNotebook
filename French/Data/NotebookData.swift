@@ -222,6 +222,13 @@ enum NotebookData {
                 audioText: "je vais, tu vas, il va, nous allons, vous allez, ils vont"
             ),
             NotebookItem(
+                french: "Faire (To do / make): fais, fais, fait, faisons, faites, font",
+                english: "Je fais (I do/make), Tu fais (You do), Il fait (He does), Nous faisons (We do)",
+                phonetic: "Zhuh fay / Too fay / Eel fay / Noo fuh-zohn · ਯ਼ ਫੇ / ਤੂ ਫੇ / ਈਲ ਫੇ",
+                grammarNote: "Hack: Used for daily activities & weather (e.g. Il fait beau = The weather is fine).",
+                audioText: "je fais, tu fais, il fait, nous faisons, vous faites, ils font"
+            ),
+            NotebookItem(
                 french: "Parler (-ER Pattern): parle, parles, parle, parlons, parlez, parlent",
                 english: "Je parle (I speak), Tu parles (You speak), Nous parlons (We speak)",
                 phonetic: "Zhuh pa-kh-l / Noo par-lohn · ਯ਼ ਪਾਖ਼ਲ / ਨੂ ਪਾਰਲੋਂ",

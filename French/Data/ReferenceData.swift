@@ -168,9 +168,39 @@ enum ReferenceData {
             ConjugationRow(pronoun: "il/elle a", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "a", punjabiSound: "ਈਲ ਆ (he/she has)"),
             ConjugationRow(pronoun: "nous avons", pronounPunjabi: "ਨੂ", verbForm: "avons", punjabiSound: "ਨੂ ਜ਼ਾਵੋਂ (we have)"),
             ConjugationRow(pronoun: "vous avez", pronounPunjabi: "ਵੂ", verbForm: "avez", punjabiSound: "ਵੂ ਜ਼ਾਵੇ (you have)"),
-            ConjugationRow(pronoun: "ils/elles ont", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "ont", punjabiSound: "ਈл ਜ਼ੋਂ (they have)"),
+            ConjugationRow(pronoun: "ils/elles ont", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "ont", punjabiSound: "ਈਲ ਜ਼ੋਂ (they have)"),
         ],
         note: "In French, age uses Avoir (J'ai 29 ans)."
+    )
+
+    static let allerCard = VerbCard(
+        infinitive: "aller (ਆਲੇ)",
+        englishMeaning: "to go (irregular movement verb)",
+        group: "Irregular — essential for near future",
+        rows: [
+            ConjugationRow(pronoun: "je vais", pronounPunjabi: "ਯ਼", verbForm: "vais", punjabiSound: "ਯ਼ ਵੇ (I go)"),
+            ConjugationRow(pronoun: "tu vas", pronounPunjabi: "ਤੂ", verbForm: "vas", punjabiSound: "ਤੂ ਵਾ (you go)"),
+            ConjugationRow(pronoun: "il/elle va", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "va", punjabiSound: "ਈਲ ਵਾ (he/she goes)"),
+            ConjugationRow(pronoun: "nous allons", pronounPunjabi: "ਨੂ", verbForm: "allons", punjabiSound: "ਨੂਜ਼ ਆਲੋਂ (we go)"),
+            ConjugationRow(pronoun: "vous allez", pronounPunjabi: "ਵੂ", verbForm: "allez", punjabiSound: "ਵੂਜ਼ ਆਲੇ (you go)"),
+            ConjugationRow(pronoun: "ils/elles vont", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "vont", punjabiSound: "ਈਲ ਵੋਂ (they go)"),
+        ],
+        note: "Hack: 'Je vais + verb' forms the Near Future (e.g. Je vais parler = I am going to speak)."
+    )
+
+    static let faireCard = VerbCard(
+        infinitive: "faire (ਫੇਖ਼)",
+        englishMeaning: "to do / to make",
+        group: "Irregular — essential daily verb",
+        rows: [
+            ConjugationRow(pronoun: "je fais", pronounPunjabi: "ਯ਼", verbForm: "fais", punjabiSound: "ਯ਼ ਫੇ (I do/make)"),
+            ConjugationRow(pronoun: "tu fais", pronounPunjabi: "ਤੂ", verbForm: "fais", punjabiSound: "ਤੂ ਫੇ (you do/make)"),
+            ConjugationRow(pronoun: "il/elle fait", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "fait", punjabiSound: "ਈਲ ਫੇ (he/she does/makes)"),
+            ConjugationRow(pronoun: "nous faisons", pronounPunjabi: "ਨੂ", verbForm: "faisons", punjabiSound: "ਨੂ ਫ਼ੁਜ਼ੋਂ (we do/make)"),
+            ConjugationRow(pronoun: "vous faites", pronounPunjabi: "ਵੂ", verbForm: "faites", punjabiSound: "ਵੂ ਫ਼ੇਤ (you do/make)"),
+            ConjugationRow(pronoun: "ils/elles font", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "font", punjabiSound: "ਈਲ ਫੋਂ (they do/make)"),
+        ],
+        note: "Used for weather (il fait beau) and daily activities."
     )
 
     static let erVerbCard = VerbCard(
@@ -178,12 +208,12 @@ enum ReferenceData {
         englishMeaning: "to speak (regular -ER verb pattern)",
         group: "-ER verbs (regular) — ~90% follow this",
         rows: [
-            ConjugationRow(pronoun: "je parle", pronounPunjabi: "ਯ਼", verbForm: "parle", punjabiSound: "ਯ਼ ਪਾਖ਼ਲ"),
-            ConjugationRow(pronoun: "tu parles", pronounPunjabi: "ਤੂ", verbForm: "parles", punjabiSound: "ਤੂ ਪਾਖ਼ਲ"),
-            ConjugationRow(pronoun: "il/elle parle", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "parle", punjabiSound: "ਈਲ ਪਾਖ਼ਲ"),
-            ConjugationRow(pronoun: "nous parlons", pronounPunjabi: "ਨੂ", verbForm: "parlons", punjabiSound: "ਨੂ ਪਾਖ਼ਲੋਂ"),
-            ConjugationRow(pronoun: "vous parlez", pronounPunjabi: "ਵੂ", verbForm: "parlez", punjabiSound: "ਵੂ ਪਾਖ਼ਲੇ"),
-            ConjugationRow(pronoun: "ils/elles parlent", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "parlent", punjabiSound: "ਈਲ ਪਾਖ਼ਲ"),
+            ConjugationRow(pronoun: "je parle", pronounPunjabi: "ਯ਼", verbForm: "parle", punjabiSound: "ਯ਼ ਪਾਖ਼ਲ (I speak)"),
+            ConjugationRow(pronoun: "tu parles", pronounPunjabi: "ਤੂ", verbForm: "parles", punjabiSound: "ਤੂ ਪਾਖ਼ਲ (you speak)"),
+            ConjugationRow(pronoun: "il/elle parle", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "parle", punjabiSound: "ਈਲ ਪਾਖ਼ਲ (he/she speaks)"),
+            ConjugationRow(pronoun: "nous parlons", pronounPunjabi: "ਨੂ", verbForm: "parlons", punjabiSound: "ਨੂ ਪਾਖ਼ਲੋਂ (we speak)"),
+            ConjugationRow(pronoun: "vous parlez", pronounPunjabi: "ਵੂ", verbForm: "parlez", punjabiSound: "ਵੂ ਪਾਖ਼ਲੇ (you speak)"),
+            ConjugationRow(pronoun: "ils/elles parlent", pronounPunjabi: "ਈਲ/ਐੱਲ", verbForm: "parlent", punjabiSound: "ਈਲ ਪਾਖ਼ਲ (they speak)"),
         ],
         note: "Note: R is pronounced as throat 'ਖ਼' (ਪਾਖ਼ਲੇ, ਪਾਖ਼ਲ)."
     )

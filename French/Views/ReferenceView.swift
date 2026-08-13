@@ -27,9 +27,11 @@ struct ReferenceView: View {
                     NavigationLink(destination: ReferenceCategoryDetailView(title: "Verb Basics", iconName: "character.book.closed.fill") {
                         VerbCardView(card: ReferenceData.etreCard, speech: speech)
                         VerbCardView(card: ReferenceData.avoirCard, speech: speech)
+                        VerbCardView(card: ReferenceData.allerCard, speech: speech)
+                        VerbCardView(card: ReferenceData.faireCard, speech: speech)
                         VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
                     }) {
-                        ReferenceCategoryRow(title: "Verb Basics & Conjugations", subtitle: "être, avoir, parler (-ER pattern)", iconName: "character.book.closed.fill", countText: "3 verbs")
+                        ReferenceCategoryRow(title: "Verb Basics & Conjugations", subtitle: "être, avoir, aller, faire, parler (-ER pattern)", iconName: "character.book.closed.fill", countText: "5 verbs")
                     }
                     .buttonStyle(.plain)
 
