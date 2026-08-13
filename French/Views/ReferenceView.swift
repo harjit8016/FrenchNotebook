@@ -8,16 +8,11 @@ struct ReferenceView: View {
 
     private let filterTags = ["All", "Pronouns", "Liaison", "Verbs", "Modals", "Cognates"]
 
-    private let gridColumns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
-
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    // Hero Header with Stats
+                    // Hero Header
                     HeroHeaderView(
                         title: "Grammar & Rules",
                         subtitle: "Quick rules, liaisons & verb tables"
@@ -29,13 +24,13 @@ struct ReferenceView: View {
                     // Category Filter Chips
                     FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
 
-                    // 2-Column Grid Cards for Reference Categories
-                    LazyVGrid(columns: gridColumns, spacing: 12) {
+                    // 1-Column Full-Width Reference List Cards (Zero Text Truncation)
+                    LazyVStack(spacing: 12) {
                         if matchesFilter("Pronouns") {
                             NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
                                 RuleCardView(card: ReferenceData.pronounRule, speech: speech)
                             }) {
-                                RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule", color: CategoryColors.indigo)
+                                RefListCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle, nous, vous, ils, elles", iconName: "person.2.fill", countText: "1 rule", color: CategoryColors.indigo)
                             }
                             .buttonStyle(.plain)
                         }
@@ -46,7 +41,7 @@ struct ReferenceView: View {
                                     RuleCardView(card: card, speech: speech)
                                 }
                             }) {
-                                RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules", color: CategoryColors.emerald)
+                                RefListCard(title: "Liaison Rules", subtitle: "Word linking & silent H rules", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules", color: CategoryColors.emerald)
                             }
                             .buttonStyle(.plain)
                         }
@@ -59,7 +54,7 @@ struct ReferenceView: View {
                                 VerbCardView(card: ReferenceData.faireCard, speech: speech)
                                 VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
                             }) {
-                                RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs", color: CategoryColors.rose)
+                                RefListCard(title: "Verb Basics & Conjugations", subtitle: "être, avoir, aller, faire, parler (-ER pattern)", iconName: "character.book.closed.fill", countText: "5 verbs", color: CategoryColors.rose)
                             }
                             .buttonStyle(.plain)
                         }
@@ -68,7 +63,7 @@ struct ReferenceView: View {
                             NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals", iconName: "questionmark.circle") {
                                 RuleCardView(card: ReferenceData.modalNote, speech: speech)
                             }) {
-                                RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note", color: CategoryColors.cyan)
+                                RefListCard(title: "Modals (can / must / will)", subtitle: "pouvoir, devoir, near future", iconName: "questionmark.circle", countText: "1 note", color: CategoryColors.cyan)
                             }
                             .buttonStyle(.plain)
                         }
@@ -79,7 +74,7 @@ struct ReferenceView: View {
                                     RuleCardView(card: card, speech: speech)
                                 }
                             }) {
-                                RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks", color: CategoryColors.amber)
+                                RefListCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té, -ique, -eux, -able", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks", color: CategoryColors.amber)
                             }
                             .buttonStyle(.plain)
                         }
@@ -100,9 +95,9 @@ struct ReferenceView: View {
     }
 }
 
-// MARK: - 2-Column Grid Reference Category Card
+// MARK: - 1-Column Modern List Reference Category Card (Zero Text Truncation)
 
-private struct RefGridCard: View {
+private struct RefListCard: View {
     let title: String
     let subtitle: String
     let iconName: String
@@ -111,41 +106,44 @@ private struct RefGridCard: View {
     @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                ZStack {
-                    Circle()
-                        .fill(color)
-                        .frame(width: 40, height: 40)
-                        .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
+        HStack(alignment: .center, spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(color)
+                    .frame(width: 44, height: 44)
+                    .shadow(color: Color.black.opacity(0.10), radius: 3, x: 0, y: 2)
 
-                    Image(systemName: iconName)
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(.white)
-                }
+                Image(systemName: iconName)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.white)
+            }
 
-                Spacer()
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                    .fixedSize(horizontal: false, vertical: true)
 
+                Text(subtitle)
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 4)
+
+            VStack(alignment: .trailing, spacing: 6) {
                 Text(countText)
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundStyle(color)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .background(color.opacity(0.12))
                     .clipShape(Capsule())
-            }
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                    .lineLimit(1)
-
-                Text(subtitle)
-                    .font(.system(size: 12, weight: .regular))
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
             }
         }
         .padding(14)

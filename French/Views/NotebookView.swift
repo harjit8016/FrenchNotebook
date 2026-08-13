@@ -45,16 +45,11 @@ struct NotebookView: View {
         return result
     }
 
-    private let gridColumns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
-
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    // Hero Header with Streak & XP Stats
+                    // Hero Header
                     HeroHeaderView(
                         title: "French Notebook",
                         subtitle: "Master grammar, sounds & hacks"
@@ -66,11 +61,11 @@ struct NotebookView: View {
                     // Category Filter Chips
                     FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
 
-                    // 2-Column Compact Category Grid
-                    LazyVGrid(columns: gridColumns, spacing: 12) {
+                    // 1-Column Full-Width Category Card List (Zero Text Truncation)
+                    LazyVStack(spacing: 12) {
                         ForEach(Array(filteredSections.enumerated()), id: \.element.id) { index, section in
                             NavigationLink(destination: NotebookSectionDetailView(section: section)) {
-                                GridCategoryCard(section: section, gradientIndex: index)
+                                ListCategoryCard(section: section, colorIndex: index)
                             }
                             .buttonStyle(.plain)
                         }
@@ -86,53 +81,59 @@ struct NotebookView: View {
     }
 }
 
-// MARK: - 2-Column Modern Grid Category Card
+// MARK: - 1-Column Modern List Category Card (Zero Text Truncation)
 
-private struct GridCategoryCard: View {
+private struct ListCategoryCard: View {
     let section: NotebookSection
-    let gradientIndex: Int
+    let colorIndex: Int
     @ObservedObject private var themeManager = ThemeManager.shared
 
     private var categoryColor: Color {
-        CategoryColors.color(for: gradientIndex)
+        CategoryColors.color(for: colorIndex)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                ZStack {
-                    Circle()
-                        .fill(categoryColor)
-                        .frame(width: 40, height: 40)
-                        .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
+        HStack(alignment: .center, spacing: 14) {
+            // Distinct Solid Color Icon Circle
+            ZStack {
+                Circle()
+                    .fill(categoryColor)
+                    .frame(width: 44, height: 44)
+                    .shadow(color: Color.black.opacity(0.10), radius: 3, x: 0, y: 2)
 
-                    Image(systemName: section.iconName)
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(.white)
-                }
+                Image(systemName: section.iconName)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.white)
+            }
 
-                Spacer()
+            // Category Title & Description (Full multi-line, zero truncation!)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(section.title)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                Text("\(section.items.count)")
+                Text(section.description)
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 4)
+
+            // Right Badges & Chevron
+            VStack(alignment: .trailing, spacing: 6) {
+                Text("\(section.items.count) cards")
                     .font(.system(size: 11, weight: .bold, design: .rounded))
                     .foregroundStyle(categoryColor)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .background(categoryColor.opacity(0.12))
                     .clipShape(Capsule())
-            }
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text(section.title)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                    .lineLimit(1)
-
-                Text(section.description)
-                    .font(.system(size: 12, weight: .regular))
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
             }
         }
         .padding(14)
