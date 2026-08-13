@@ -284,50 +284,50 @@ private struct BasicsItemCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // Header with Icon & French Word
-            HStack(alignment: .top, spacing: 10) {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
-                        Image(systemName: item.iconName)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundStyle(themeManager.currentTheme.accentColor)
+        Button {
+            HapticManager.shared.tapWord()
+            if isSpeaking {
+                speech.stop()
+            } else {
+                speech.speak(item.spokenText ?? item.french, itemID: item.id, rate: Float(themeManager.speechRate))
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                // Header with Icon & French Word
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 8) {
+                            Image(systemName: item.iconName)
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                        Text(item.french)
-                            .font(.system(size: 17, weight: .bold))
-                            .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                            Text(item.french)
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        }
+
+                        // Phonetic & Punjabi Sound Pill
+                        HStack(spacing: 6) {
+                            Text(item.phonetic)
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(themeManager.currentTheme.accentColor)
+
+                            Text("•")
+                                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+
+                            Text(item.punjabiSound)
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(themeManager.currentTheme.accentColor)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                        .clipShape(Capsule())
                     }
 
-                    // Phonetic & Punjabi Sound Pill
-                    HStack(spacing: 6) {
-                        Text(item.phonetic)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(themeManager.currentTheme.accentColor)
+                    Spacer()
 
-                        Text("•")
-                            .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-
-                        Text(item.punjabiSound)
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(themeManager.currentTheme.accentColor)
-                    }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background(themeManager.currentTheme.accentColor.opacity(0.12))
-                    .clipShape(Capsule())
-                }
-
-                Spacer()
-
-                // Audio Play/Stop Button
-                Button {
-                    HapticManager.shared.tapWord()
-                    if isSpeaking {
-                        speech.stop()
-                    } else {
-                        speech.speak(item.spokenText ?? item.french, itemID: item.id, rate: Float(themeManager.speechRate))
-                    }
-                } label: {
+                    // Audio Play/Stop Indicator Circle
                     ZStack {
                         Circle()
                             .fill(isSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.accentColor.opacity(0.12))
@@ -338,34 +338,34 @@ private struct BasicsItemCard: View {
                             .foregroundStyle(isSpeaking ? .white : themeManager.currentTheme.accentColor)
                     }
                 }
-                .buttonStyle(.plain)
-            }
 
-            // English Meaning
-            Text(item.english)
-                .font(themeManager.fontSizeScale.contentBodyFont)
-                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                // English Meaning
+                Text(item.english)
+                    .font(themeManager.fontSizeScale.contentBodyFont)
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
-            // Grammar Note if present
-            if let note = item.grammarNote {
-                HStack(alignment: .top, spacing: 6) {
-                    Text("RULE")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(themeManager.currentTheme.accentColor.opacity(0.14))
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                // Grammar Note if present
+                if let note = item.grammarNote {
+                    HStack(alignment: .top, spacing: 6) {
+                        Text("RULE")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(themeManager.currentTheme.accentColor)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(themeManager.currentTheme.accentColor.opacity(0.14))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
 
-                    Text(note)
-                        .font(.system(size: 12.5, weight: .regular))
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.82))
+                        Text(note)
+                            .font(.system(size: 12.5, weight: .regular))
+                            .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.82))
+                    }
+                    .padding(.top, 2)
                 }
-                .padding(.top, 2)
             }
+            .padding(14)
+            .glassCard(cornerRadius: 16, isPressed: isSpeaking)
         }
-        .padding(14)
-        .glassCard(cornerRadius: 16, isPressed: isSpeaking)
+        .buttonStyle(.plain)
     }
 }
 

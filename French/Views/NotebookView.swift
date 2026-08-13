@@ -193,41 +193,41 @@ private struct ModernNotebookItemCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // Header Title
-            HStack(alignment: .top, spacing: 10) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.french)
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                        .kindleTextFormatting(lineSpacing: 3)
-
-                    // Phonetic Chip Pill
-                    HStack(spacing: 4) {
-                        Image(systemName: "waveform")
-                            .font(.system(size: 10, weight: .bold))
-                        Text(item.phonetic)
-                            .font(.system(size: 12, weight: .medium))
-                    }
-                    .foregroundStyle(themeManager.currentTheme.accentColor)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-                    .background(themeManager.currentTheme.accentColor.opacity(0.12))
-                    .clipShape(Capsule())
-                }
-
-                Spacer()
+        Button {
+            HapticManager.shared.tapWord()
+            if isSpeaking {
+                speech.stop()
+            } else {
+                speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
             }
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                // Header Title
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.french)
+                            .font(.system(size: 17, weight: .bold))
+                            .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                            .kindleTextFormatting(lineSpacing: 3)
 
-            // MARK: - Actionable Spoken Audio Pill Card with Real-Time Word Highlighting & Inline Stop Toggle
-            Button {
-                HapticManager.shared.tapWord()
-                if isSpeaking {
-                    speech.stop()
-                } else {
-                    speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+                        // Phonetic Chip Pill
+                        HStack(spacing: 4) {
+                            Image(systemName: "waveform")
+                                .font(.system(size: 10, weight: .bold))
+                            Text(item.phonetic)
+                                .font(.system(size: 12, weight: .medium))
+                        }
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                        .clipShape(Capsule())
+                    }
+
+                    Spacer()
                 }
-            } label: {
+
+                // Actionable Spoken Audio Pill Card with Real-Time Word Highlighting & Inline Stop Toggle
                 HStack(spacing: 10) {
                     ZStack {
                         Circle()
@@ -270,35 +270,35 @@ private struct ModernNotebookItemCard: View {
                     RoundedRectangle(cornerRadius: 12)
                         .strokeBorder(isSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.12), lineWidth: 1)
                 )
-            }
-            .buttonStyle(.plain)
 
-            // English Meaning
-            Text(item.english)
-                .font(themeManager.fontSizeScale.contentBodyFont)
-                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                .kindleTextFormatting(lineSpacing: 3)
+                // English Meaning
+                Text(item.english)
+                    .font(themeManager.fontSizeScale.contentBodyFont)
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .kindleTextFormatting(lineSpacing: 3)
 
-            if let note = item.grammarNote {
-                HStack(alignment: .top, spacing: 6) {
-                    Text("HACK")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(themeManager.currentTheme.accentColor.opacity(0.14))
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                if let note = item.grammarNote {
+                    HStack(alignment: .top, spacing: 6) {
+                        Text("HACK")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(themeManager.currentTheme.accentColor)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(themeManager.currentTheme.accentColor.opacity(0.14))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
 
-                    Text(note)
-                        .font(.system(size: 12.5, weight: .regular))
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.82))
-                        .kindleTextFormatting(lineSpacing: 2)
+                        Text(note)
+                            .font(.system(size: 12.5, weight: .regular))
+                            .foregroundStyle(themeManager.currentTheme.primaryTextColor.opacity(0.82))
+                            .kindleTextFormatting(lineSpacing: 2)
+                    }
+                    .padding(.top, 2)
                 }
-                .padding(.top, 2)
             }
+            .padding(14)
+            .glassCard(cornerRadius: 16, isPressed: isSpeaking)
         }
-        .padding(14)
-        .glassCard(cornerRadius: 16, isPressed: isSpeaking)
+        .buttonStyle(.plain)
     }
 }
 
