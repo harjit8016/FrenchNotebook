@@ -77,10 +77,10 @@ enum BasicsData {
         AlphabetItem(letter: "W", frenchWord: "Wagon", englishMeaning: "Wagon / Carriage", phonetic: "doo-bluh-veh · vah-gohn", punjabiSound: "ਦੂਬਲ-ਵੇ · ਵਾਗੋਂ", emojiIcon: "🚃"),
         AlphabetItem(letter: "X", frenchWord: "Xylophone", englishMeaning: "Xylophone", phonetic: "eeks · ksee-loh-fuhn", punjabiSound: "ਈਕਸ · ਕਸੀਲੋਫੋਨ", emojiIcon: "🎼"),
         AlphabetItem(letter: "Y", frenchWord: "Yaourt", englishMeaning: "Yogurt", phonetic: "ee-grehk · yah-oort", punjabiSound: "ਈ-ਗ੍ਰੇਕ · ਯਾਊਰਤ", emojiIcon: "🥛"),
-        AlphabetItem(letter: "Z", frenchWord: "Zèbre", englishMeaning: "Zebra", phonetic: "zehd · zeh-brə", punjabiSound: "ਜ਼ੈਡ · ਜ਼ੇਬ੍ਰ", emojiIcon: "zebra") // standard emoji string 🦓
+        AlphabetItem(letter: "Z", frenchWord: "Zèbre", englishMeaning: "Zebra", phonetic: "zehd · zeh-brə", punjabiSound: "ਜ਼ੈਡ · ਜ਼ੇਬ੍ਰ", emojiIcon: "🦓")
     ]
 
-    // MARK: - All 5 Section Groups with 22 Categories
+    // MARK: - All 5 Section Groups with 23 Categories
 
     static let sections: [BasicsSectionGroup] = [
         // SECTION 1: Absolute Basics
@@ -91,7 +91,7 @@ enum BasicsData {
                 BasicsCategory(
                     title: "Greetings & Magic Words",
                     emojiIcon: "👋",
-                    description: "Essential polite phrases for daily conversation.",
+                    description: "Essential polite phrases for daily conversation and exam speaking tasks.",
                     items: [
                         BasicsItem(french: "Bonjour", english: "Hello / Good morning", phonetic: "bon-zhoo-kh", punjabiSound: "ਬੋਂਜ਼ੂਖ਼", emojiIcon: "☀️"),
                         BasicsItem(french: "Bonsoir", english: "Good evening", phonetic: "bon-swahr", punjabiSound: "ਬੋਂਸਵਾਖ਼", emojiIcon: "🌙"),
@@ -99,7 +99,11 @@ enum BasicsData {
                         BasicsItem(french: "S'il vous plaît", english: "Please (formal)", phonetic: "seel-voo-pleh", punjabiSound: "ਸੀਲ-ਵੂ-ਪਲੇ", emojiIcon: "🙏"),
                         BasicsItem(french: "Merci beaucoup", english: "Thank you very much", phonetic: "mair-see boh-koo", punjabiSound: "ਮੈਖ਼ਸੀ ਬੋਕੂ", emojiIcon: "💖"),
                         BasicsItem(french: "De rien", english: "You're welcome", phonetic: "duh-ryen", punjabiSound: "ਦੁ-ਰਿਆਂ", emojiIcon: "😊"),
-                        BasicsItem(french: "Pardon / Désolé", english: "Sorry / Excuse me", phonetic: "par-dohn / day-zoh-lay", punjabiSound: "ਪਾਰਦੋਂ / ਦੇਜ਼ੋਲੇ", emojiIcon: "🤝", spokenText: "Pardon, Désolé")
+                        BasicsItem(french: "Pardon / Désolé", english: "Sorry / Excuse me", phonetic: "par-dohn / day-zoh-lay", punjabiSound: "ਪਾਰਦੋਂ / ਦੇਜ਼ੋਲੇ", emojiIcon: "🤝", spokenText: "Pardon, Désolé"),
+                        BasicsItem(french: "Comment ça va ?", english: "How is it going?", phonetic: "koh-mahn sah vah", punjabiSound: "ਕੋਮਾਂ ਸਾ ਵਾ", emojiIcon: "💬"),
+                        BasicsItem(french: "À bientôt", english: "See you soon", phonetic: "ah byan-toh", punjabiSound: "ਆ ਬਿਆਂਤੋ", emojiIcon: "👋"),
+                        BasicsItem(french: "Enchanté / Enchantée", english: "Nice to meet you", phonetic: "ahn-shahn-tay", punjabiSound: "ਆਂਸ਼ਾਂਤੇ", emojiIcon: "🤝", spokenText: "Enchanté", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Bonne journée !", english: "Have a good day!", phonetic: "bun zhoor-nay", punjabiSound: "ਬੋਨ ਜ਼ੂਖ਼ਨੇ", emojiIcon: "🌤️")
                     ]
                 ),
                 BasicsCategory(
@@ -146,6 +150,24 @@ enum BasicsData {
                         BasicsItem(french: "L'Étoile", english: "Star (la)", phonetic: "lay-twahl", punjabiSound: "ਲੇਤਵਾਲ", emojiIcon: "⭐", genderTag: "FEM"),
                         BasicsItem(french: "Le Rectangle", english: "Rectangle", phonetic: "luh khayk-tahn-glə", punjabiSound: "ਲੁ ਰੇਕਤਾਂਗਲ", emojiIcon: "🟧", genderTag: "MASC")
                     ]
+                ),
+                BasicsCategory(
+                    title: "Praising & Describing (TEF/TCF)",
+                    emojiIcon: "✨",
+                    description: "High-scoring adjectives & expressions to describe scenery, nature, and people in speaking exams.",
+                    items: [
+                        BasicsItem(french: "Captivant / Captivante", english: "Captivating / Mesmerizing", phonetic: "kahp-tee-vahn / kahp-tee-vahnt", punjabiSound: "ਕਾਪਤੀਵਾਂ / ਕਾਪਤੀਵਾਂਤ", emojiIcon: "🌀", grammarNote: "Describe scenery or an artwork to show high-level vocabulary!", spokenText: "Captivant, Captivante", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Fascinant / Fascinante", english: "Fascinating", phonetic: "fah-see-nahn / fah-see-nahnt", punjabiSound: "ਫਾਸੀਨਾਂ / ਫਾਸੀਨਾਂਤ", emojiIcon: "🤩", spokenText: "Fascinant, Fascinante", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Adorable", english: "Adorable / Lovable", phonetic: "ah-doh-rah-blə", punjabiSound: "ਆਦੋਰਾਬਲ", emojiIcon: "🥰", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Magnifique", english: "Gorgeous / Magnificent", phonetic: "mah-nyee-feek", punjabiSound: "ਮਾਨੀਫੀਕ", emojiIcon: "✨", grammarNote: "Invariable: stays 'magnifique' for both genders.", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Splendide", english: "Splendid / Superb", phonetic: "splahn-deed", punjabiSound: "ਸਪਲਾਂਦੀਦ", emojiIcon: "🌟", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Fabuleux / Fabuleuse", english: "Fabulous", phonetic: "fah-boo-luh / fah-boo-luhz", punjabiSound: "ਫਾਬੂਲੂ / ਫਾਬੂਲੂਜ਼", emojiIcon: "🏆", spokenText: "Fabuleux, Fabuleuse", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Verdoyant / Verdoyante", english: "Lush Green / Verdant", phonetic: "vair-doy-yahn / vair-doy-yahnt", punjabiSound: "ਵੇਖ਼ਦੁਆਯਾਂ / ਵੇਖ਼ਦੁਆਯਾਂਤ", emojiIcon: "🌳", grammarNote: "Perfect to describe natural spots in TEF speaking tasks!", spokenText: "Verdoyant, Verdoyante", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Pittoresque", english: "Picturesque / Scenic", phonetic: "pee-toh-resk", punjabiSound: "ਪੀਤੋਰੈਸਕ", emojiIcon: "🖼️", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Une vue imprenable", english: "Breathtaking / Unobstructed View", phonetic: "oon voo ahn-pruh-nah-blə", punjabiSound: "ਊਨ ਵੂ ਐਂਪ੍ਰਨਾਬਲ", emojiIcon: "🏔️", grammarNote: "Idiomatic: means an unobstructed stunning view from a mountain/balcony.", genderTag: "FEM"),
+                        BasicsItem(french: "À couper le souffle", english: "Breath-taking", phonetic: "ah koo-pay luh soo-flə", punjabiSound: "ਆ ਕੂਪੇ ਲੁ ਸੂਫਲ", emojiIcon: "🌬️", grammarNote: "Literally: 'to cut the breath'. A native-level French phrase for exams."),
+                        BasicsItem(french: "Charmant / Charmante", english: "Charming / Lovely", phonetic: "shar-mahn / shar-mahnt", punjabiSound: "ਸ਼ਾਰਮਾਂ / ਸ਼ਾਰਮਾਂਤ", emojiIcon: "🌸", spokenText: "Charmant, Charmante", genderTag: "MASC & FEM")
+                    ]
                 )
             ]
         ),
@@ -165,7 +187,12 @@ enum BasicsData {
                         BasicsItem(french: "Les Yeux", english: "Eyes (un œil / le)", phonetic: "leh-zyuh", punjabiSound: "ਲੇਜ਼ੂ", emojiIcon: "👀", genderTag: "MASC"),
                         BasicsItem(french: "Les Oreilles", english: "Ears (une / la)", phonetic: "leh-zoh-ray-yə", punjabiSound: "ਲੇਜ਼ੋਰੇਯ", emojiIcon: "👂", genderTag: "FEM"),
                         BasicsItem(french: "Les Mains", english: "Hands (la main)", phonetic: "leh mahn", punjabiSound: "ਲੇ ਮੈਂ", emojiIcon: "✋", genderTag: "FEM"),
-                        BasicsItem(french: "Les Pieds", english: "Feet (le pied)", phonetic: "leh pyay", punjabiSound: "ਲੇ ਪਿਏ", emojiIcon: "🦶", genderTag: "MASC")
+                        BasicsItem(french: "Les Pieds", english: "Feet (le pied)", phonetic: "leh pyay", punjabiSound: "ਲੇ ਪਿਏ", emojiIcon: "🦶", genderTag: "MASC"),
+                        BasicsItem(french: "Le Nez", english: "Nose", phonetic: "luh nay", punjabiSound: "ਲੁ ਨੇ", emojiIcon: "👃", genderTag: "MASC"),
+                        BasicsItem(french: "La Bouche", english: "Mouth", phonetic: "lah boosh", punjabiSound: "ਲਾ ਬੂਸ਼", emojiIcon: "👄", genderTag: "FEM"),
+                        BasicsItem(french: "Les Cheveux", english: "Hair (le cheveu)", phonetic: "leh shuh-vuh", punjabiSound: "ਲੇ ਸ਼ੁਵੂ", emojiIcon: "💇", genderTag: "MASC"),
+                        BasicsItem(french: "Le Bras", english: "Arm", phonetic: "luh brah", punjabiSound: "ਲੁ ਬ੍ਰਾ", emojiIcon: "💪", genderTag: "MASC"),
+                        BasicsItem(french: "La Jambe", english: "Leg", phonetic: "lah zhahnb", punjabiSound: "ਲਾ ਜ਼ਾਂਬ", emojiIcon: "🦵", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -178,7 +205,12 @@ enum BasicsData {
                         BasicsItem(french: "Le Frère", english: "Brother", phonetic: "luh frehr", punjabiSound: "ਲੁ ਫ੍ਰੇਖ਼", emojiIcon: "👦", genderTag: "MASC"),
                         BasicsItem(french: "La Sœur", english: "Sister", phonetic: "lah suhr", punjabiSound: "ਲਾ ਸੂਖ਼", emojiIcon: "👧", genderTag: "FEM"),
                         BasicsItem(french: "Le Grand-père", english: "Grandfather", phonetic: "luh grahn-pair-kh", punjabiSound: "ਲੁ ਗ੍ਰਾਂ-ਪੇਖ਼", emojiIcon: "👴", genderTag: "MASC"),
-                        BasicsItem(french: "La Grand-mère", english: "Grandmother", phonetic: "lah grahn-mair-kh", punjabiSound: "ਲਾ ਗ੍ਰਾਂ-ਮੇਖ਼", emojiIcon: "👵", genderTag: "FEM")
+                        BasicsItem(french: "La Grand-mère", english: "Grandmother", phonetic: "lah grahn-mair-kh", punjabiSound: "ਲਾ ਗ੍ਰਾਂ-ਮੇਖ਼", emojiIcon: "👵", genderTag: "FEM"),
+                        BasicsItem(french: "Le Fils", english: "Son", phonetic: "luh fees", punjabiSound: "ਲੁ ਫੀਸ", emojiIcon: "👦", genderTag: "MASC"),
+                        BasicsItem(french: "La Fille", english: "Daughter", phonetic: "lah feey", punjabiSound: "ਲਾ ਫੀਯ", emojiIcon: "👧", genderTag: "FEM"),
+                        BasicsItem(french: "L'Oncle", english: "Uncle", phonetic: "lohn-klə", punjabiSound: "ਲੋਂਕਲ", emojiIcon: "👨", genderTag: "MASC"),
+                        BasicsItem(french: "La Tante", english: "Aunt", phonetic: "lah tahnt", punjabiSound: "ਲਾ ਤਾਂਤ", emojiIcon: "👩", genderTag: "FEM"),
+                        BasicsItem(french: "L'Ami / L'Amie", english: "Friend", phonetic: "lah-mee", punjabiSound: "ਲਾਮੀ", emojiIcon: "🧑‍🤝‍🧑", spokenText: "L'Ami", genderTag: "MASC & FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -190,7 +222,11 @@ enum BasicsData {
                         BasicsItem(french: "Je suis triste (m/f)", english: "I am sad", phonetic: "zhuh swee treest", punjabiSound: "ਜ਼ੁ ਸੁਈ ਤ੍ਰੀਸਤ", emojiIcon: "😢", genderTag: "MASC & FEM"),
                         BasicsItem(french: "Je suis fatigué (m) / fatiguée (f)", english: "I am tired", phonetic: "zhuh swee fah-tee-gay", punjabiSound: "ਜ਼ੁ ਸੁਈ ਫਾਤੀਗੇ", emojiIcon: "🥱", spokenText: "Je suis fatigué", genderTag: "MASC & FEM"),
                         BasicsItem(french: "J'ai faim", english: "I am hungry (I have hunger)", phonetic: "zhay fahn", punjabiSound: "ਜ਼ੇ ਫੈਂ", emojiIcon: "🍽️"),
-                        BasicsItem(french: "J'ai soif", english: "I am thirsty (I have thirst)", phonetic: "zhay swahf", punjabiSound: "ਜ਼ੇ ਸਵਾਫ", emojiIcon: "🧃")
+                        BasicsItem(french: "J'ai soif", english: "I am thirsty (I have thirst)", phonetic: "zhay swahf", punjabiSound: "ਜ਼ੇ ਸਵਾਫ", emojiIcon: "🧃"),
+                        BasicsItem(french: "Je suis en colère", english: "I am angry", phonetic: "zhuh swee zahn koh-lair", punjabiSound: "ਜ਼ੁ ਸੁਈ ਜ਼ਾਂ ਕੋਲੈਖ਼", emojiIcon: "😡", spokenText: "Je suis en colère"),
+                        BasicsItem(french: "Je suis surpris / surprise", english: "I am surprised", phonetic: "zhuh swee soor-pree", punjabiSound: "ਜ਼ੁ ਸੁਈ ਸੂਖ਼ਪ੍ਰੀ", emojiIcon: "😮", spokenText: "Je suis surpris", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Je suis malade", english: "I am sick", phonetic: "zhuh swee mah-lahd", punjabiSound: "ਜ਼ੁ ਸੁਈ ਮਾਲਾਦ", emojiIcon: "🤒"),
+                        BasicsItem(french: "J'ai peur", english: "I am scared (I have fear)", phonetic: "zhay puhr", punjabiSound: "ਜ਼ੇ ਪੂਖ਼", emojiIcon: "😨")
                     ]
                 ),
                 BasicsCategory(
@@ -204,7 +240,12 @@ enum BasicsData {
                         BasicsItem(french: "Le T-shirt", english: "T-shirt", phonetic: "luh tee-shurt", punjabiSound: "ਲੁ ਟੀ-ਸ਼ਰਟ", emojiIcon: "👕", genderTag: "MASC"),
                         BasicsItem(french: "Les Chaussures", english: "Shoes (la)", phonetic: "leh shoh-soor", punjabiSound: "ਲੇ ਸ਼ੋਸੂਖ਼", emojiIcon: "👟", genderTag: "FEM"),
                         BasicsItem(french: "Le Pyjama", english: "Pajamas", phonetic: "luh pee-zhah-mah", punjabiSound: "ਲੁ ਪੀਜ਼ਾਮਾ", emojiIcon: "🥋", genderTag: "MASC"),
-                        BasicsItem(french: "Les Sous-vêtements", english: "Underwear (le)", phonetic: "leh soo-veh-tmah", punjabiSound: "ਲੇ ਸੂ-ਵੇਤਮਾਂ", emojiIcon: "🩲", genderTag: "MASC")
+                        BasicsItem(french: "Les Sous-vêtements", english: "Underwear (le)", phonetic: "leh soo-veh-tmah", punjabiSound: "ਲੇ ਸੂ-ਵੇਤਮਾਂ", emojiIcon: "🩲", genderTag: "MASC"),
+                        BasicsItem(french: "Les Chaussettes", english: "Socks (la)", phonetic: "leh shoh-set", punjabiSound: "ਲੇ ਸ਼ੋਸੈਤ", emojiIcon: "🧦", genderTag: "FEM"),
+                        BasicsItem(french: "Le Pantalon", english: "Trousers / Pants", phonetic: "luh pahn-tah-lohn", punjabiSound: "ਲੁ ਪਾਂਤਾਲੋਂ", emojiIcon: "👖", genderTag: "MASC"),
+                        BasicsItem(french: "La Robe", english: "Dress", phonetic: "lah ruhb", punjabiSound: "ਲਾ ਰੋਬ", emojiIcon: "👗", genderTag: "FEM"),
+                        BasicsItem(french: "La Veste", english: "Jacket", phonetic: "lah vest", punjabiSound: "ਲਾ ਵੈਸਤ", emojiIcon: "🧥", genderTag: "FEM"),
+                        BasicsItem(french: "Le Chapeau", english: "Hat", phonetic: "luh shah-poh", punjabiSound: "ਲੁ ਸ਼ਾਪੋ", emojiIcon: "🎩", genderTag: "MASC")
                     ]
                 )
             ]
@@ -246,7 +287,7 @@ enum BasicsData {
                     items: [
                         BasicsItem(french: "L'Été", english: "Summer (le)", phonetic: "lay-tay", punjabiSound: "ਲੇਤੇ", emojiIcon: "☀️", genderTag: "MASC"),
                         BasicsItem(french: "L'Hiver", english: "Winter (le)", phonetic: "lee-vair", punjabiSound: "ਲੀਵੇਖ਼", emojiIcon: "❄️", genderTag: "MASC"),
-                        BasicsItem(french: "L'Automne", english: "Autumn / Fall (le)", phonetic: "loh-tuhn", punjabiSound: "ਲੋਤਨ", emojiIcon: "🍂", genderTag: "MASC"),
+                        BasicsItem(french: "L'Automne", english: "Autumn / Fall (le)", phonetic: "loh-tuhn", punjabiSound: "ਲੋਤন", emojiIcon: "🍂", genderTag: "MASC"),
                         BasicsItem(french: "Le Printemps", english: "Spring", phonetic: "luh prahn-tahn", punjabiSound: "ਲੁ ਪ੍ਰਾਂਤਾਂ", emojiIcon: "🌸", genderTag: "MASC"),
                         BasicsItem(french: "Il fait beau", english: "The weather is nice", phonetic: "eel feh boh", punjabiSound: "ਈਲ ਫੇ ਬੋ", emojiIcon: "🌤️"),
                         BasicsItem(french: "Il pleut", english: "It is raining", phonetic: "eel pluh", punjabiSound: "ਈਲ ਪਲੂ", emojiIcon: "🌧️")
@@ -303,7 +344,13 @@ enum BasicsData {
                         BasicsItem(french: "La Chaise", english: "Chair", phonetic: "lah shehz", punjabiSound: "ਲਾ ਸ਼ੈਜ਼", emojiIcon: "🪑", genderTag: "FEM"),
                         BasicsItem(french: "La Table", english: "Table", phonetic: "lah tah-blə", punjabiSound: "ਲਾ ਤਾਬਲ", emojiIcon: "🪵", genderTag: "FEM"),
                         BasicsItem(french: "L'Armoire", english: "Wardrobe / Almirah (la)", phonetic: "lar-mwahr", punjabiSound: "ਲਾਰਮਵਾਖ਼", emojiIcon: "🚪", genderTag: "FEM"),
-                        BasicsItem(french: "La Coiffeuse", english: "Dressing table", phonetic: "lah kwah-fuhz", punjabiSound: "ਲਾ ਕਵਾਫੂਜ਼", emojiIcon: "🪞", genderTag: "FEM")
+                        BasicsItem(french: "La Coiffeuse", english: "Dressing table", phonetic: "lah kwah-fuhz", punjabiSound: "ਲਾ ਕਵਾਫੂਜ਼", emojiIcon: "🪞", genderTag: "FEM"),
+                        BasicsItem(french: "Le Bureau", english: "Desk / Study table", phonetic: "luh boo-roh", punjabiSound: "ਲੁ ਬੂਰੋ", emojiIcon: "✍️", genderTag: "MASC"),
+                        BasicsItem(french: "La Lampe", english: "Lamp", phonetic: "lah lahnp", punjabiSound: "ਲਾ ਲਾਂਪ", emojiIcon: "💡", genderTag: "FEM"),
+                        BasicsItem(french: "Le Miroir", english: "Mirror", phonetic: "luh mee-khwahr", punjabiSound: "ਲੁ ਮੀਖ਼ਵਾਰ", emojiIcon: "🪞", genderTag: "MASC"),
+                        BasicsItem(french: "L'Oreiller", english: "Pillow", phonetic: "loh-ray-yay", punjabiSound: "ਲੋਰੇਯੇ", emojiIcon: "🛌", genderTag: "MASC"),
+                        BasicsItem(french: "La Couverture", english: "Blanket / Quilt", phonetic: "lah koo-vair-toor", punjabiSound: "ਲਾ ਕੂਵੇਖ਼ਤੂਖ਼", emojiIcon: "🧣", genderTag: "FEM"),
+                        BasicsItem(french: "Le Tapis", english: "Rug / Carpet", phonetic: "luh tah-pee", punjabiSound: "ਲੁ ਤਾਪੀ", emojiIcon: "🧶", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -314,7 +361,11 @@ enum BasicsData {
                         BasicsItem(french: "Le Sac à dos", english: "Backpack / School bag", phonetic: "luh sahk ah doh", punjabiSound: "ਲੁ ਸਾਕ ਆ ਦੋ", emojiIcon: "🎒", genderTag: "MASC"),
                         BasicsItem(french: "Le Crayon", english: "Pencil", phonetic: "luh kreh-yohn", punjabiSound: "ਲੁ ਕ੍ਰੇਯੋਂ", emojiIcon: "✏️", genderTag: "MASC"),
                         BasicsItem(french: "Les Livres", english: "Books (le)", phonetic: "leh leev-khə", punjabiSound: "ਲੇ ਲੀਵਖ਼", emojiIcon: "📚", genderTag: "MASC"),
-                        BasicsItem(french: "La Gomme", english: "Eraser", phonetic: "lah guhm", punjabiSound: "ਲਾ ਗੋਮ", emojiIcon: "🧼", genderTag: "FEM")
+                        BasicsItem(french: "La Gomme", english: "Eraser", phonetic: "lah guhm", punjabiSound: "ਲਾ ਗੋਮ", emojiIcon: "🧼", genderTag: "FEM"),
+                        BasicsItem(french: "Le Stylo", english: "Pen", phonetic: "luh stee-loh", punjabiSound: "ਲੁ ਸਤੀਲੋ", emojiIcon: "🖊️", genderTag: "MASC"),
+                        BasicsItem(french: "Le Cahier", english: "Notebook", phonetic: "luh kah-yay", punjabiSound: "ਲੁ ਕਾਯੇ", emojiIcon: "📓", genderTag: "MASC"),
+                        BasicsItem(french: "La Règle", english: "Ruler", phonetic: "lah reh-glə", punjabiSound: "ਲਾ ਰੈਗਲ", emojiIcon: "📏", genderTag: "FEM"),
+                        BasicsItem(french: "Les Ciseaux", english: "Scissors (le)", phonetic: "leh see-zoh", punjabiSound: "ਲੇ ਸੀਜ਼ੋ", emojiIcon: "✂️", genderTag: "MASC")
                     ]
                 )
             ]
@@ -334,7 +385,12 @@ enum BasicsData {
                         BasicsItem(french: "La Cuillère", english: "Spoon", phonetic: "lah kwee-yair", punjabiSound: "ਲਾ ਕਵੀਏਖ਼", emojiIcon: "🥄", genderTag: "FEM"),
                         BasicsItem(french: "La Fourchette", english: "Fork", phonetic: "lah foor-sheht", punjabiSound: "ਲਾ ਫੂਰਸ਼ੈਤ", emojiIcon: "🍴", genderTag: "FEM"),
                         BasicsItem(french: "Le Verre", english: "Glass", phonetic: "luh vair", punjabiSound: "ਲੁ ਵੇਖ਼", emojiIcon: "🥛", genderTag: "MASC"),
-                        BasicsItem(french: "Le Bol", english: "Bowl", phonetic: "luh buhl", punjabiSound: "ਲੁ ਬੋਲ", emojiIcon: "🥣", genderTag: "MASC")
+                        BasicsItem(french: "Le Bol", english: "Bowl", phonetic: "luh buhl", punjabiSound: "ਲੁ ਬੋਲ", emojiIcon: "🥣", genderTag: "MASC"),
+                        BasicsItem(french: "Le Couteau", english: "Knife", phonetic: "luh koo-toh", punjabiSound: "ਲੁ ਕੂਤੋ", emojiIcon: "🔪", genderTag: "MASC"),
+                        BasicsItem(french: "La Tasse", english: "Cup", phonetic: "lah tahs", punjabiSound: "ਲਾ ਤਾਸ", emojiIcon: "☕", genderTag: "FEM"),
+                        BasicsItem(french: "La Poêle", english: "Frying Pan", phonetic: "lah pwahl", punjabiSound: "ਲਾ ਪਵਾਲ", emojiIcon: "🍳", genderTag: "FEM"),
+                        BasicsItem(french: "La Bouilloire", english: "Kettle", phonetic: "lah bwee-ywahr", punjabiSound: "ਲਾ ਬੁਈਯਵਾਰ", emojiIcon: "🫖", genderTag: "FEM"),
+                        BasicsItem(french: "La Serviette", english: "Napkin", phonetic: "lah sair-vyeht", punjabiSound: "ਲਾ ਸੈਰਵਿਏਤ", emojiIcon: "🧻", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -345,7 +401,12 @@ enum BasicsData {
                         BasicsItem(french: "La Pomme", english: "Apple", phonetic: "lah puhm", punjabiSound: "ਲਾ ਪੋਮ", emojiIcon: "🍎", genderTag: "FEM"),
                         BasicsItem(french: "La Banane", english: "Banana", phonetic: "lah bah-nahn", punjabiSound: "ਲਾ ਬਾਨਾਨ", emojiIcon: "🍌", genderTag: "FEM"),
                         BasicsItem(french: "L'Orange", english: "Orange (la)", phonetic: "loh-rahnzh", punjabiSound: "ਲੋਰਾਂਜ਼", emojiIcon: "🍊", genderTag: "FEM"),
-                        BasicsItem(french: "Le Raisin", english: "Grapes", phonetic: "luh khay-zahn", punjabiSound: "ਲੁ ਰੇਜ਼ਾਂ", emojiIcon: "🍇", genderTag: "MASC")
+                        BasicsItem(french: "Le Raisin", english: "Grapes", phonetic: "luh khay-zahn", punjabiSound: "ਲੁ ਰੇਜ਼ਾਂ", emojiIcon: "🍇", genderTag: "MASC"),
+                        BasicsItem(french: "La Fraise", english: "Strawberry", phonetic: "lah frehz", punjabiSound: "ਲਾ ਫ੍ਰੈਜ਼", emojiIcon: "🍓", genderTag: "FEM"),
+                        BasicsItem(french: "Le Citron", english: "Lemon", phonetic: "luh see-trohn", punjabiSound: "ਲੁ ਸੀਤ੍ਰੋਂ", emojiIcon: "🍋", genderTag: "MASC"),
+                        BasicsItem(french: "La Cerise", english: "Cherry", phonetic: "lah suh-reez", punjabiSound: "ਲਾ ਸੁਰੀਜ਼", emojiIcon: "🍒", genderTag: "FEM"),
+                        BasicsItem(french: "La Pêche", english: "Peach", phonetic: "lah pehsh", punjabiSound: "ਲਾ ਪੈਸ਼", emojiIcon: "🍑", genderTag: "FEM"),
+                        BasicsItem(french: "La Pastèque", english: "Watermelon", phonetic: "lah pahs-tehk", punjabiSound: "ਲਾ ਪਾਸਤੈਕ", emojiIcon: "🍉", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -356,7 +417,12 @@ enum BasicsData {
                         BasicsItem(french: "La Pomme de terre", english: "Potato", phonetic: "lah puhm duh tair", punjabiSound: "ਲਾ ਪੋਮ ਦੁ ਤੈਖ਼", emojiIcon: "🥔", genderTag: "FEM"),
                         BasicsItem(french: "La Tomate", english: "Tomato", phonetic: "lah toh-maht", punjabiSound: "ਲਾ ਤੋਮਾਤ", emojiIcon: "🍅", genderTag: "FEM"),
                         BasicsItem(french: "L'Oignon", english: "Onion (le)", phonetic: "lohn-yohn", punjabiSound: "ਲੋਨਯੋਂ", emojiIcon: "🧅", genderTag: "MASC"),
-                        BasicsItem(french: "Les Carottes", english: "Carrots (la)", phonetic: "leh kah-kht", punjabiSound: "ਲੇ ਕਾਖ਼ੋਤ", emojiIcon: "🥕", genderTag: "FEM")
+                        BasicsItem(french: "Les Carottes", english: "Carrots (la)", phonetic: "leh kah-kht", punjabiSound: "ਲੇ ਕਾਖ਼ੋਤ", emojiIcon: "🥕", genderTag: "FEM"),
+                        BasicsItem(french: "La Salade", english: "Lettuce / Salad", phonetic: "lah sah-lahd", punjabiSound: "ਲਾ ਸਾਲਾਦ", emojiIcon: "🥬", genderTag: "FEM"),
+                        BasicsItem(french: "Le Concombre", english: "Cucumber", phonetic: "luh kohn-kohn-brə", punjabiSound: "ਲੁ ਕੋਨਕੋਨਬਰ", emojiIcon: "🥒", genderTag: "MASC"),
+                        BasicsItem(french: "L'Ail", english: "Garlic", phonetic: "lye", punjabiSound: "ਲਾਈ", emojiIcon: "🧄", genderTag: "MASC"),
+                        BasicsItem(french: "Le Petit pois", english: "Peas", phonetic: "luh puh-tee pwah", punjabiSound: "ਲੁ ਪਤੀ ਪਵਾ", emojiIcon: "🫛", spokenText: "Le Petit pois", genderTag: "MASC"),
+                        BasicsItem(french: "Le Champignon", english: "Mushroom", phonetic: "luh shahn-peen-yohn", punjabiSound: "ਲੁ ਸ਼ਾਂਪੀਨਯੋਂ", emojiIcon: "🍄", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -368,7 +434,13 @@ enum BasicsData {
                         BasicsItem(french: "Le Chat", english: "Cat", phonetic: "luh shah", punjabiSound: "ਲੁ ਸ਼ਾ", emojiIcon: "🐱", genderTag: "MASC"),
                         BasicsItem(french: "Le Lion", english: "Lion", phonetic: "luh lee-ohn", punjabiSound: "ਲੁ ਲੀਓਂ", emojiIcon: "🦁", genderTag: "MASC"),
                         BasicsItem(french: "L'Éléphant", english: "Elephant (le)", phonetic: "lay-lay-fahn", punjabiSound: "ਲੇਲੇਫਾਂ", emojiIcon: "🐘", genderTag: "MASC"),
-                        BasicsItem(french: "La Vache", english: "Cow", phonetic: "lah vahsh", punjabiSound: "ਲਾ ਵਾਸ਼", emojiIcon: "🐮", genderTag: "FEM")
+                        BasicsItem(french: "La Vache", english: "Cow", phonetic: "lah vahsh", punjabiSound: "ਲਾ ਵਾਸ਼", emojiIcon: "🐮", genderTag: "FEM"),
+                        BasicsItem(french: "Le Cheval", english: "Horse", phonetic: "luh shuh-vahl", punjabiSound: "ਲੁ ਸ਼ਵਾਲ", emojiIcon: "🐎", genderTag: "MASC"),
+                        BasicsItem(french: "Le Mouton", english: "Sheep", phonetic: "luh moo-tohn", punjabiSound: "ਲੁ ਮੂਤੋਂ", emojiIcon: "🐑", genderTag: "MASC"),
+                        BasicsItem(french: "Le Singe", english: "Monkey", phonetic: "luh sahnh-zhə", punjabiSound: "ਲੁ ਸੈਂਜ਼", emojiIcon: "🐒", genderTag: "MASC"),
+                        BasicsItem(french: "Le Lapin", english: "Rabbit", phonetic: "luh lah-pahn", punjabiSound: "ਲੁ ਲਾਪੈਂ", emojiIcon: "🐰", genderTag: "MASC"),
+                        BasicsItem(french: "L'Ours", english: "Bear", phonetic: "loors", punjabiSound: "ਲੂਰਸ", emojiIcon: "🐻", genderTag: "MASC"),
+                        BasicsItem(french: "L'Oiseau", english: "Bird", phonetic: "lwah-zoh", punjabiSound: "ਲਵਾਜ਼ੋ", emojiIcon: "🐦", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -379,7 +451,12 @@ enum BasicsData {
                         BasicsItem(french: "La Voiture", english: "Car", phonetic: "lah vwah-toor", punjabiSound: "ਲਾ ਵਵਾਤੂਖ਼", emojiIcon: "🚗", genderTag: "FEM"),
                         BasicsItem(french: "Le Bus", english: "Bus", phonetic: "luh boos", punjabiSound: "ਲੁ ਬੂਸ", emojiIcon: "🚌", genderTag: "MASC"),
                         BasicsItem(french: "Le Vélo", english: "Bicycle", phonetic: "luh vay-loh", punjabiSound: "ਲੁ ਵੇਲੋ", emojiIcon: "🚲", genderTag: "MASC"),
-                        BasicsItem(french: "L'Avion", english: "Airplane (le)", phonetic: "lah-vyohn", punjabiSound: "ਲਾਵੀਓਂ", emojiIcon: "✈️", genderTag: "MASC")
+                        BasicsItem(french: "L'Avion", english: "Airplane (le)", phonetic: "lah-vyohn", punjabiSound: "ਲਾਵੀਓਂ", emojiIcon: "✈️", genderTag: "MASC"),
+                        BasicsItem(french: "Le Train", english: "Train", phonetic: "luh trahn", punjabiSound: "ਲੁ ਤ੍ਰੈਂ", emojiIcon: "🚆", genderTag: "MASC"),
+                        BasicsItem(french: "Le Bateau", english: "Boat / Ship", phonetic: "luh bah-toh", punjabiSound: "ਲੁ ਬਾਤੋ", emojiIcon: "⛵", genderTag: "MASC"),
+                        BasicsItem(french: "Le Taxi", english: "Taxi", phonetic: "luh tahk-see", punjabiSound: "ਲੁ ਤਾਕਸੀ", emojiIcon: "🚕", genderTag: "MASC"),
+                        BasicsItem(french: "La Moto", english: "Motorcycle", phonetic: "lah moh-toh", punjabiSound: "ਲਾ ਮੋਤੋ", emojiIcon: "🏍️", genderTag: "FEM"),
+                        BasicsItem(french: "Le Métro", english: "Subway / Metro", phonetic: "luh may-troh", punjabiSound: "ਲੁ ਮੇਤਰੋ", emojiIcon: "🚇", genderTag: "MASC")
                     ]
                 )
             ]
