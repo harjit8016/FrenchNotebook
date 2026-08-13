@@ -3,6 +3,35 @@ import UIKit
 import AVFoundation
 import Combine
 
+// MARK: - Custom Font Helper (Literata / Bookerly / Georgia / System Serif Fallback)
+
+extension Font {
+    static func kindleContentFont(size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        // Check for Literata (Google Play Books Bookerly counterpart) -> Bookerly -> Georgia -> System Serif
+        if UIFont(name: "Literata-Regular", size: size) != nil || UIFont(name: "Literata", size: size) != nil {
+            let fontName = (weight == .bold || weight == .semibold) ? "Literata-Bold" : "Literata-Regular"
+            if UIFont(name: fontName, size: size) != nil {
+                return .custom(fontName, size: size)
+            }
+            return .custom("Literata", size: size)
+        }
+        if UIFont(name: "Bookerly-Regular", size: size) != nil || UIFont(name: "Bookerly", size: size) != nil {
+            let fontName = (weight == .bold || weight == .semibold) ? "Bookerly-Bold" : "Bookerly-Regular"
+            if UIFont(name: fontName, size: size) != nil {
+                return .custom(fontName, size: size)
+            }
+            return .custom("Bookerly", size: size)
+        }
+        if UIFont(name: "Georgia-Bold", size: size) != nil && (weight == .bold || weight == .semibold) {
+            return .custom("Georgia-Bold", size: size)
+        }
+        if UIFont(name: "Georgia", size: size) != nil {
+            return .custom("Georgia", size: size)
+        }
+        return .system(size: size, weight: weight, design: .serif)
+    }
+}
+
 // MARK: - App Theme Options (Kindle-Inspired Palettes)
 
 enum AppTheme: String, CaseIterable, Identifiable, Codable {
@@ -84,7 +113,7 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-// MARK: - Font Size Scale Options (Separated UI Sans-Serif & Content Book Serif)
+// MARK: - Font Size Scale Options (Separated UI Sans-Serif & Content Literata/Bookerly Serif)
 
 enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     case small = "Compact"
@@ -108,10 +137,10 @@ enum FontSizeScale: String, CaseIterable, Identifiable, Codable {
     var uiButtonFont: Font { Font.system(size: 15 * scaleFactor, weight: .semibold, design: .default) }
     var uiLabelFont: Font { Font.system(size: 13.5 * scaleFactor, weight: .medium, design: .default) }
 
-    // 2. Learning Reading Content Typography (Kindle Book Serif)
-    var contentTitleFont: Font { Font.system(size: 19.5 * scaleFactor, weight: .bold, design: .serif) }
-    var contentBodyFont: Font { Font.system(size: 16.0 * scaleFactor, weight: .regular, design: .serif) }
-    var contentPhoneticFont: Font { Font.system(size: 14.5 * scaleFactor, weight: .medium, design: .serif) }
+    // 2. Learning Reading Content Typography (Literata / Bookerly / Georgia / System Serif)
+    var contentTitleFont: Font { Font.kindleContentFont(size: 19.5 * scaleFactor, weight: .bold) }
+    var contentBodyFont: Font { Font.kindleContentFont(size: 16.0 * scaleFactor, weight: .regular) }
+    var contentPhoneticFont: Font { Font.kindleContentFont(size: 14.5 * scaleFactor, weight: .medium) }
 
     // Backward compatibility aliases
     var titleFont: Font { contentTitleFont }
