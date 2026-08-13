@@ -141,7 +141,7 @@ struct SettingsView: View {
                             .padding(.horizontal, 16)
                             .padding(.vertical, 9)
                             .foregroundStyle(.white)
-                            .background(AppGradients.indigoViolet)
+                            .background(themeManager.currentTheme.accentColor)
                             .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)

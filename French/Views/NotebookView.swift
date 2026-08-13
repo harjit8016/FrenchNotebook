@@ -93,29 +93,17 @@ private struct GridCategoryCard: View {
     let gradientIndex: Int
     @ObservedObject private var themeManager = ThemeManager.shared
 
-    private var cardGradient: LinearGradient {
-        let gradients = [
-            AppGradients.indigoViolet,
-            AppGradients.emeraldTeal,
-            AppGradients.sunsetRose,
-            AppGradients.oceanCyan,
-            AppGradients.amberGold
-        ]
-        return gradients[gradientIndex % gradients.count]
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(cardGradient)
+                        .fill(themeManager.currentTheme.accentColor.opacity(0.12))
                         .frame(width: 40, height: 40)
-                        .shadow(color: Color.black.opacity(0.12), radius: 4, x: 0, y: 2)
 
                     Image(systemName: section.iconName)
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
                 }
 
                 Spacer()
@@ -143,7 +131,7 @@ private struct GridCategoryCard: View {
             }
         }
         .padding(14)
-        .glassCard(cornerRadius: 18)
+        .glassCard(cornerRadius: 16)
     }
 }
 
@@ -243,13 +231,12 @@ private struct ModernNotebookItemCard: View {
                 HStack(spacing: 10) {
                     ZStack {
                         Circle()
-                            .fill(isSpeaking ? AppGradients.emeraldTeal : AppGradients.indigoViolet)
-                            .frame(width: 36, height: 36)
-                            .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
+                            .fill(isSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.accentColor.opacity(0.12))
+                            .frame(width: 34, height: 34)
 
                         Image(systemName: isSpeaking ? "stop.fill" : "speaker.wave.2.fill")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(.white)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(isSpeaking ? .white : themeManager.currentTheme.accentColor)
                     }
 
                     VStack(alignment: .leading, spacing: 2) {
@@ -272,16 +259,16 @@ private struct ModernNotebookItemCard: View {
                     Spacer(minLength: 0)
 
                     Image(systemName: isSpeaking ? "stop.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 19, weight: .semibold))
                         .foregroundStyle(themeManager.currentTheme.accentColor)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .background(themeManager.currentTheme.cardBackgroundColor.opacity(0.85))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(isSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.15), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(isSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.12), lineWidth: 1)
                 )
             }
             .buttonStyle(.plain)
@@ -296,10 +283,10 @@ private struct ModernNotebookItemCard: View {
                 HStack(alignment: .top, spacing: 6) {
                     Text("HACK")
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(AppGradients.sunsetRose)
+                        .background(themeManager.currentTheme.accentColor.opacity(0.14))
                         .clipShape(RoundedRectangle(cornerRadius: 4))
 
                     Text(note)
@@ -311,7 +298,7 @@ private struct ModernNotebookItemCard: View {
             }
         }
         .padding(14)
-        .glassCard(cornerRadius: 18, isPressed: isSpeaking)
+        .glassCard(cornerRadius: 16, isPressed: isSpeaking)
     }
 }
 

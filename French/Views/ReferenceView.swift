@@ -35,7 +35,7 @@ struct ReferenceView: View {
                             NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
                                 RuleCardView(card: ReferenceData.pronounRule, speech: speech)
                             }) {
-                                RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule", gradient: AppGradients.indigoViolet)
+                                RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule")
                             }
                             .buttonStyle(.plain)
                         }
@@ -46,7 +46,7 @@ struct ReferenceView: View {
                                     RuleCardView(card: card, speech: speech)
                                 }
                             }) {
-                                RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules", gradient: AppGradients.emeraldTeal)
+                                RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules")
                             }
                             .buttonStyle(.plain)
                         }
@@ -59,7 +59,7 @@ struct ReferenceView: View {
                                 VerbCardView(card: ReferenceData.faireCard, speech: speech)
                                 VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
                             }) {
-                                RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs", gradient: AppGradients.sunsetRose)
+                                RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs")
                             }
                             .buttonStyle(.plain)
                         }
@@ -68,7 +68,7 @@ struct ReferenceView: View {
                             NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals", iconName: "questionmark.circle") {
                                 RuleCardView(card: ReferenceData.modalNote, speech: speech)
                             }) {
-                                RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note", gradient: AppGradients.oceanCyan)
+                                RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note")
                             }
                             .buttonStyle(.plain)
                         }
@@ -79,7 +79,7 @@ struct ReferenceView: View {
                                     RuleCardView(card: card, speech: speech)
                                 }
                             }) {
-                                RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks", gradient: AppGradients.amberGold)
+                                RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks")
                             }
                             .buttonStyle(.plain)
                         }
@@ -107,7 +107,6 @@ private struct RefGridCard: View {
     let subtitle: String
     let iconName: String
     let countText: String
-    let gradient: LinearGradient
     @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
@@ -115,13 +114,12 @@ private struct RefGridCard: View {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(gradient)
+                        .fill(themeManager.currentTheme.accentColor.opacity(0.12))
                         .frame(width: 40, height: 40)
-                        .shadow(color: Color.black.opacity(0.12), radius: 4, x: 0, y: 2)
 
                     Image(systemName: iconName)
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
                 }
 
                 Spacer()
@@ -149,7 +147,7 @@ private struct RefGridCard: View {
             }
         }
         .padding(14)
-        .glassCard(cornerRadius: 18)
+        .glassCard(cornerRadius: 16)
     }
 }
 
@@ -200,7 +198,7 @@ struct RuleCardView: View {
             }
         }
         .padding(14)
-        .glassCard(cornerRadius: 18)
+        .glassCard(cornerRadius: 16)
     }
 }
 
@@ -240,12 +238,12 @@ struct VerbCardView: View {
                 } label: {
                     ZStack {
                         Circle()
-                            .fill(isVerbSpeaking ? AppGradients.emeraldTeal : AppGradients.sunsetRose)
+                            .fill(isVerbSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.accentColor.opacity(0.12))
                             .frame(width: 36, height: 36)
 
                         Image(systemName: isVerbSpeaking ? "stop.fill" : "speaker.wave.2.fill")
                             .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(isVerbSpeaking ? .white : themeManager.currentTheme.accentColor)
                     }
                 }
                 .buttonStyle(.plain)

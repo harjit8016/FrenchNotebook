@@ -22,13 +22,7 @@ struct FilterChipsView: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 7)
                             .background(
-                                Group {
-                                    if isSelected {
-                                        AppGradients.indigoViolet
-                                    } else {
-                                        themeManager.currentTheme.cardBackgroundColor.opacity(0.85)
-                                    }
-                                }
+                                isSelected ? themeManager.currentTheme.accentColor : themeManager.currentTheme.cardBackgroundColor.opacity(0.85)
                             )
                             .clipShape(Capsule())
                             .overlay(
