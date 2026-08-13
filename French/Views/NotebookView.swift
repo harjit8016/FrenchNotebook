@@ -26,7 +26,7 @@ struct NotebookView: View {
     }
 }
 
-// MARK: - Category Row View (UI Navigation - Roboto / Sans-Serif)
+// MARK: - Category Row View (Screen 1 - Untouched)
 
 private struct CategoryRowView: View {
     let section: NotebookSection
@@ -46,12 +46,10 @@ private struct CategoryRowView: View {
             }
 
             VStack(alignment: .leading, spacing: 3) {
-                // UI Header Title (Roboto / Sans-Serif)
                 Text(section.title)
                     .font(themeManager.fontSizeScale.uiTitleFont)
                     .foregroundStyle(themeManager.currentTheme.primaryTextColor)
 
-                // UI Description Subtitle (Roboto / Sans-Serif)
                 Text(section.description)
                     .font(themeManager.fontSizeScale.uiLabelFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
@@ -75,7 +73,7 @@ private struct CategoryRowView: View {
     }
 }
 
-// MARK: - Dedicated Detail View (Screen 2)
+// MARK: - Dedicated Detail View (Screen 2 - Full-Width Edge-to-Edge Separator Layout)
 
 struct NotebookSectionDetailView: View {
     let section: NotebookSection
@@ -84,20 +82,34 @@ struct NotebookSectionDetailView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 14) {
-                // UI Category Header Subtitle (Roboto / Sans-Serif)
+            VStack(alignment: .leading, spacing: 0) {
+                // UI Category Header Subtitle
                 Text(section.description)
                     .font(themeManager.fontSizeScale.uiLabelFont)
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
                     .padding(.horizontal, 16)
-                    .padding(.top, 4)
+                    .padding(.top, 12)
+                    .padding(.bottom, 12)
 
-                ForEach(section.items) { item in
-                    NotebookItemCard(item: item, speech: speech)
+                ForEach(Array(section.items.enumerated()), id: \.element.id) { index, item in
+                    VStack(spacing: 0) {
+                        // Full-Width Separator Line (Very left to very right)
+                        Rectangle()
+                            .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
+                            .frame(height: 1)
+
+                        // Item Content Cell (Full Screen Width with 16pt Content Padding)
+                        NotebookItemRow(item: item, speech: speech)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                    }
                 }
-                .padding(.horizontal, 16)
+
+                // Bottom closing separator line
+                Rectangle()
+                    .fill(themeManager.currentTheme.secondaryTextColor.opacity(0.18))
+                    .frame(height: 1)
             }
-            .padding(.vertical, 12)
         }
         .appBackground()
         .appNavigationStyle(title: section.title, displayMode: .inline)
@@ -135,104 +147,93 @@ private struct HighlightedTextView: View {
     }
 }
 
-// MARK: - Notebook Item Card (Learning Reading Content - Kindle Book Serif)
+// MARK: - Notebook Item Row (Screen 2: Clean, Actionable Audio Button, Edge-to-Edge Layout)
 
-private struct NotebookItemCard: View {
+private struct NotebookItemRow: View {
     let item: NotebookItem
     @ObservedObject var speech: SpeechService
     @ObservedObject private var themeManager = ThemeManager.shared
 
+    private var isSpeaking: Bool {
+        speech.currentlySpeakingItemID == item.id
+    }
+
     private var activeRange: NSRange? {
-        if speech.currentlySpeakingItemID == item.id {
+        if isSpeaking {
             return speech.currentWordRange
         }
         return nil
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    // Header Title (Kindle Book Serif)
-                    Text(item.french)
-                        .font(themeManager.fontSizeScale.contentTitleFont)
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                        .kindleTextFormatting(lineSpacing: 4)
-                        .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 8) {
+            // Header Title (Kindle Book Serif)
+            Text(item.french)
+                .font(themeManager.fontSizeScale.contentTitleFont)
+                .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                .kindleTextFormatting(lineSpacing: 4)
+                .fixedSize(horizontal: false, vertical: true)
 
-                    // Target Spoken Word Panel (Kindle Book Serif Content)
-                    if item.audioText != nil {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Audio:")
-                                .font(themeManager.fontSizeScale.uiLabelFont.bold())
-                                .foregroundStyle(themeManager.currentTheme.accentColor)
+            // MARK: - Actionable Audio Button Section (Tappable Content Pill)
+            Button {
+                HapticManager.shared.tapWord()
+                speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                            HighlightedTextView(
-                                fullText: item.spokenFrench,
-                                activeRange: activeRange,
-                                font: themeManager.fontSizeScale.contentBodyFont.bold()
-                            )
-                            .kindleTextFormatting(lineSpacing: 4)
-                            .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .appRecessedWell(cornerRadius: 10)
-                    }
+                    HighlightedTextView(
+                        fullText: item.spokenFrench,
+                        activeRange: activeRange,
+                        font: themeManager.fontSizeScale.contentBodyFont.bold()
+                    )
+                    .kindleTextFormatting(lineSpacing: 4)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                    // English Meaning (Kindle Book Serif)
-                    Text(item.english)
-                        .font(themeManager.fontSizeScale.contentBodyFont)
-                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                        .kindleTextFormatting(lineSpacing: 5)
-                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
 
-                    // Phonetic Guide (Kindle Book Serif)
-                    HStack(alignment: .top, spacing: 4) {
-                        Image(systemName: "text.phonetic")
-                            .font(.caption2)
-                            .padding(.top, 3)
-                        Text(item.phonetic)
-                            .font(themeManager.fontSizeScale.contentPhoneticFont)
-                            .kindleTextFormatting(lineSpacing: 3)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .foregroundStyle(themeManager.currentTheme.accentColor)
-
-                    // Optional Grammar Note (Kindle Book Serif)
-                    if let note = item.grammarNote {
-                        Text(note)
-                            .font(themeManager.fontSizeScale.uiLabelFont)
-                            .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                            .kindleTextFormatting(lineSpacing: 3)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .padding(.top, 1)
-                    }
+                    Image(systemName: "play.circle.fill")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(themeManager.currentTheme.accentColor.opacity(0.85))
                 }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .appNeumorphicCard(cornerRadius: 12, isPressed: isSpeaking)
+            }
+            .buttonStyle(.plain)
 
-                Spacer()
+            // English Meaning (Kindle Book Serif)
+            Text(item.english)
+                .font(themeManager.fontSizeScale.contentBodyFont)
+                .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                .kindleTextFormatting(lineSpacing: 5)
+                .fixedSize(horizontal: false, vertical: true)
 
-                // Prominent Speaker Button (Roboto UI Button)
-                Button {
-                    speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(themeManager.currentTheme.cardBackgroundColor)
-                            .frame(width: 44, height: 44)
-                            .appNeumorphicCard(cornerRadius: 22, isPressed: speech.currentlySpeakingItemID == item.id)
+            // Phonetic Guide (Kindle Book Serif)
+            HStack(alignment: .top, spacing: 4) {
+                Image(systemName: "text.phonetic")
+                    .font(.caption2)
+                    .padding(.top, 3)
+                Text(item.phonetic)
+                    .font(themeManager.fontSizeScale.contentPhoneticFont)
+                    .kindleTextFormatting(lineSpacing: 3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                        Image(systemName: speech.currentlySpeakingItemID == item.id ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundStyle(speech.currentlySpeakingItemID == item.id ? themeManager.currentTheme.accentColor : themeManager.currentTheme.primaryTextColor)
-                    }
-                }
-                .buttonStyle(.plain)
+            // Optional Grammar Note (Roboto UI Subtitle)
+            if let note = item.grammarNote {
+                Text(note)
+                    .font(themeManager.fontSizeScale.uiLabelFont)
+                    .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
+                    .kindleTextFormatting(lineSpacing: 3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 1)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .appNeumorphicCard(cornerRadius: 18, isPressed: speech.currentlySpeakingItemID == item.id)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
