@@ -4,7 +4,7 @@ import CoreText
 import AVFoundation
 import Combine
 
-// MARK: - Custom Font Helper (Bundled Official Literata TTF - Exact Kindle Bookerly Counterpart)
+// MARK: - Custom Font Helper (SF Pro Content Typography)
 
 extension Font {
     static func registerLiterataFonts() {
@@ -20,16 +20,8 @@ extension Font {
     }
 
     static func kindleContentFont(size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        if weight == .bold || weight == .semibold {
-            if UIFont(name: "Literata-Bold", size: size) != nil {
-                return .custom("Literata-Bold", size: size)
-            }
-        }
-        if UIFont(name: "Literata-Regular", size: size) != nil {
-            return .custom("Literata-Regular", size: size)
-        }
-        // Fallback to Georgia if needed
-        return .custom(weight == .bold ? "Georgia-Bold" : "Georgia", size: size)
+        // SF Pro (Apple System Font) for ultra-clean, modern, highly legible French content
+        return .system(size: size, weight: weight, design: .default)
     }
 }
 

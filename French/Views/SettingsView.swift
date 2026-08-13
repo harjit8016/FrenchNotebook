@@ -96,7 +96,7 @@ struct SettingsView: View {
                                 .font(themeManager.fontSizeScale.uiLabelFont.bold())
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                            // Reading content sample (Book Serif)
+                            // Reading content sample (SF Pro System Font)
                             Text("Bonjour ! Je m'appelle Harjit.")
                                 .font(themeManager.fontSizeScale.contentTitleFont)
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
