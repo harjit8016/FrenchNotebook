@@ -264,14 +264,19 @@ struct VerbCardView: View {
             // Compact Conjugation Grid Rows
             VStack(spacing: 6) {
                 ForEach(card.rows) { row in
+                    let isRowSpeaking = speech.currentlySpeakingItemID == row.id
                     Button {
                         HapticManager.shared.tapWord()
                         speech.speak(row.pronoun, itemID: row.id, rate: Float(themeManager.speechRate))
                     } label: {
                         HStack {
-                            Text(row.pronoun)
-                                .font(.system(size: 15, weight: .bold))
-                                .foregroundStyle(speech.currentlySpeakingItemID == row.id ? themeManager.currentTheme.accentColor : themeManager.currentTheme.primaryTextColor)
+                            HighlightedTextView(
+                                fullText: row.pronoun,
+                                activeRange: isRowSpeaking ? speech.currentWordRange : nil,
+                                font: .system(size: 15, weight: .bold),
+                                normalColor: themeManager.currentTheme.primaryTextColor,
+                                highlightColor: themeManager.currentTheme.accentColor
+                            )
 
                             Spacer()
 
@@ -279,7 +284,7 @@ struct VerbCardView: View {
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
-                            Image(systemName: speech.currentlySpeakingItemID == row.id ? "speaker.wave.3.fill" : "speaker.wave.2")
+                            Image(systemName: isRowSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2")
                                 .font(.system(size: 12))
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                         }
@@ -320,9 +325,13 @@ private struct ExampleRow: View {
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(example.french)
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(isSpeakingThis ? themeManager.currentTheme.accentColor : themeManager.currentTheme.primaryTextColor)
+                    HighlightedTextView(
+                        fullText: example.french,
+                        activeRange: isSpeakingThis ? speech.currentWordRange : nil,
+                        font: .system(size: 15, weight: .bold),
+                        normalColor: themeManager.currentTheme.primaryTextColor,
+                        highlightColor: themeManager.currentTheme.accentColor
+                    )
 
                     Text(example.english)
                         .font(.system(size: 12, weight: .regular))

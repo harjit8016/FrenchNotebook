@@ -216,6 +216,7 @@ private struct ModernNotebookItemCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // Header Title
             HStack(alignment: .top, spacing: 10) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(item.french)
@@ -238,26 +239,60 @@ private struct ModernNotebookItemCard: View {
                 }
 
                 Spacer()
+            }
 
-                // Circular Audio Play Button with Gradient Sheen
-                Button {
-                    HapticManager.shared.tapWord()
-                    speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
-                } label: {
+            // MARK: - Actionable Spoken Audio Pill Card with Real-Time Word Highlighting
+            Button {
+                HapticManager.shared.tapWord()
+                speech.speak(item.spokenFrench, itemID: item.id, rate: Float(themeManager.speechRate))
+            } label: {
+                HStack(spacing: 10) {
                     ZStack {
                         Circle()
                             .fill(isSpeaking ? AppGradients.emeraldTeal : AppGradients.indigoViolet)
-                            .frame(width: 42, height: 42)
-                            .shadow(color: Color.black.opacity(0.18), radius: 4, x: 0, y: 2)
+                            .frame(width: 36, height: 36)
+                            .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
 
                         Image(systemName: isSpeaking ? "speaker.wave.3.fill" : "speaker.wave.2.fill")
-                            .font(.system(size: 16, weight: .bold))
+                            .font(.system(size: 15, weight: .bold))
                             .foregroundStyle(.white)
                     }
-                }
-                .buttonStyle(.plain)
-            }
 
+                    VStack(alignment: .leading, spacing: 2) {
+                        if item.audioText != nil {
+                            Text("SPOKEN FRENCH")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(themeManager.currentTheme.accentColor)
+                        }
+
+                        HighlightedTextView(
+                            fullText: item.spokenFrench,
+                            activeRange: isSpeaking ? speech.currentWordRange : nil,
+                            font: themeManager.fontSizeScale.contentBodyFont.bold(),
+                            normalColor: themeManager.currentTheme.primaryTextColor,
+                            highlightColor: themeManager.currentTheme.accentColor
+                        )
+                        .kindleTextFormatting(lineSpacing: 3)
+                    }
+
+                    Spacer(minLength: 0)
+
+                    Image(systemName: isSpeaking ? "pause.circle.fill" : "play.circle.fill")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(themeManager.currentTheme.cardBackgroundColor.opacity(0.85))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .strokeBorder(isSpeaking ? themeManager.currentTheme.accentColor : themeManager.currentTheme.secondaryTextColor.opacity(0.15), lineWidth: 1)
+                )
+            }
+            .buttonStyle(.plain)
+
+            // English Meaning
             Text(item.english)
                 .font(themeManager.fontSizeScale.contentBodyFont)
                 .foregroundStyle(themeManager.currentTheme.secondaryTextColor)

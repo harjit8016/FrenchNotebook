@@ -9,6 +9,7 @@ final class SpeechService: NSObject, ObservableObject {
     @Published var isSpeaking: Bool = false
     @Published var currentlySpeakingItemID: UUID? = nil
     @Published var currentWordRange: NSRange? = nil
+    @Published var currentSpokenText: String = ""
 
     private var activeUtterance: AVSpeechUtterance? = nil
 
@@ -76,6 +77,7 @@ final class SpeechService: NSObject, ObservableObject {
         activeUtterance = utterance
         currentlySpeakingItemID = itemID
         currentWordRange = nil
+        currentSpokenText = printableText
         isSpeaking = true
 
         synthesizer.speak(utterance)

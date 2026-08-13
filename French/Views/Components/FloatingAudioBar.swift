@@ -31,10 +31,14 @@ struct FloatingAudioBar: View {
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(themeManager.currentTheme.accentColor)
 
-                    Text(speech.currentWordRange != nil ? "Pronouncing word..." : "Listening...")
-                        .font(themeManager.fontSizeScale.captionFont)
-                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                        .lineLimit(1)
+                    HighlightedTextView(
+                        fullText: speech.currentSpokenText.isEmpty ? "Listening..." : speech.currentSpokenText,
+                        activeRange: speech.currentWordRange,
+                        font: .system(size: 13, weight: .bold),
+                        normalColor: themeManager.currentTheme.primaryTextColor,
+                        highlightColor: themeManager.currentTheme.accentColor
+                    )
+                    .lineLimit(1)
                 }
 
                 Spacer()
