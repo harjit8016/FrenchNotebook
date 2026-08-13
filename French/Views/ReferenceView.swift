@@ -35,7 +35,7 @@ struct ReferenceView: View {
                             NavigationLink(destination: ReferenceCategoryDetailView(title: "Pronouns", iconName: "person.2.fill") {
                                 RuleCardView(card: ReferenceData.pronounRule, speech: speech)
                             }) {
-                                RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule")
+                                RefGridCard(title: "Subject Pronouns", subtitle: "je, tu, il, elle...", iconName: "person.2.fill", countText: "1 rule", color: CategoryColors.indigo)
                             }
                             .buttonStyle(.plain)
                         }
@@ -46,7 +46,7 @@ struct ReferenceView: View {
                                     RuleCardView(card: card, speech: speech)
                                 }
                             }) {
-                                RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules")
+                                RefGridCard(title: "Liaison Rules", subtitle: "Linking & silent H", iconName: "link", countText: "\(ReferenceData.liaisonRules.count) rules", color: CategoryColors.emerald)
                             }
                             .buttonStyle(.plain)
                         }
@@ -59,7 +59,7 @@ struct ReferenceView: View {
                                 VerbCardView(card: ReferenceData.faireCard, speech: speech)
                                 VerbCardView(card: ReferenceData.erVerbCard, speech: speech)
                             }) {
-                                RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs")
+                                RefGridCard(title: "Verb Basics", subtitle: "être, avoir, aller, faire...", iconName: "character.book.closed.fill", countText: "5 verbs", color: CategoryColors.rose)
                             }
                             .buttonStyle(.plain)
                         }
@@ -68,7 +68,7 @@ struct ReferenceView: View {
                             NavigationLink(destination: ReferenceCategoryDetailView(title: "Modals", iconName: "questionmark.circle") {
                                 RuleCardView(card: ReferenceData.modalNote, speech: speech)
                             }) {
-                                RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note")
+                                RefGridCard(title: "Modals (can/must)", subtitle: "pouvoir, devoir...", iconName: "questionmark.circle", countText: "1 note", color: CategoryColors.cyan)
                             }
                             .buttonStyle(.plain)
                         }
@@ -79,7 +79,7 @@ struct ReferenceView: View {
                                     RuleCardView(card: card, speech: speech)
                                 }
                             }) {
-                                RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks")
+                                RefGridCard(title: "Cognate Hacks", subtitle: "-tion, -eur, -té...", iconName: "equal.circle", countText: "\(ReferenceData.cognateHacks.count) hacks", color: CategoryColors.amber)
                             }
                             .buttonStyle(.plain)
                         }
@@ -107,6 +107,7 @@ private struct RefGridCard: View {
     let subtitle: String
     let iconName: String
     let countText: String
+    var color: Color = CategoryColors.indigo
     @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
@@ -114,22 +115,23 @@ private struct RefGridCard: View {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(themeManager.currentTheme.accentColor.opacity(0.12))
+                        .fill(color)
                         .frame(width: 40, height: 40)
+                        .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
 
                     Image(systemName: iconName)
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                        .foregroundStyle(.white)
                 }
 
                 Spacer()
 
                 Text(countText)
                     .font(.system(size: 10, weight: .bold, design: .rounded))
-                    .foregroundStyle(themeManager.currentTheme.accentColor)
+                    .foregroundStyle(color)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                    .background(color.opacity(0.12))
                     .clipShape(Capsule())
             }
 

@@ -93,27 +93,32 @@ private struct GridCategoryCard: View {
     let gradientIndex: Int
     @ObservedObject private var themeManager = ThemeManager.shared
 
+    private var categoryColor: Color {
+        CategoryColors.color(for: gradientIndex)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 ZStack {
                     Circle()
-                        .fill(themeManager.currentTheme.accentColor.opacity(0.12))
+                        .fill(categoryColor)
                         .frame(width: 40, height: 40)
+                        .shadow(color: Color.black.opacity(0.12), radius: 3, x: 0, y: 2)
 
                     Image(systemName: section.iconName)
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                        .foregroundStyle(.white)
                 }
 
                 Spacer()
 
                 Text("\(section.items.count)")
                     .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .foregroundStyle(themeManager.currentTheme.accentColor)
+                    .foregroundStyle(categoryColor)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(themeManager.currentTheme.accentColor.opacity(0.12))
+                    .background(categoryColor.opacity(0.12))
                     .clipShape(Capsule())
             }
 

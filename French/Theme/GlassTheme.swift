@@ -35,6 +35,24 @@ struct ModernCleanCardModifier: ViewModifier {
     }
 }
 
+// MARK: - Solid Distinct Category Colors for Easy Visual Memory & Mapping
+
+enum CategoryColors {
+    static let indigo  = Color(red: 0.38, green: 0.40, blue: 0.95)
+    static let emerald = Color(red: 0.05, green: 0.68, blue: 0.52)
+    static let rose    = Color(red: 0.92, green: 0.30, blue: 0.45)
+    static let cyan    = Color(red: 0.00, green: 0.62, blue: 0.88)
+    static let amber   = Color(red: 0.95, green: 0.55, blue: 0.10)
+    static let purple  = Color(red: 0.62, green: 0.35, blue: 0.95)
+    static let teal    = Color(red: 0.10, green: 0.65, blue: 0.65)
+    static let orange  = Color(red: 0.95, green: 0.42, blue: 0.12)
+
+    static func color(for index: Int) -> Color {
+        let palette = [indigo, emerald, rose, cyan, amber, purple, teal, orange]
+        return palette[index % palette.count]
+    }
+}
+
 extension View {
     /// Refined, distraction-free Apple HIG card styling with tactile touch physics.
     func glassCard(cornerRadius: CGFloat = 16, isPressed: Bool = false) -> some View {
