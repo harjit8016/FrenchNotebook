@@ -297,13 +297,28 @@ private struct BasicsItemCard: View {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 8) {
-                            Image(systemName: item.iconName)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(themeManager.currentTheme.accentColor)
+                            if let hex = item.colorHex {
+                                Circle()
+                                    .fill(Color(hex: hex))
+                                    .frame(width: 18, height: 18)
+                                    .overlay(
+                                        Circle()
+                                            .strokeBorder(Color.primary.opacity(0.20), lineWidth: 1)
+                                    )
+                                    .shadow(color: Color.black.opacity(0.10), radius: 2, x: 0, y: 1)
+                            } else {
+                                Image(systemName: item.iconName)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundStyle(themeManager.currentTheme.accentColor)
+                            }
 
                             Text(item.french)
                                 .font(.system(size: 17, weight: .bold))
                                 .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+
+                            if let gender = item.genderTag {
+                                GenderTagBadge(gender: gender)
+                            }
                         }
 
                         // Phonetic & Punjabi Sound Pill
@@ -366,6 +381,59 @@ private struct BasicsItemCard: View {
             .glassCard(cornerRadius: 16, isPressed: isSpeaking)
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Gender Tag Badge Helper
+
+private struct GenderTagBadge: View {
+    let gender: String
+
+    private var badgeColor: Color {
+        switch gender.uppercased() {
+        case "MASC":
+            return .blue
+        case "FEM":
+            return .pink
+        default:
+            return .purple
+        }
+    }
+
+    var body: some View {
+        Text(gender)
+            .font(.system(size: 9, weight: .bold, design: .rounded))
+            .foregroundStyle(badgeColor)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(badgeColor.opacity(0.14))
+            .clipShape(Capsule())
+    }
+}
+
+// MARK: - Color Hex Extension Helper
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 6: // RGB
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
 

@@ -23,6 +23,8 @@ struct BasicsItem: Identifiable {
     let iconName: String
     var grammarNote: String? = nil
     var spokenText: String? = nil
+    var colorHex: String? = nil
+    var genderTag: String? = nil // "MASC", "FEM", "MASC & FEM"
 }
 
 // MARK: - Basics Category Model
@@ -48,7 +50,7 @@ struct BasicsSectionGroup: Identifiable {
 
 enum BasicsData {
 
-    // MARK: - 1. Alphabet (A to Z) - 100% Semantic Matching SF Symbols
+    // MARK: - 1. Alphabet (A to Z)
     static let alphabet: [AlphabetItem] = [
         AlphabetItem(letter: "A", frenchWord: "Arbre", englishMeaning: "Tree", phonetic: "ah · ahr-brə", punjabiSound: "ਆ · ਆਰਬ੍ਰ", iconName: "tree.fill"),
         AlphabetItem(letter: "B", frenchWord: "Bateau", englishMeaning: "Boat", phonetic: "beh · bah-toh", punjabiSound: "ਬੇ · ਬਾਤੋ", iconName: "sailboat.fill"),
@@ -118,15 +120,15 @@ enum BasicsData {
                 BasicsCategory(
                     title: "Colors (Les Couleurs)",
                     iconName: "paintpalette.fill",
-                    description: "Learn colors in French with visual indicators.",
+                    description: "Colors in French with exact color dots & gender forms.",
                     items: [
-                        BasicsItem(french: "Rouge", english: "Red", phonetic: "roozh", punjabiSound: "ਰੂਜ਼", iconName: "paintpalette.fill"),
-                        BasicsItem(french: "Bleu", english: "Blue", phonetic: "bluh", punjabiSound: "ਬਲੂ", iconName: "paintpalette.fill"),
-                        BasicsItem(french: "Vert", english: "Green", phonetic: "vair", punjabiSound: "ਵੇਖ਼", iconName: "leaf.fill"),
-                        BasicsItem(french: "Jaune", english: "Yellow", phonetic: "zhohn", punjabiSound: "ਜ਼ੋਨ", iconName: "sun.max.fill"),
-                        BasicsItem(french: "Blanc", english: "White", phonetic: "blahn", punjabiSound: "ਬਲਾਂ", iconName: "sparkles"),
-                        BasicsItem(french: "Noir", english: "Black", phonetic: "nwahr", punjabiSound: "ਨਵਾਖ਼", iconName: "moon.fill"),
-                        BasicsItem(french: "Orange / Rose", english: "Orange / Pink", phonetic: "oh-rahnzh / rohz", punjabiSound: "ਓਰਾਂਜ਼ / ਰੋਜ਼", iconName: "paintpalette.fill", spokenText: "Orange, Rose")
+                        BasicsItem(french: "Rouge", english: "Red (m/f invariable)", phonetic: "roozh", punjabiSound: "ਰੂਜ਼", iconName: "paintpalette.fill", colorHex: "#FF3B30", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Bleu / Bleue", english: "Blue (m: Bleu | f: Bleue)", phonetic: "bluh", punjabiSound: "ਬਲੂ", iconName: "paintpalette.fill", colorHex: "#007AFF", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Vert / Verte", english: "Green (m: Vert | f: Verte)", phonetic: "vair / vairt", punjabiSound: "ਵੇਖ਼ / ਵੇਖ਼ਤ", iconName: "paintpalette.fill", spokenText: "Vert, Verte", colorHex: "#34C759", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Jaune", english: "Yellow (m/f invariable)", phonetic: "zhohn", punjabiSound: "ਜ਼ੋਨ", iconName: "paintpalette.fill", colorHex: "#FFCC00", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Blanc / Blanche", english: "White (m: Blanc | f: Blanche)", phonetic: "blahn / blahnsh", punjabiSound: "ਬਲਾਂ / ਬਲਾਂਸ਼", iconName: "paintpalette.fill", spokenText: "Blanc, Blanche", colorHex: "#FFFFFF", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Noir / Noire", english: "Black (m: Noir | f: Noire)", phonetic: "nwahr", punjabiSound: "ਨਵਾਖ਼", iconName: "paintpalette.fill", spokenText: "Noir, Noire", colorHex: "#1C1C1E", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Orange / Rose", english: "Orange (m/f) & Pink (m/f)", phonetic: "oh-rahnzh / rohz", punjabiSound: "ਓਰਾਂਜ਼ / ਰੋਜ਼", iconName: "paintpalette.fill", spokenText: "Orange, Rose", colorHex: "#FF9500", genderTag: "MASC & FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -134,11 +136,11 @@ enum BasicsData {
                     iconName: "square.on.circle.fill",
                     description: "Geometric shapes and forms.",
                     items: [
-                        BasicsItem(french: "Le Cercle", english: "Circle", phonetic: "luh sair-klə", punjabiSound: "ਲੁ ਸੈਰਕਲ", iconName: "circle.fill"),
-                        BasicsItem(french: "Le Carré", english: "Square", phonetic: "luh kah-ray", punjabiSound: "ਲੁ ਕਾਰੇ", iconName: "square.fill"),
-                        BasicsItem(french: "Le Triangle", english: "Triangle", phonetic: "luh treh-ahn-glə", punjabiSound: "ਲੁ ਤ੍ਰਿਆਂਗਲ", iconName: "triangle.fill"),
-                        BasicsItem(french: "L'Étoile", english: "Star", phonetic: "lay-twahl", punjabiSound: "ਲੇਤਵਾਲ", iconName: "star.fill"),
-                        BasicsItem(french: "Le Rectangle", english: "Rectangle", phonetic: "luh khayk-tahn-glə", punjabiSound: "ਲੁ ਰੇਕਤਾਂਗਲ", iconName: "rectangle.fill")
+                        BasicsItem(french: "Le Cercle", english: "Circle", phonetic: "luh sair-klə", punjabiSound: "ਲੁ ਸੈਰਕਲ", iconName: "circle.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Carré", english: "Square", phonetic: "luh kah-ray", punjabiSound: "ਲੁ ਕਾਰੇ", iconName: "square.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Triangle", english: "Triangle", phonetic: "luh treh-ahn-glə", punjabiSound: "ਲੁ ਤ੍ਰਿਆਂਗਲ", iconName: "triangle.fill", genderTag: "MASC"),
+                        BasicsItem(french: "L'Étoile", english: "Star (la)", phonetic: "lay-twahl", punjabiSound: "ਲੇਤਵਾਲ", iconName: "star.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Le Rectangle", english: "Rectangle", phonetic: "luh khayk-tahn-glə", punjabiSound: "ਲੁ ਰੇਕਤਾਂਗਲ", iconName: "rectangle.fill", genderTag: "MASC")
                     ]
                 )
             ]
@@ -154,12 +156,12 @@ enum BasicsData {
                     iconName: "person.fill",
                     description: "Human body parts in French.",
                     items: [
-                        BasicsItem(french: "La Tête", english: "Head", phonetic: "lah teht", punjabiSound: "ਲਾ ਤੇਤ", iconName: "face.smiling"),
-                        BasicsItem(french: "Les Épaules", english: "Shoulders", phonetic: "leh-zay-pohl", punjabiSound: "ਲੇਜ਼ੇਪੋਲ", iconName: "person.fill"),
-                        BasicsItem(french: "Les Yeux", english: "Eyes", phonetic: "leh-zyuh", punjabiSound: "ਲੇਜ਼ੂ", iconName: "eye.fill"),
-                        BasicsItem(french: "Les Oreilles", english: "Ears", phonetic: "leh-zoh-ray-yə", punjabiSound: "ਲੇਜ਼ੋਰੇਯ", iconName: "ear.fill"),
-                        BasicsItem(french: "Les Mains", english: "Hands", phonetic: "leh mahn", punjabiSound: "ਲੇ ਮੈਂ", iconName: "hand.raised.fill"),
-                        BasicsItem(french: "Les Pieds", english: "Feet", phonetic: "leh pyay", punjabiSound: "ਲੇ ਪਿਏ", iconName: "shoeprints.fill")
+                        BasicsItem(french: "La Tête", english: "Head", phonetic: "lah teht", punjabiSound: "ਲਾ ਤੇਤ", iconName: "face.smiling", genderTag: "FEM"),
+                        BasicsItem(french: "Les Épaules", english: "Shoulders (la)", phonetic: "leh-zay-pohl", punjabiSound: "ਲੇਜ਼ੇਪੋਲ", iconName: "person.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Les Yeux", english: "Eyes (un œil / le)", phonetic: "leh-zyuh", punjabiSound: "ਲੇਜ਼ੂ", iconName: "eye.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Les Oreilles", english: "Ears (une / la)", phonetic: "leh-zoh-ray-yə", punjabiSound: "ਲੇਜ਼ੋਰੇਯ", iconName: "ear.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Les Mains", english: "Hands (la main)", phonetic: "leh mahn", punjabiSound: "ਲੇ ਮੈਂ", iconName: "hand.raised.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Les Pieds", english: "Feet (le pied)", phonetic: "leh pyay", punjabiSound: "ਲੇ ਪਿਏ", iconName: "shoeprints.fill", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -167,12 +169,12 @@ enum BasicsData {
                     iconName: "house.circle.fill",
                     description: "Parents, siblings, and relatives.",
                     items: [
-                        BasicsItem(french: "La Mère (Maman)", english: "Mother (Mom)", phonetic: "lah mair-kh", punjabiSound: "ਲਾ ਮੇਖ਼ (ਮਾਮਾਂ)", iconName: "person.crop.circle.fill", spokenText: "La Mère, Maman"),
-                        BasicsItem(french: "Le Père (Papa)", english: "Father (Dad)", phonetic: "luh pair-kh", punjabiSound: "ਲੁ ਪੇਖ਼ (ਪਾਪਾ)", iconName: "person.crop.circle.fill", spokenText: "Le Père, Papa"),
-                        BasicsItem(french: "Le Frère", english: "Brother", phonetic: "luh frehr", punjabiSound: "ਲੁ ਫ੍ਰੇਖ਼", iconName: "person.fill"),
-                        BasicsItem(french: "La Sœur", english: "Sister", phonetic: "lah suhr", punjabiSound: "ਲਾ ਸੂਖ਼", iconName: "person.fill"),
-                        BasicsItem(french: "Le Grand-père", english: "Grandfather", phonetic: "luh grahn-pair-kh", punjabiSound: "ਲੁ ਗ੍ਰਾਂ-ਪੇਖ਼", iconName: "person.crop.square.fill"),
-                        BasicsItem(french: "La Grand-mère", english: "Grandmother", phonetic: "lah grahn-mair-kh", punjabiSound: "ਲਾ ਗ੍ਰਾਂ-ਮੇਖ਼", iconName: "person.crop.square.fill")
+                        BasicsItem(french: "La Mère (Maman)", english: "Mother (Mom)", phonetic: "lah mair-kh", punjabiSound: "ਲਾ ਮੇਖ਼ (ਮਾਮਾਂ)", iconName: "person.crop.circle.fill", spokenText: "La Mère, Maman", genderTag: "FEM"),
+                        BasicsItem(french: "Le Père (Papa)", english: "Father (Dad)", phonetic: "luh pair-kh", punjabiSound: "ਲੁ ਪੇਖ਼ (ਪਾਪਾ)", iconName: "person.crop.circle.fill", spokenText: "Le Père, Papa", genderTag: "MASC"),
+                        BasicsItem(french: "Le Frère", english: "Brother", phonetic: "luh frehr", punjabiSound: "ਲੁ ਫ੍ਰੇਖ਼", iconName: "person.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Sœur", english: "Sister", phonetic: "lah suhr", punjabiSound: "ਲਾ ਸੂਖ਼", iconName: "person.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Le Grand-père", english: "Grandfather", phonetic: "luh grahn-pair-kh", punjabiSound: "ਲੁ ਗ੍ਰਾਂ-ਪੇਖ਼", iconName: "person.crop.square.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Grand-mère", english: "Grandmother", phonetic: "lah grahn-mair-kh", punjabiSound: "ਲਾ ਗ੍ਰਾਂ-ਮੇਖ਼", iconName: "person.crop.square.fill", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -180,9 +182,9 @@ enum BasicsData {
                     iconName: "face.smiling.fill",
                     description: "Express how you feel.",
                     items: [
-                        BasicsItem(french: "Je suis heureux / heureuse", english: "I am happy", phonetic: "zhuh swee uh-ruh", punjabiSound: "ਜ਼ੁ ਸੁਈ ਊਰੂ", iconName: "face.smiling.fill", spokenText: "Je suis heureux, heureuse"),
-                        BasicsItem(french: "Je suis triste", english: "I am sad", phonetic: "zhuh swee treest", punjabiSound: "ਜ਼ੁ ਸੁਈ ਤ੍ਰੀਸਤ", iconName: "cloud.rain.fill"),
-                        BasicsItem(french: "Je suis fatigué(e)", english: "I am tired", phonetic: "zhuh swee fah-tee-gay", punjabiSound: "ਜ਼ੁ ਸੁਈ ਫਾਤੀਗੇ", iconName: "bed.double.fill", spokenText: "Je suis fatigué"),
+                        BasicsItem(french: "Je suis heureux (m) / heureuse (f)", english: "I am happy", phonetic: "zhuh swee uh-ruh", punjabiSound: "ਜ਼ੁ ਸੁਈ ਊਰੂ", iconName: "face.smiling.fill", spokenText: "Je suis heureux, heureuse", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Je suis triste (m/f)", english: "I am sad", phonetic: "zhuh swee treest", punjabiSound: "ਜ਼ੁ ਸੁਈ ਤ੍ਰੀਸਤ", iconName: "cloud.rain.fill", genderTag: "MASC & FEM"),
+                        BasicsItem(french: "Je suis fatigué (m) / fatiguée (f)", english: "I am tired", phonetic: "zhuh swee fah-tee-gay", punjabiSound: "ਜ਼ੁ ਸੁਈ ਫਾਤੀਗੇ", iconName: "bed.double.fill", spokenText: "Je suis fatigué", genderTag: "MASC & FEM"),
                         BasicsItem(french: "J'ai faim", english: "I am hungry (I have hunger)", phonetic: "zhay fahn", punjabiSound: "ਜ਼ੇ ਫੈਂ", iconName: "fork.knife"),
                         BasicsItem(french: "J'ai soif", english: "I am thirsty (I have thirst)", phonetic: "zhay swahf", punjabiSound: "ਜ਼ੇ ਸਵਾਫ", iconName: "cup.and.saucer.fill")
                     ]
@@ -192,13 +194,13 @@ enum BasicsData {
                     iconName: "tshirt.fill",
                     description: "Everyday clothes and grooming items.",
                     items: [
-                        BasicsItem(french: "Le Peigne", english: "Comb", phonetic: "luh pehn-yə", punjabiSound: "ਲੁ ਪੇਨਯ", iconName: "sparkles"),
-                        BasicsItem(french: "L'Huile pour cheveux", english: "Hair oil", phonetic: "lweel poor shuh-vuh", punjabiSound: "ਲੁਈਲ ਪੂਖ਼ ਸ਼ੁਵੂ", iconName: "drop.fill"),
-                        BasicsItem(french: "Le Sèche-cheveux", english: "Hair dryer", phonetic: "luh sehsh-shuh-vuh", punjabiSound: "ਲੁ ਸੈਸ਼-ਸ਼ੁਵੂ", iconName: "wind"),
-                        BasicsItem(french: "Le T-shirt", english: "T-shirt", phonetic: "luh tee-shurt", punjabiSound: "ਲੁ ਟੀ-ਸ਼ਰਟ", iconName: "tshirt.fill"),
-                        BasicsItem(french: "Les Chaussures", english: "Shoes", phonetic: "leh shoh-soor", punjabiSound: "ਲੇ ਸ਼ੋਸੂਖ਼", iconName: "shoeprints.fill"),
-                        BasicsItem(french: "Le Pyjama", english: "Pajamas", phonetic: "luh pee-zhah-mah", punjabiSound: "ਲੁ ਪੀਜ਼ਾਮਾ", iconName: "bed.double.fill"),
-                        BasicsItem(french: "Les Sous-vêtements", english: "Underwear", phonetic: "leh soo-veh-tmah", punjabiSound: "ਲੇ ਸੂ-ਵੇਤਮਾਂ", iconName: "tshirt.fill")
+                        BasicsItem(french: "Le Peigne", english: "Comb", phonetic: "luh pehn-yə", punjabiSound: "ਲੁ ਪੇਨਯ", iconName: "sparkles", genderTag: "MASC"),
+                        BasicsItem(french: "L'Huile pour cheveux", english: "Hair oil (la)", phonetic: "lweel poor shuh-vuh", punjabiSound: "ਲੁਈਲ ਪੂਖ਼ ਸ਼ੁਵੂ", iconName: "drop.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Le Sèche-cheveux", english: "Hair dryer", phonetic: "luh sehsh-shuh-vuh", punjabiSound: "ਲੁ ਸੈਸ਼-ਸ਼ੁਵੂ", iconName: "wind", genderTag: "MASC"),
+                        BasicsItem(french: "Le T-shirt", english: "T-shirt", phonetic: "luh tee-shurt", punjabiSound: "ਲੁ ਟੀ-ਸ਼ਰਟ", iconName: "tshirt.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Les Chaussures", english: "Shoes (la)", phonetic: "leh shoh-soor", punjabiSound: "ਲੇ ਸ਼ੋਸੂਖ਼", iconName: "shoeprints.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Le Pyjama", english: "Pajamas", phonetic: "luh pee-zhah-mah", punjabiSound: "ਲੁ ਪੀਜ਼ਾਮਾ", iconName: "bed.double.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Les Sous-vêtements", english: "Underwear (le)", phonetic: "leh soo-veh-tmah", punjabiSound: "ਲੇ ਸੂ-ਵੇਤਮਾਂ", iconName: "tshirt.fill", genderTag: "MASC")
                     ]
                 )
             ]
@@ -212,25 +214,25 @@ enum BasicsData {
                 BasicsCategory(
                     title: "Days of the Week",
                     iconName: "calendar",
-                    description: "The 7 days of the week in French.",
+                    description: "The 7 days of the week (all masculine in French).",
                     items: [
-                        BasicsItem(french: "Lundi", english: "Monday", phonetic: "luhn-dee", punjabiSound: "ਲੰਦੀ", iconName: "calendar"),
-                        BasicsItem(french: "Mardi", english: "Tuesday", phonetic: "mar-dee", punjabiSound: "ਮਾਰਦੀ", iconName: "calendar"),
-                        BasicsItem(french: "Mercredi", english: "Wednesday", phonetic: "mair-kruh-dee", punjabiSound: "ਮੈਖ਼ਕ੍ਰੁਦੀ", iconName: "calendar"),
-                        BasicsItem(french: "Jeudi", english: "Thursday", phonetic: "zhuh-dee", punjabiSound: "ਜ਼ੁਦੀ", iconName: "calendar"),
-                        BasicsItem(french: "Vendredi", english: "Friday", phonetic: "vahn-druh-dee", punjabiSound: "ਵਾਂਦ੍ਰੁਦੀ", iconName: "calendar"),
-                        BasicsItem(french: "Samedi", english: "Saturday", phonetic: "sahm-dee", punjabiSound: "ਸਾਮਦੀ", iconName: "calendar"),
-                        BasicsItem(french: "Dimanche", english: "Sunday", phonetic: "dee-mahnsh", punjabiSound: "ਦੀਮਾਂਸ਼", iconName: "sun.max.fill")
+                        BasicsItem(french: "Lundi", english: "Monday (Le)", phonetic: "luhn-dee", punjabiSound: "ਲੰਦੀ", iconName: "calendar", genderTag: "MASC"),
+                        BasicsItem(french: "Mardi", english: "Tuesday (Le)", phonetic: "mar-dee", punjabiSound: "ਮਾਰਦੀ", iconName: "calendar", genderTag: "MASC"),
+                        BasicsItem(french: "Mercredi", english: "Wednesday (Le)", phonetic: "mair-kruh-dee", punjabiSound: "ਮੈਖ਼ਕ੍ਰੁਦੀ", iconName: "calendar", genderTag: "MASC"),
+                        BasicsItem(french: "Jeudi", english: "Thursday (Le)", phonetic: "zhuh-dee", punjabiSound: "ਜ਼ੁਦੀ", iconName: "calendar", genderTag: "MASC"),
+                        BasicsItem(french: "Vendredi", english: "Friday (Le)", phonetic: "vahn-druh-dee", punjabiSound: "ਵਾਂਦ੍ਰੁਦੀ", iconName: "calendar", genderTag: "MASC"),
+                        BasicsItem(french: "Samedi", english: "Saturday (Le)", phonetic: "sahm-dee", punjabiSound: "ਸਾਮਦੀ", iconName: "calendar", genderTag: "MASC"),
+                        BasicsItem(french: "Dimanche", english: "Sunday (Le)", phonetic: "dee-mahnsh", punjabiSound: "ਦੀਮਾਂਸ਼", iconName: "sun.max.fill", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
                     title: "Months of the Year",
                     iconName: "calendar.badge.clock",
-                    description: "The 12 months in French.",
+                    description: "The 12 months in French (all masculine).",
                     items: [
-                        BasicsItem(french: "Janvier, Février, Mars, Avril", english: "Jan, Feb, Mar, Apr", phonetic: "zhahn-vyay, fay-vryay, marz, ah-vreel", punjabiSound: "ਜ਼ਾਂਵੀਏ, ਫੇਵਰੀਏ, ਮਾਰਸ, ਆਵਰੀਲ", iconName: "snowflake"),
-                        BasicsItem(french: "Mai, Juin, Juillet, Août", english: "May, June, July, Aug", phonetic: "meh, zhwahn, zhwee-yeh, oot", punjabiSound: "ਮੇ, ਜ਼ਵਾਂ, ਜ਼ੁਈਏ, ਊਤ", iconName: "sun.max.fill"),
-                        BasicsItem(french: "Septembre, Octobre, Novembre, Décembre", english: "Sep, Oct, Nov, Dec", phonetic: "sep-tahm-brə, ok-toh-brə, noh-vahm-brə, day-sahm-brə", punjabiSound: "ਸੈਪਤਾਂਬ੍ਰ, ਓਕਤੋਬ੍ਰ, ਨੋਵਾਂਬ੍ਰ, ਦੇਸਾਂਬ੍ਰ", iconName: "leaf.fill")
+                        BasicsItem(french: "Janvier, Février, Mars, Avril", english: "Jan, Feb, Mar, Apr (m)", phonetic: "zhahn-vyay, fay-vryay, marz, ah-vreel", punjabiSound: "ਜ਼ਾਂਵੀਏ, ਫੇਵਰੀਏ, ਮਾਰਸ, ਆਵਰੀਲ", iconName: "snowflake", genderTag: "MASC"),
+                        BasicsItem(french: "Mai, Juin, Juillet, Août", english: "May, June, July, Aug (m)", phonetic: "meh, zhwahn, zhwee-yeh, oot", punjabiSound: "ਮੇ, ਜ਼ਵਾਂ, ਜ਼ੁਈਏ, ਊਤ", iconName: "sun.max.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Septembre, Octobre, Novembre, Décembre", english: "Sep, Oct, Nov, Dec (m)", phonetic: "sep-tahm-brə, ok-toh-brə, noh-vahm-brə, day-sahm-brə", punjabiSound: "ਸੈਪਤਾਂਬ੍ਰ, ਓਕਤੋਬ੍ਰ, ਨੋਵਾਂਬ੍ਰ, ਦੇਸਾਂਬ੍ਰ", iconName: "leaf.fill", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -238,10 +240,10 @@ enum BasicsData {
                     iconName: "cloud.sun.fill",
                     description: "Talk about weather and four seasons.",
                     items: [
-                        BasicsItem(french: "L'Été", english: "Summer", phonetic: "lay-tay", punjabiSound: "ਲੇਤੇ", iconName: "sun.max.fill"),
-                        BasicsItem(french: "L'Hiver", english: "Winter", phonetic: "lee-vair", punjabiSound: "ਲੀਵੇਖ਼", iconName: "snowflake"),
-                        BasicsItem(french: "L'Automne", english: "Autumn / Fall", phonetic: "loh-tuhn", punjabiSound: "ਲੋਤਨ", iconName: "leaf.fill"),
-                        BasicsItem(french: "Le Printemps", english: "Spring", phonetic: "luh prahn-tahn", punjabiSound: "ਲੁ ਪ੍ਰਾਂਤਾਂ", iconName: "leaf.fill"),
+                        BasicsItem(french: "L'Été", english: "Summer (le)", phonetic: "lay-tay", punjabiSound: "ਲੇਤੇ", iconName: "sun.max.fill", genderTag: "MASC"),
+                        BasicsItem(french: "L'Hiver", english: "Winter (le)", phonetic: "lee-vair", punjabiSound: "ਲੀਵੇਖ਼", iconName: "snowflake", genderTag: "MASC"),
+                        BasicsItem(french: "L'Automne", english: "Autumn / Fall (le)", phonetic: "loh-tuhn", punjabiSound: "ਲੋਤਨ", iconName: "leaf.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Printemps", english: "Spring", phonetic: "luh prahn-tahn", punjabiSound: "ਲੁ ਪ੍ਰਾਂਤਾਂ", iconName: "leaf.fill", genderTag: "MASC"),
                         BasicsItem(french: "Il fait beau", english: "The weather is nice", phonetic: "eel feh boh", punjabiSound: "ਈਲ ਫੇ ਬੋ", iconName: "sun.max.fill"),
                         BasicsItem(french: "Il pleut", english: "It is raining", phonetic: "eel pluh", punjabiSound: "ਈਲ ਪਲੂ", iconName: "cloud.rain.fill")
                     ]
@@ -273,11 +275,11 @@ enum BasicsData {
                     iconName: "leaf.fill",
                     description: "Sun, moon, stars, trees and flowers.",
                     items: [
-                        BasicsItem(french: "Le Soleil", english: "Sun", phonetic: "luh soh-lay", punjabiSound: "ਲੁ ਸੋਲੇ", iconName: "sun.max.fill"),
-                        BasicsItem(french: "La Lune", english: "Moon", phonetic: "lah loon", punjabiSound: "ਲਾ ਲੂਨ", iconName: "moon.fill"),
-                        BasicsItem(french: "Les Étoiles", english: "Stars", phonetic: "leh-zay-twahl", punjabiSound: "ਲੇਜ਼ੇਤਵਾਲ", iconName: "sparkles"),
-                        BasicsItem(french: "L'Arbre", english: "Tree", phonetic: "lahr-brə", punjabiSound: "ਲਾਰਬ੍ਰ", iconName: "tree.fill"),
-                        BasicsItem(french: "La Fleur", english: "Flower", phonetic: "lah fluhr", punjabiSound: "ਲਾ ਫਲੂਖ਼", iconName: "leaf.fill")
+                        BasicsItem(french: "Le Soleil", english: "Sun", phonetic: "luh soh-lay", punjabiSound: "ਲੁ ਸੋਲੇ", iconName: "sun.max.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Lune", english: "Moon", phonetic: "lah loon", punjabiSound: "ਲਾ ਲੂਨ", iconName: "moon.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Les Étoiles", english: "Stars (la)", phonetic: "leh-zay-twahl", punjabiSound: "ਲੇਜ਼ੇਤਵਾਲ", iconName: "sparkles", genderTag: "FEM"),
+                        BasicsItem(french: "L'Arbre", english: "Tree (le)", phonetic: "lahr-brə", punjabiSound: "ਲਾਰਬ੍ਰ", iconName: "tree.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Fleur", english: "Flower", phonetic: "lah fluhr", punjabiSound: "ਲਾ ਫਲੂਖ਼", iconName: "leaf.fill", genderTag: "FEM")
                     ]
                 )
             ]
@@ -293,11 +295,11 @@ enum BasicsData {
                     iconName: "bed.double.fill",
                     description: "Furniture and room essentials.",
                     items: [
-                        BasicsItem(french: "Le Lit", english: "Bed", phonetic: "luh lee", punjabiSound: "ਲੁ ਲੀ", iconName: "bed.double.fill"),
-                        BasicsItem(french: "La Chaise", english: "Chair", phonetic: "lah shehz", punjabiSound: "ਲਾ ਸ਼ੈਜ਼", iconName: "square.fill"),
-                        BasicsItem(french: "La Table", english: "Table", phonetic: "lah tah-blə", punjabiSound: "ਲਾ ਤਾਬਲ", iconName: "square.fill"),
-                        BasicsItem(french: "L'Armoire", english: "Wardrobe / Almirah", phonetic: "lar-mwahr", punjabiSound: "ਲਾਰਮਵਾਖ਼", iconName: "square.split.2x2.fill"),
-                        BasicsItem(french: "La Coiffeuse", english: "Dressing table", phonetic: "lah kwah-fuhz", punjabiSound: "ਲਾ ਕਵਾਫੂਜ਼", iconName: "sparkles")
+                        BasicsItem(french: "Le Lit", english: "Bed", phonetic: "luh lee", punjabiSound: "ਲੁ ਲੀ", iconName: "bed.double.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Chaise", english: "Chair", phonetic: "lah shehz", punjabiSound: "ਲਾ ਸ਼ੈਜ਼", iconName: "square.fill", genderTag: "FEM"),
+                        BasicsItem(french: "La Table", english: "Table", phonetic: "lah tah-blə", punjabiSound: "ਲਾ ਤਾਬਲ", iconName: "square.fill", genderTag: "FEM"),
+                        BasicsItem(french: "L'Armoire", english: "Wardrobe / Almirah (la)", phonetic: "lar-mwahr", punjabiSound: "ਲਾਰਮਵਾਖ਼", iconName: "square.split.2x2.fill", genderTag: "FEM"),
+                        BasicsItem(french: "La Coiffeuse", english: "Dressing table", phonetic: "lah kwah-fuhz", punjabiSound: "ਲਾ ਕਵਾਫੂਜ਼", iconName: "sparkles", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -305,10 +307,10 @@ enum BasicsData {
                     iconName: "book.fill",
                     description: "Stationery and school items.",
                     items: [
-                        BasicsItem(french: "Le Sac à dos", english: "Backpack / School bag", phonetic: "luh sahk ah doh", punjabiSound: "ਲੁ ਸਾਕ ਆ ਦੋ", iconName: "bag.fill"),
-                        BasicsItem(french: "Le Crayon", english: "Pencil", phonetic: "luh kreh-yohn", punjabiSound: "ਲੁ ਕ੍ਰੇਯੋਂ", iconName: "pencil"),
-                        BasicsItem(french: "Les Livres", english: "Books", phonetic: "leh leev-khə", punjabiSound: "ਲੇ ਲੀਵਖ਼", iconName: "books.vertical.fill"),
-                        BasicsItem(french: "La Gomme", english: "Eraser", phonetic: "lah guhm", punjabiSound: "ਲਾ ਗੋਮ", iconName: "square.fill")
+                        BasicsItem(french: "Le Sac à dos", english: "Backpack / School bag", phonetic: "luh sahk ah doh", punjabiSound: "ਲੁ ਸਾਕ ਆ ਦੋ", iconName: "bag.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Crayon", english: "Pencil", phonetic: "luh kreh-yohn", punjabiSound: "ਲੁ ਕ੍ਰੇਯੋਂ", iconName: "pencil", genderTag: "MASC"),
+                        BasicsItem(french: "Les Livres", english: "Books (le)", phonetic: "leh leev-khə", punjabiSound: "ਲੇ ਲੀਵਖ਼", iconName: "books.vertical.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Gomme", english: "Eraser", phonetic: "lah guhm", punjabiSound: "ਲਾ ਗੋਮ", iconName: "square.fill", genderTag: "FEM")
                     ]
                 )
             ]
@@ -324,11 +326,11 @@ enum BasicsData {
                     iconName: "cup.and.saucer.fill",
                     description: "Plates, spoons, glasses, and utensils.",
                     items: [
-                        BasicsItem(french: "L'Assiette", english: "Plate", phonetic: "lah-syeht", punjabiSound: "ਲਾਸਿਏਤ", iconName: "circle.fill"),
-                        BasicsItem(french: "La Cuillère", english: "Spoon", phonetic: "lah kwee-yair", punjabiSound: "ਲਾ ਕਵੀਏਖ਼", iconName: "fork.knife"),
-                        BasicsItem(french: "La Fourchette", english: "Fork", phonetic: "lah foor-sheht", punjabiSound: "ਲਾ ਫੂਰਸ਼ੈਤ", iconName: "fork.knife"),
-                        BasicsItem(french: "Le Verre", english: "Glass", phonetic: "luh vair", punjabiSound: "ਲੁ ਵੇਖ਼", iconName: "cup.and.saucer.fill"),
-                        BasicsItem(french: "Le Bol", english: "Bowl", phonetic: "luh buhl", punjabiSound: "ਲੁ ਬੋਲ", iconName: "circle.circle.fill")
+                        BasicsItem(french: "L'Assiette", english: "Plate (la)", phonetic: "lah-syeht", punjabiSound: "ਲਾਸਿਏਤ", iconName: "circle.fill", genderTag: "FEM"),
+                        BasicsItem(french: "La Cuillère", english: "Spoon", phonetic: "lah kwee-yair", punjabiSound: "ਲਾ ਕਵੀਏਖ਼", iconName: "fork.knife", genderTag: "FEM"),
+                        BasicsItem(french: "La Fourchette", english: "Fork", phonetic: "lah foor-sheht", punjabiSound: "ਲਾ ਫੂਰਸ਼ੈਤ", iconName: "fork.knife", genderTag: "FEM"),
+                        BasicsItem(french: "Le Verre", english: "Glass", phonetic: "luh vair", punjabiSound: "ਲੁ ਵੇਖ਼", iconName: "cup.and.saucer.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Bol", english: "Bowl", phonetic: "luh buhl", punjabiSound: "ਲੁ ਬੋਲ", iconName: "circle.circle.fill", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -336,10 +338,10 @@ enum BasicsData {
                     iconName: "apple.logo",
                     description: "Popular delicious fruits.",
                     items: [
-                        BasicsItem(french: "La Pomme", english: "Apple", phonetic: "lah puhm", punjabiSound: "ਲਾ ਪੋਮ", iconName: "apple.logo"),
-                        BasicsItem(french: "La Banane", english: "Banana", phonetic: "lah bah-nahn", punjabiSound: "ਲਾ ਬਾਨਾਨ", iconName: "leaf.fill"),
-                        BasicsItem(french: "L'Orange", english: "Orange", phonetic: "loh-rahnzh", punjabiSound: "ਲੋਰਾਂਜ਼", iconName: "circle.fill"),
-                        BasicsItem(french: "Le Raisin", english: "Grapes", phonetic: "luh khay-zahn", punjabiSound: "ਲੁ ਰੇਜ਼ਾਂ", iconName: "circle.fill")
+                        BasicsItem(french: "La Pomme", english: "Apple", phonetic: "lah puhm", punjabiSound: "ਲਾ ਪੋਮ", iconName: "apple.logo", genderTag: "FEM"),
+                        BasicsItem(french: "La Banane", english: "Banana", phonetic: "lah bah-nahn", punjabiSound: "ਲਾ ਬਾਨਾਨ", iconName: "leaf.fill", genderTag: "FEM"),
+                        BasicsItem(french: "L'Orange", english: "Orange (la)", phonetic: "loh-rahnzh", punjabiSound: "ਲੋਰਾਂਜ਼", iconName: "circle.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Le Raisin", english: "Grapes", phonetic: "luh khay-zahn", punjabiSound: "ਲੁ ਰੇਜ਼ਾਂ", iconName: "circle.fill", genderTag: "MASC")
                     ]
                 ),
                 BasicsCategory(
@@ -347,10 +349,10 @@ enum BasicsData {
                     iconName: "leaf.fill",
                     description: "Common vegetables.",
                     items: [
-                        BasicsItem(french: "La Pomme de terre", english: "Potato", phonetic: "lah puhm duh tair", punjabiSound: "ਲਾ ਪੋਮ ਦੁ ਤੈਖ਼", iconName: "circle.fill"),
-                        BasicsItem(french: "La Tomate", english: "Tomato", phonetic: "lah toh-maht", punjabiSound: "ਲਾ ਤੋਮਾਤ", iconName: "circle.fill"),
-                        BasicsItem(french: "L'Oignon", english: "Onion", phonetic: "lohn-yohn", punjabiSound: "ਲੋਨਯੋਂ", iconName: "circle.fill"),
-                        BasicsItem(french: "Les Carottes", english: "Carrots", phonetic: "leh kah-kht", punjabiSound: "ਲੇ ਕਾਖ਼ੋਤ", iconName: "leaf.fill")
+                        BasicsItem(french: "La Pomme de terre", english: "Potato", phonetic: "lah puhm duh tair", punjabiSound: "ਲਾ ਪੋਮ ਦੁ ਤੈਖ਼", iconName: "circle.fill", genderTag: "FEM"),
+                        BasicsItem(french: "La Tomate", english: "Tomato", phonetic: "lah toh-maht", punjabiSound: "ਲਾ ਤੋਮਾਤ", iconName: "circle.fill", genderTag: "FEM"),
+                        BasicsItem(french: "L'Oignon", english: "Onion (le)", phonetic: "lohn-yohn", punjabiSound: "ਲੋਨਯੋਂ", iconName: "circle.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Les Carottes", english: "Carrots (la)", phonetic: "leh kah-kht", punjabiSound: "ਲੇ ਕਾਖ਼ੋਤ", iconName: "leaf.fill", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -358,11 +360,11 @@ enum BasicsData {
                     iconName: "pawprint.fill",
                     description: "Domestic and wild animals.",
                     items: [
-                        BasicsItem(french: "Le Chien", english: "Dog", phonetic: "luh shyen", punjabiSound: "ਲੁ ਸ਼ਿਆਂ", iconName: "pawprint.fill"),
-                        BasicsItem(french: "Le Chat", english: "Cat", phonetic: "luh shah", punjabiSound: "ਲੁ ਸ਼ਾ", iconName: "cat.fill"),
-                        BasicsItem(french: "Le Lion", english: "Lion", phonetic: "luh lee-ohn", punjabiSound: "ਲੁ ਲੀਓਂ", iconName: "pawprint.fill"),
-                        BasicsItem(french: "L'Éléphant", english: "Elephant", phonetic: "lay-lay-fahn", punjabiSound: "ਲੇਲੇਫਾਂ", iconName: "pawprint.fill"),
-                        BasicsItem(french: "La Vache", english: "Cow", phonetic: "lah vahsh", punjabiSound: "ਲਾ ਵਾਸ਼", iconName: "pawprint.fill")
+                        BasicsItem(french: "Le Chien", english: "Dog", phonetic: "luh shyen", punjabiSound: "ਲੁ ਸ਼ਿਆਂ", iconName: "pawprint.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Chat", english: "Cat", phonetic: "luh shah", punjabiSound: "ਲੁ ਸ਼ਾ", iconName: "cat.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Lion", english: "Lion", phonetic: "luh lee-ohn", punjabiSound: "ਲੁ ਲੀਓਂ", iconName: "pawprint.fill", genderTag: "MASC"),
+                        BasicsItem(french: "L'Éléphant", english: "Elephant (le)", phonetic: "lay-lay-fahn", punjabiSound: "ਲੇਲੇਫਾਂ", iconName: "pawprint.fill", genderTag: "MASC"),
+                        BasicsItem(french: "La Vache", english: "Cow", phonetic: "lah vahsh", punjabiSound: "ਲਾ ਵਾਸ਼", iconName: "pawprint.fill", genderTag: "FEM")
                     ]
                 ),
                 BasicsCategory(
@@ -370,10 +372,10 @@ enum BasicsData {
                     iconName: "car.fill",
                     description: "Vehicles and transport modes.",
                     items: [
-                        BasicsItem(french: "La Voiture", english: "Car", phonetic: "lah vwah-toor", punjabiSound: "ਲਾ ਵਵਾਤੂਖ਼", iconName: "car.fill"),
-                        BasicsItem(french: "Le Bus", english: "Bus", phonetic: "luh boos", punjabiSound: "ਲੁ ਬੂਸ", iconName: "bus.fill"),
-                        BasicsItem(french: "Le Vélo", english: "Bicycle", phonetic: "luh vay-loh", punjabiSound: "ਲੁ ਵੇਲੋ", iconName: "bicycle"),
-                        BasicsItem(french: "L'Avion", english: "Airplane", phonetic: "lah-vyohn", punjabiSound: "ਲਾਵੀਓਂ", iconName: "airplane")
+                        BasicsItem(french: "La Voiture", english: "Car", phonetic: "lah vwah-toor", punjabiSound: "ਲਾ ਵਵਾਤੂਖ਼", iconName: "car.fill", genderTag: "FEM"),
+                        BasicsItem(french: "Le Bus", english: "Bus", phonetic: "luh boos", punjabiSound: "ਲੁ ਬੂਸ", iconName: "bus.fill", genderTag: "MASC"),
+                        BasicsItem(french: "Le Vélo", english: "Bicycle", phonetic: "luh vay-loh", punjabiSound: "ਲੁ ਵੇਲੋ", iconName: "bicycle", genderTag: "MASC"),
+                        BasicsItem(french: "L'Avion", english: "Airplane (le)", phonetic: "lah-vyohn", punjabiSound: "ਲਾਵੀਓਂ", iconName: "airplane", genderTag: "MASC")
                     ]
                 )
             ]
