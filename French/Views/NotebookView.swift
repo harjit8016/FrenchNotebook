@@ -55,9 +55,6 @@ struct NotebookView: View {
                         subtitle: "Master grammar, sounds & hacks"
                     )
 
-                    // Live Search & Filter Bar
-                    SearchBarView(searchText: $searchText, placeholder: "Search French, English, Punjabi...")
-
                     // Category Filter Chips
                     FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
 
@@ -165,9 +162,6 @@ struct NotebookSectionDetailView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 14) {
-                SearchBarView(searchText: $searchText, placeholder: "Search inside \(section.title)...")
-                    .padding(.top, 6)
-
                 Text(section.description)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(themeManager.currentTheme.secondaryTextColor)

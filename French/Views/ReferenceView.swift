@@ -18,9 +18,6 @@ struct ReferenceView: View {
                         subtitle: "Quick rules, liaisons & verb tables"
                     )
 
-                    // Live Search Bar
-                    SearchBarView(searchText: $searchText, placeholder: "Search rules, conjugations & hacks...")
-
                     // Category Filter Chips
                     FilterChipsView(tags: filterTags, selectedTag: $selectedFilterTag)
 
