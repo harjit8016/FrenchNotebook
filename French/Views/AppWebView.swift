@@ -67,7 +67,7 @@ struct YouTubeEmbedHelper {
     }
 }
 
-// MARK: - Native Web View with Interactive Navigation & Media Controls
+// MARK: - Native Web View with Auto-Unmute & Interactive Video Playback
 
 struct AppWebView: UIViewRepresentable {
     let url: URL
@@ -99,7 +99,6 @@ struct AppWebView: UIViewRepresentable {
             let html = YouTubeEmbedHelper.generateEmbedHTML(for: videoID)
             webView.loadHTMLString(html, baseURL: URL(string: "https://www.youtube-nocookie.com"))
         } else {
-            // Load direct native URL for Instagram Reels and web media
             let request = URLRequest(url: url)
             webView.load(request)
         }
@@ -112,8 +111,8 @@ struct AppWebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             let js = """
             (function() {
-                function tryAutoPlay() {
-                    // Click "Continue on web" or "Continue" if present
+                function unmuteAndPlay() {
+                    // Click "Continue on web" or "Watch on Instagram" if present
                     const buttons = document.querySelectorAll('button, a, div[role="button"]');
                     for (let btn of buttons) {
                         const text = (btn.innerText || '').toLowerCase();
@@ -121,23 +120,33 @@ struct AppWebView: UIViewRepresentable {
                             try { btn.click(); } catch(e) {}
                         }
                     }
-                    // Auto-play video
+
+                    // Unmute and play video elements automatically
                     const videos = document.getElementsByTagName('video');
                     for (let vid of videos) {
                         vid.playsInline = true;
-                        vid.play().catch(function() {
-                            vid.muted = true;
-                            vid.play().catch(function(){});
-                        });
+                        vid.muted = false;
+                        vid.volume = 1.0;
+
+                        var promise = vid.play();
+                        if (promise !== undefined) {
+                            promise.catch(function(error) {
+                                vid.muted = true;
+                                vid.play().then(function() {
+                                    setTimeout(function() { vid.muted = false; }, 300);
+                                }).catch(function(){});
+                            });
+                        }
                     }
                 }
-                tryAutoPlay();
+
+                unmuteAndPlay();
                 var count = 0;
                 var interval = setInterval(function() {
-                    tryAutoPlay();
+                    unmuteAndPlay();
                     count++;
-                    if (count > 10) clearInterval(interval);
-                }, 350);
+                    if (count > 8) clearInterval(interval);
+                }, 300);
             })();
             """
             webView.evaluateJavaScript(js, completionHandler: nil)
@@ -163,119 +172,34 @@ struct AppWebView: UIViewRepresentable {
     }
 }
 
-// MARK: - Dedicated Web Detail Screen with Native Video Controls
+// MARK: - Dedicated Web Detail Screen (Clean HIG Top Navigation, Zero Bottom Toolbar Clutter)
 
 struct WebViewDetailView: View {
     let link: SavedLink
     @ObservedObject private var themeManager = ThemeManager.shared
     @State private var webView = WKWebView()
-    @State private var isPlaying: Bool = true
-    @State private var useDirectWeb: Bool = false
     @State private var showShareSheet: Bool = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                themeManager.currentTheme.backgroundColor
-                    .ignoresSafeArea()
+        ZStack {
+            themeManager.currentTheme.backgroundColor
+                .ignoresSafeArea()
 
-                if let url = URL(string: link.urlString) {
-                    if useDirectWeb {
-                        DirectAppWebView(url: url, webView: webView)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .padding(.horizontal, 8)
-                            .padding(.top, 8)
-                    } else {
-                        AppWebView(url: url, webView: webView)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .padding(.horizontal, 8)
-                            .padding(.top, 8)
-                    }
-                } else {
-                    VStack(spacing: 12) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(.orange)
-                        Text("Invalid URL")
-                            .font(themeManager.fontSizeScale.titleFont)
-                            .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                    }
-                }
-            }
-
-            // MARK: - Native Player Control Toolbar
-            HStack(spacing: 20) {
-                // Native Play / Pause Toggle
-                Button {
-                    HapticManager.shared.tapWord()
-                    isPlaying.toggle()
-                    let js = isPlaying ?
-                        "(document.querySelector('video')?.play() || document.getElementById('yt-player')?.contentWindow?.postMessage('{\"event\":\"command\",\"func\":\"playVideo\",\"args\":\"\"}', '*'));" :
-                        "(document.querySelector('video')?.pause() || document.getElementById('yt-player')?.contentWindow?.postMessage('{\"event\":\"command\",\"func\":\"pauseVideo\",\"args\":\"\"}', '*'));"
-                    webView.evaluateJavaScript(js, completionHandler: nil)
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 16, weight: .bold))
-                        Text(isPlaying ? "Pause" : "Play")
-                            .font(themeManager.fontSizeScale.bodyFont.bold())
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .foregroundStyle(.white)
-                    .background(themeManager.currentTheme.accentColor)
-                    .clipShape(Capsule())
-                }
-
-                // Reload Player Button
-                Button {
-                    HapticManager.shared.tapWord()
-                    webView.reload()
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.system(size: 16, weight: .bold))
+            if let url = URL(string: link.urlString) {
+                AppWebView(url: url, webView: webView)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+            } else {
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(.orange)
+                    Text("Invalid URL")
+                        .font(themeManager.fontSizeScale.titleFont)
                         .foregroundStyle(themeManager.currentTheme.primaryTextColor)
-                        .padding(10)
-                        .appNeumorphicCard(cornerRadius: 20)
-                }
-
-                Spacer()
-
-                // Toggle Direct Web / Embed Mode
-                Button {
-                    HapticManager.shared.tapWord()
-                    useDirectWeb.toggle()
-                } label: {
-                    Text(useDirectWeb ? "Embed Mode" : "Direct Mode")
-                        .font(themeManager.fontSizeScale.captionFont)
-                        .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .appNeumorphicCard(cornerRadius: 10)
-                }
-
-                // Share Link Button
-                Button {
-                    HapticManager.shared.tapWord()
-                    showShareSheet = true
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(themeManager.currentTheme.accentColor)
-                }
-
-                // Open in External Safari / YouTube / Instagram App
-                if let url = URL(string: link.urlString) {
-                    Link(destination: url) {
-                        Image(systemName: "safari")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundStyle(themeManager.currentTheme.accentColor)
-                    }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(themeManager.currentTheme.cardBackgroundColor)
         }
         .sheet(isPresented: $showShareSheet) {
             if let url = URL(string: link.urlString) {
@@ -286,6 +210,24 @@ struct WebViewDetailView: View {
         }
         .appBackground()
         .appNavigationStyle(title: link.title, displayMode: .inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button {
+                    HapticManager.shared.tapWord()
+                    showShareSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                }
+
+                if let url = URL(string: link.urlString) {
+                    Link(destination: url) {
+                        Image(systemName: "safari")
+                            .foregroundStyle(themeManager.currentTheme.accentColor)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -300,21 +242,4 @@ struct ActivityViewController: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-
-// MARK: - Direct App Web View (Fallback)
-
-private struct DirectAppWebView: UIViewRepresentable {
-    let url: URL
-    let webView: WKWebView
-
-    func makeUIView(context: Context) -> WKWebView {
-        let config = webView.configuration
-        config.allowsInlineMediaPlayback = true
-        config.mediaTypesRequiringUserActionForPlayback = []
-        webView.load(URLRequest(url: url))
-        return webView
-    }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
 }
