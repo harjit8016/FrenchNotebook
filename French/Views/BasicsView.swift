@@ -513,7 +513,12 @@ private struct BasicsItemCard: View {
                         }
 
                         // Phonetic & Punjabi Sound Pill
-                        HStack(spacing: 6) {
+                        HStack(alignment: .top, spacing: 6) {
+                            Image(systemName: "waveform")
+                                .font(.system(size: 10, weight: .bold))
+                                .padding(.top, 2)
+                                .foregroundStyle(themeManager.currentTheme.accentColor)
+
                             Text(item.phonetic)
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
@@ -525,10 +530,10 @@ private struct BasicsItemCard: View {
                                 .font(.system(size: 12, weight: .bold))
                                 .foregroundStyle(themeManager.currentTheme.accentColor)
                         }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
                         .background(themeManager.currentTheme.accentColor.opacity(0.12))
-                        .clipShape(Capsule())
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
 
                     Spacer()

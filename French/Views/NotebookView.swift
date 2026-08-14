@@ -211,17 +211,20 @@ private struct ModernNotebookItemCard: View {
                             .kindleTextFormatting(lineSpacing: 3)
 
                         // Phonetic Chip Pill
-                        HStack(spacing: 4) {
+                        HStack(alignment: .top, spacing: 6) {
                             Image(systemName: "waveform")
-                                .font(.system(size: 10, weight: .bold))
+                                .font(.system(size: 11, weight: .bold))
+                                .padding(.top, 2)
+
                             Text(item.phonetic)
-                                .font(.system(size: 12, weight: .medium))
+                                .font(.system(size: 12.5, weight: .medium))
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .foregroundStyle(themeManager.currentTheme.accentColor)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
                         .background(themeManager.currentTheme.accentColor.opacity(0.12))
-                        .clipShape(Capsule())
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
 
                     Spacer()
