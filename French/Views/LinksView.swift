@@ -416,12 +416,18 @@ private struct AddLinkSheetView: View {
                             .font(themeManager.fontSizeScale.captionFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
-                        TextField("https://youtube.com/shorts/... or instagram.com/...", text: $urlString)
-                            .font(themeManager.fontSizeScale.bodyFont)
-                            .padding(12)
-                            .appNeumorphicCard(cornerRadius: 10)
-                            .autocapitalization(.none)
-                            .keyboardType(.URL)
+                        TextField(
+                            "",
+                            text: $urlString,
+                            prompt: Text("https://youtube.com/shorts/... or instagram.com/...")
+                                .foregroundColor(themeManager.currentTheme.secondaryTextColor.opacity(0.55))
+                        )
+                        .font(themeManager.fontSizeScale.bodyFont)
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        .padding(12)
+                        .appNeumorphicCard(cornerRadius: 10)
+                        .autocapitalization(.none)
+                        .keyboardType(.URL)
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
@@ -429,10 +435,16 @@ private struct AddLinkSheetView: View {
                             .font(themeManager.fontSizeScale.captionFont)
                             .foregroundStyle(themeManager.currentTheme.secondaryTextColor)
 
-                        TextField("e.g., French Pronunciation Lesson", text: $title)
-                            .font(themeManager.fontSizeScale.bodyFont)
-                            .padding(12)
-                            .appNeumorphicCard(cornerRadius: 10)
+                        TextField(
+                            "",
+                            text: $title,
+                            prompt: Text("e.g., French Pronunciation Lesson")
+                                .foregroundColor(themeManager.currentTheme.secondaryTextColor.opacity(0.55))
+                        )
+                        .font(themeManager.fontSizeScale.bodyFont)
+                        .foregroundStyle(themeManager.currentTheme.primaryTextColor)
+                        .padding(12)
+                        .appNeumorphicCard(cornerRadius: 10)
                     }
 
                     Spacer()
