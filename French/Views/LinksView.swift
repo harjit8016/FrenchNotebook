@@ -303,21 +303,7 @@ private struct LinkCardView: View {
                     thumbnailPlaceholder
                 }
 
-                // Dark overlay gradient for contrast
-                Color.black.opacity(0.2)
 
-                // Overlay Play Button Icon (when not selecting)
-                if !isSelectionMode {
-                    ZStack {
-                        Circle()
-                            .fill(Color.black.opacity(0.55))
-                            .frame(width: 38, height: 38)
-
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                }
 
                 // Selection Checkmark Circle Badge (Top-Left)
                 if isSelectionMode {
