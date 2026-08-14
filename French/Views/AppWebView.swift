@@ -171,6 +171,7 @@ struct WebViewDetailView: View {
     @State private var webView = WKWebView()
     @State private var isPlaying: Bool = true
     @State private var useDirectWeb: Bool = false
+    @State private var showShareSheet: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -253,6 +254,16 @@ struct WebViewDetailView: View {
                         .appNeumorphicCard(cornerRadius: 10)
                 }
 
+                // Share Link Button
+                Button {
+                    HapticManager.shared.tapWord()
+                    showShareSheet = true
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(themeManager.currentTheme.accentColor)
+                }
+
                 // Open in External Safari / YouTube / Instagram App
                 if let url = URL(string: link.urlString) {
                     Link(destination: url) {
@@ -266,9 +277,29 @@ struct WebViewDetailView: View {
             .padding(.vertical, 10)
             .background(themeManager.currentTheme.cardBackgroundColor)
         }
+        .sheet(isPresented: $showShareSheet) {
+            if let url = URL(string: link.urlString) {
+                ActivityViewController(activityItems: [link.title, url])
+            } else {
+                ActivityViewController(activityItems: [link.title, link.urlString])
+            }
+        }
         .appBackground()
         .appNavigationStyle(title: link.title, displayMode: .inline)
     }
+}
+
+// MARK: - Native iOS Activity View Controller (Share Sheet)
+
+struct ActivityViewController: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    var applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: - Direct App Web View (Fallback)
