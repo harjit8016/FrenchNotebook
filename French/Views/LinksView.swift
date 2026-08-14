@@ -419,7 +419,7 @@ private struct AddLinkSheetView: View {
                         TextField(
                             "",
                             text: $urlString,
-                            prompt: Text("https://youtube.com/shorts/... or instagram.com/...")
+                            prompt: Text("Paste YouTube or Instagram link here...")
                                 .foregroundColor(themeManager.currentTheme.secondaryTextColor.opacity(0.55))
                         )
                         .font(themeManager.fontSizeScale.bodyFont)
